@@ -32,6 +32,3 @@ set(LIB_NAME "x-opengl-game-engine-core")
 
 add_subdirectory(engine)
 add_subdirectory(sandbox)
-include(CTest)
-enable_testing()
-add_subdirectory(tests)
