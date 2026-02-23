@@ -1,0 +1,69 @@
+{
+  "version": 3,
+
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "generator": "Ninja",
+      "cacheVariables": {
+        "CMAKE_C_STANDARD": "11",
+        "CMAKE_CXX_STANDARD": "17"
+      }
+    },
+
+    {
+      "name": "linux-gcc-debug",
+      "inherits": "base",
+      "displayName": "Linux GCC Debug",
+      "binaryDir": "build/linux-gcc-debug",
+      "toolchainFile": "cmake/toolchains/linux-gcc.cmake",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      },
+      "environment": {
+        "http_proxy": "http://127.0.0.1:7890",
+        "https_proxy": "http://127.0.0.1:7890"
+      }
+    },
+    {
+      "name": "mac-clang-debug",
+      "inherits": "base",
+      "displayName": "macOs Clang Debug",
+      "binaryDir": "build/mac-clang-debug",
+      "toolchainFile": "cmake/toolchains/apple-clang.cmake",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      },
+      "environment": {
+        "http_proxy": "http://127.0.0.1:7890",
+        "https_proxy": "http://127.0.0.1:7890"
+      }
+    },
+    {
+      "name": "mac-clang-release",
+      "inherits": "base",
+      "displayName": "macOS Clang Release",
+      "binaryDir": "build/macos-clang-release",
+      "toolchainFile": "cmake/toolchains/clang-apple.cmake",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    }
+  ],
+
+  "buildPresets": [
+    {
+      "name": "linux-gcc-debug",
+      "configurePreset": "linux-gcc-debug"
+    },
+    {
+      "name": "mac-clang-debug",
+      "configurePreset": "mac-clang-debug"
+    },
+    {
+      "name": "mac-clang-release",
+      "configurePreset": "mac-clang-release"
+    }
+  ]
+}
