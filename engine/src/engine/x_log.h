@@ -2,25 +2,28 @@
 
 #include <spdlog/spdlog.h>
 
-#define XLOG_INFO(...) XLog::get_logger()->info(__VA_ARGS__)
-#define XLOG_WARN(...) XLog::get_logger()->warn(__VA_ARGS__)
-#define XLOG_ERROR(...) XLog::get_logger()->error(__VA_ARGS__)
-
-class XLog
-{
+class XLog {
 public:
     static void Init();
 
-    static std::shared_ptr<spdlog::logger> get_logger()
-    {
-        if (!m_logger)
-        {
-            // 兜底 保证不会崩溃
-            Init();
-        }
-        return m_logger;
-    }
+    inline static std::shared_ptr<spdlog::logger> get_coreLogger() { return s_coreLogger; }
+    inline static std::shared_ptr<spdlog::logger> get_clientLogger() { return s_clientLogger; }
 
 private:
-    static std::shared_ptr<spdlog::logger> m_logger;
+    static std::shared_ptr<spdlog::logger> s_coreLogger;
+    static std::shared_ptr<spdlog::logger> s_clientLogger;
 };
+
+// Core log macros
+#define X_CORE_TRACE(...) ::XLog::get_coreLogger()->trace(__VA_ARGS__)
+#define X_CORE_INFO(...)  ::XLog::get_coreLogger()->info(__VA_ARGS__)
+#define X_CORE_WARN(...)  ::XLog::get_coreLogger()->warn(__VA_ARGS__)
+#define X_CORE_ERROR(...) ::XLog::get_coreLogger()->error(__VA_ARGS__)
+#define X_CORE_FATAL(...) ::XLog::get_coreLogger()->fatal(__VA_ARGS__)
+
+// Client log macros
+#define X_TRACE(...) ::XLog::get_clientLogger()->trace(__VA_ARGS__)
+#define X_INFO(...)  ::XLog::get_clientLogger()->info(__VA_ARGS__)
+#define X_WARN(...)  ::XLog::get_clientLogger()->warn(__VA_ARGS__)
+#define X_ERROR(...) ::XLog::get_clientLogger()->error(__VA_ARGS__)
+#define X_FATAL(...) ::XLog::get_clientLogger()->fatal(__VA_ARGS__)

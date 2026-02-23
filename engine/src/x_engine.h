@@ -7,6 +7,7 @@
 // For use by engine application
 
 #include "engine/x_application.h"
+#include "engine/x_log.h"
 
 // ---Entry Point---
 #include "engine/entry_point.h"

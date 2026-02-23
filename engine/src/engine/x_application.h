@@ -8,7 +8,7 @@
 
 class XApplication {
 public:
-    XApplication();;
+    XApplication() = default;
 
     virtual ~XApplication() = default;
 
