@@ -2,6 +2,8 @@
 
 #include <spdlog/spdlog.h>
 
+#include "core.h"
+
 class XLog {
 public:
     static void Init();
