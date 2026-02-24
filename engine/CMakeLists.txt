@@ -18,10 +18,17 @@ target_include_directories(${LIB_NAME}
 )
 
 target_link_libraries(${LIB_NAME}
-    PUBLIC
-        spdlog
+    PUBLIC spdlog
+    PUBLIC glad
+    PUBLIC glfw
 )
 
 target_precompile_headers(${LIB_NAME}
     PRIVATE ${HDR_DIR}/pch.h
+)
+
+# 要用OpenGL的版本 从cmake的pre set传进来
+target_compile_definitions(${LIB_NAME} PUBLIC
+        OPENGL_VERSION_MAJOR=${OPENGL_VERSION_MAJOR}
+        OPENGL_VERSION_MINOR=${OPENGL_VERSION_MINOR}
 )

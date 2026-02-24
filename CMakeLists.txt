@@ -27,8 +27,11 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 # dep
 set(LIB_DIRECTORY ${CMAKE_SOURCE_DIR}/cmake)
 include(${LIB_DIRECTORY}/spdlog.cmake)
+include(${LIB_DIRECTORY}/OpenGL.cmake)
+include(${LIB_DIRECTORY}/glad.cmake)
+include(${LIB_DIRECTORY}/glfw.cmake)
 
-set(LIB_NAME "x-opengl-game-engine-core")
+set(LIB_NAME "${PROJECT_NAME}-core")
 
 add_subdirectory(engine)
 add_subdirectory(sandbox)

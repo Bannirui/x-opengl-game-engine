@@ -4,15 +4,21 @@
 
 #pragma once
 
+#include "engine/window.h"
 #include "engine/core.h"
 
-class XApplication {
+class XApplication
+{
 public:
-    XApplication() = default;
+    XApplication();
 
     virtual ~XApplication() = default;
 
     void Run();
+
+private:
+    std::unique_ptr<Window> m_window;
+    bool                    m_running{false};
 };
 
 // To be defined in the CLIENT

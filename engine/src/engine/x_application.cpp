@@ -7,9 +7,18 @@
 #include "engine/x_log.h"
 #include "engine/events/application_event.h"
 
-void XApplication::Run() {
-    WindowResizeEvent e(1280, 720);
-    X_TRACE("{}", e);
-    while (true) {
+XApplication::XApplication()
+{
+    m_window  = std::unique_ptr<Window>(Window::Create());
+    m_running = true;
+}
+
+void XApplication::Run()
+{
+    while (m_running)
+    {
+        glClearColor(1, 0, 1, 1);
+        glClear(GL_COLOR_BUFFER_BIT);
+        m_window->OnUpdate();
     }
 }
