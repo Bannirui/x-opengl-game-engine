@@ -3,7 +3,8 @@
 //
 
 #pragma once
-#include "event.h"
+#include "engine/events/event.h"
+#include "engine/core/mouse_codes.h"
 
 class MouseMovedEvent : public Event {
 public:
@@ -49,7 +50,7 @@ private:
 
 class MouseButtonEvent : public Event {
 public:
-    int get_mouseButton() const { return m_button; }
+    MouseCode get_mouseButton() const { return m_button; }
 
     EVENT_CLASS_CATEGORY(kEventCategoryMouse | kEventCategoryInput | kEventCategoryMouseButton)
 
@@ -58,7 +59,7 @@ protected:
     }
 
 protected:
-    int m_button;
+    MouseCode m_button;
 };
 
 class MouseButtonPressedEvent : public MouseButtonEvent {

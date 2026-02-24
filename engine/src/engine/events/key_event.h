@@ -3,11 +3,12 @@
 //
 
 #pragma once
-#include "event.h"
+#include "engine/events/event.h"
+#include "engine/core/key_codes.h"
 
 class KeyEvent : public Event {
 public:
-    int get_keyCode() const { return m_keyCode; }
+    KeyCode get_keyCode() const { return m_keyCode; }
 
     EVENT_CLASS_CATEGORY(kEventCategoryKeyboard | kEventCategoryInput);
 
@@ -16,7 +17,7 @@ protected:
     }
 
 protected:
-    int m_keyCode;
+    KeyCode m_keyCode;
 };
 
 class KeyPressEvent : public KeyEvent {

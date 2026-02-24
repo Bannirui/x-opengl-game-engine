@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "event.h"
+#include "engine/events/event.h"
 
 class WindowResizeEvent : public Event {
 public:
