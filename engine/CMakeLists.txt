@@ -32,3 +32,15 @@ target_compile_definitions(${LIB_NAME} PUBLIC
         OPENGL_VERSION_MAJOR=${OPENGL_VERSION_MAJOR}
         OPENGL_VERSION_MINOR=${OPENGL_VERSION_MINOR}
 )
+
+if(APPLE)
+    target_compile_definitions(${LIB_NAME} PUBLIC X_PLATFORM_MAC)
+endif()
+
+if(WIN32)
+    target_compile_definitions(${LIB_NAME} PUBLIC X_PLATFORM_WINDOWS)
+endif()
+
+if(UNIX AND NOT APPLE)
+    target_compile_definitions(${LIB_NAME} PUBLIC X_PLATFORM_LINUX)
+endif()
