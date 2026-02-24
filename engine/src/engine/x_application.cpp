@@ -9,7 +9,7 @@
 
 void XApplication::Run() {
     WindowResizeEvent e(1280, 720);
-    X_TRACE(e.ToString());
+    X_TRACE("{}", e);
     while (true) {
     }
 }

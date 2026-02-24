@@ -6,6 +6,7 @@
 
 #include <string>
 #include <functional>
+#include <fmt/format.h>
 
 #include "engine/core.h"
 
@@ -75,3 +76,13 @@ private:
 };
 
 inline std::ostream &operator<<(std::ostream &os, const Event &e) { return os << e.ToString(); }
+
+// 整合spdlog的格式化输出 支持Event的所有派生类
+template <typename T>
+struct fmt::formatter<T, std::enable_if_t<std::is_base_of_v<Event, T>, char>>
+{
+    constexpr auto parse(format_parse_context& ctx) { return ctx.begin(); }
+
+    template <typename FormatContext>
+    auto format(const T& e, FormatContext& ctx) const { return format_to(ctx.out(), "{}", e.ToString()); }
+};
