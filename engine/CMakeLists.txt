@@ -21,3 +21,7 @@ target_link_libraries(${LIB_NAME}
     PUBLIC
         spdlog
 )
+
+target_precompile_headers(${LIB_NAME}
+    PRIVATE ${HDR_DIR}/pch.h
+)
