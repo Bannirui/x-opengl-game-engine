@@ -5,10 +5,10 @@
 #pragma once
 
 #include "pch.h"
-#include "engine/events/event.h"
-#include "engine/layer_stack.h"
+#include "x/layer_stack.h"
 
 class Window;
+class Event;
 class WindowCloseEvent;
 class Layer;
 

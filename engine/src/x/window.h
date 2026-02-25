@@ -8,7 +8,8 @@
 #include <GLFW/glfw3.h>
 
 #include "pch.h"
-#include "engine/events/event.h"
+
+class Event;
 
 struct WindowProps
 {

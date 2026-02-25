@@ -4,9 +4,17 @@
 
 #include "platform/linux_window.h"
 
-#include "engine/x_log.h"
+#include "x/x_log.h"
+#include "x/events/application_event.h"
+#include "x/events/key_event.h"
+#include "x/events/mouse_event.h"
 
 static bool s_GLFWInitialized = false;
+
+static void glfwErrorCallback(int error, const char *description)
+{
+    X_CORE_ERROR("GLFW error ({0}): {1}", error, description);
+}
 
 LinuxWindow::LinuxWindow(const WindowProps &props)
 {
@@ -49,6 +57,7 @@ void LinuxWindow::init(const WindowProps &props)
     {
         int succ = glfwInit();
         X_CORE_ASSERT(succ, "Could not init GLFW");
+        glfwSetErrorCallback(glfwErrorCallback);
         s_GLFWInitialized = true;
     }
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, OPENGL_VERSION_MAJOR);
@@ -64,6 +73,83 @@ void LinuxWindow::init(const WindowProps &props)
         X_CORE_ASSERT(false, "Could not load GLAD function");
     }
     SetVSync(true);
+    // glfw的回调注册
+    glfwSetWindowSizeCallback(m_window,
+                              [](GLFWwindow *window, int width, int height)
+                              {
+                                  WindowData &data = *static_cast<WindowData *>(glfwGetWindowUserPointer(window));
+                                  data.width       = width;
+                                  data.height      = height;
+                                  WindowResizeEvent event(width, height);
+                                  data.eventCallback(event);
+                              });
+    glfwSetWindowCloseCallback(m_window,
+                               [](GLFWwindow *window)
+                               {
+                                   WindowData      &data = *static_cast<WindowData *>(glfwGetWindowUserPointer(window));
+                                   WindowCloseEvent event;
+                                   data.eventCallback(event);
+                               });
+    glfwSetKeyCallback(m_window,
+                       [](GLFWwindow *window, int key, int scancode, int action, int mods)
+                       {
+                           WindowData &data = *static_cast<WindowData *>(glfwGetWindowUserPointer(window));
+                           switch (action)
+                           {
+                               case GLFW_PRESS:
+                               {
+                                   KeyPressEvent event(key, false);
+                                   data.eventCallback(event);
+                                   break;
+                               }
+                               case GLFW_RELEASE:
+                               {
+                                   KeyReleaseEvent event(key);
+                                   data.eventCallback(event);
+                                   break;
+                               }
+                               case GLFW_REPEAT:
+                               {
+                                   KeyPressEvent event(key, true);
+                                   data.eventCallback(event);
+                                   break;
+                               }
+                           }
+                       });
+    glfwSetMouseButtonCallback(m_window,
+                               [](GLFWwindow *window, int button, int action, int mods)
+                               {
+                                   WindowData &data = *static_cast<WindowData *>(glfwGetWindowUserPointer(window));
+                                   switch (action)
+                                   {
+                                       case GLFW_PRESS:
+                                       {
+                                           MouseButtonPressedEvent event(button);
+                                           data.eventCallback(event);
+                                           break;
+                                       }
+                                       case GLFW_RELEASE:
+                                       {
+                                           MouseButtonReleasedEvent event(button);
+                                           data.eventCallback(event);
+                                           break;
+                                       }
+                                   }
+                               });
+    glfwSetScrollCallback(m_window,
+                          [](GLFWwindow *window, double xOffset, double yOffset)
+                          {
+                              WindowData        &data = *static_cast<WindowData *>(glfwGetWindowUserPointer(window));
+                              MouseScrolledEvent event(xOffset, yOffset);
+                              data.eventCallback(event);
+                          });
+    glfwSetCursorPosCallback(m_window,
+                             [](GLFWwindow *window, double xPos, double yPos)
+                             {
+                                 WindowData     &data = *static_cast<WindowData *>(glfwGetWindowUserPointer(window));
+                                 MouseMovedEvent event(xPos, yPos);
+                                 data.eventCallback(event);
+                             });
 }
 
 void LinuxWindow::shutdown()

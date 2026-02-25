@@ -4,10 +4,10 @@
 
 #include "platform/mac_window.h"
 
-#include "engine/x_log.h"
-#include "engine/events/application_event.h"
-#include "engine/events/key_event.h"
-#include "engine/events/mouse_event.h"
+#include "x/x_log.h"
+#include "x/events/application_event.h"
+#include "x/events/key_event.h"
+#include "x/events/mouse_event.h"
 
 static bool s_GLFWInitialized = false;
 

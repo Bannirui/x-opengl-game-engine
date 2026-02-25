@@ -6,10 +6,11 @@
 
 // For use by engine application
 
-#include "engine/x_application.h"
-#include "engine/x_log.h"
-#include "engine/layer.h"
+#include "x/x_application.h"
+#include "x/x_log.h"
+#include "x/layer.h"
+#include "x/events/event.h"
 
 // ---Entry Point---
-#include "engine/entry_point.h"
+#include "x/entry_point.h"
 // ---Entry Point---
