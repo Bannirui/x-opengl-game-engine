@@ -31,6 +31,7 @@ private:
         uint32_t        width;
         uint32_t        height;
         bool            vSync;
+        // 回调函数 用来传播glfw的事件
         EventCallbackFn eventCallback;
     };
 

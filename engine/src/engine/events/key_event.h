@@ -36,6 +36,7 @@ public:
     EVENT_CLASS_TYPE(kKeyPressed)
 
 private:
+    // 键盘被重复按键
     bool m_isRepeat;
 };
 

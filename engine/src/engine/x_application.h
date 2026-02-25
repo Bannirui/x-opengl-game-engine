@@ -4,21 +4,28 @@
 
 #pragma once
 
-#include "engine/window.h"
-#include "engine/core.h"
+#include "pch.h"
+
+class Window;
+class Event;
+class WindowCloseEvent;
 
 class XApplication
 {
 public:
     XApplication();
 
-    virtual ~XApplication() = default;
+    virtual ~XApplication();
 
     void Run();
+    void OnEvent(Event& e);
+
+private:
+    bool onWindowClose(WindowCloseEvent& e);
 
 private:
     std::unique_ptr<Window> m_window;
-    bool                    m_running{false};
+    bool                    m_running{true};
 };
 
 // To be defined in the CLIENT
