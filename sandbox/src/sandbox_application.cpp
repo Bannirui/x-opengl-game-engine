@@ -2,17 +2,31 @@
 // Created by dingrui on 2/23/26.
 //
 
+#include "pch.h"
 #include <x_engine.h>
 
-class Sandbox : public XApplication {
+class ExampleLayer : public Layer
+{
 public:
-    Sandbox() {
-    }
+    ExampleLayer() : Layer("X-EXAMPLE") {}
 
-    ~Sandbox() override {
-    }
+    void OnUpdate() override { X_INFO("ExampleLayer::OnUpdate"); }
+
+    void OnEvent(const Event &e) override { X_INFO("{}", e); }
 };
 
-XApplication *CreateApplication() {
+class Sandbox : public XApplication
+{
+public:
+    Sandbox()
+    {
+        PushLayer(new ExampleLayer());
+    }
+
+    ~Sandbox() override {}
+};
+
+XApplication *CreateApplication()
+{
     return new Sandbox();
 }

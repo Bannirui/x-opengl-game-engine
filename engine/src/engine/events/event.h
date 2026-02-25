@@ -76,8 +76,8 @@ public:
 protected:
     Event() = default;
 
-protected:
-    bool m_handled = false;
+public:
+    bool Handled{false};
 };
 
 class EventDispatcher
@@ -93,7 +93,7 @@ public:
     {
         if (m_event.GetEventType() == T::GetStaticType())
         {
-            m_event.m_handled = func(*static_cast<T *>(&m_event));
+            m_event.Handled = func(*static_cast<T *>(&m_event));
             return true;
         }
         return false;
