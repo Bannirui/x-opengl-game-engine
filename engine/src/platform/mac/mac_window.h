@@ -20,7 +20,7 @@ public:
     void     SetVSync(bool enabled) override;
     bool     IsVSync() override { return m_data.vSync; }
 
-    GLFWwindow *get_nativeWindow() override { return m_window; }
+    void *get_nativeWindow() const override { return m_window; }
 
 private:
     virtual void init(const WindowProps &props);
@@ -29,10 +29,10 @@ private:
 private:
     struct WindowData
     {
-        std::string     title;
-        uint32_t        width;
-        uint32_t        height;
-        bool            vSync;
+        std::string title;
+        uint32_t    width;
+        uint32_t    height;
+        bool        vSync;
         // 回调函数 用来传播glfw的事件
         EventCallbackFn eventCallback;
     };

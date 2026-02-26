@@ -6,6 +6,7 @@
 
 #include <imgui.h>
 #include <imgui_impl_opengl3.h>
+#include <imgui_impl_glfw.h>
 
 #include "x/core.h"
 #include "x/window.h"
@@ -13,8 +14,6 @@
 #include "x/x_application.h"
 #include "x/events/mouse_event.h"
 #include "x/events/key_event.h"
-
-#include <imgui_impl_glfw.h>
 
 ImGuiLayer::ImGuiLayer() : Layer("ImGuiLayer") {}
 
@@ -35,7 +34,7 @@ void ImGuiLayer::OnAttach()
     io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;   // 可以主动设置鼠标位置
     XApplication &app = XApplication::Get();
     // ImGui绑定glfw 事件自动托管 不用自己手动管理
-    ImGui_ImplGlfw_InitForOpenGL(app.get_window().get_nativeWindow(), true);
+    ImGui_ImplGlfw_InitForOpenGL(static_cast<GLFWwindow *>(app.get_window().get_nativeWindow()), true);
     // ImGui绑定OpenGL
     ImGui_ImplOpenGL3_Init(X_GL_VERSION);
 }

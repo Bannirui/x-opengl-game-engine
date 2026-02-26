@@ -2,7 +2,7 @@
 // Created by rui ding on 2026/2/24.
 //
 
-#include "platform/linux_window.h"
+#include "platform/mac/mac_window.h"
 
 #include "x/x_log.h"
 #include "x/events/application_event.h"
@@ -16,23 +16,23 @@ static void glfwErrorCallback(int error, const char *description)
     X_CORE_ERROR("GLFW error ({0}): {1}", error, description);
 }
 
-LinuxWindow::LinuxWindow(const WindowProps &props)
+MacWindow::MacWindow(const WindowProps &props)
 {
     init(props);
 }
 
-LinuxWindow::~LinuxWindow()
+MacWindow::~MacWindow()
 {
     shutdown();
 }
 
-void LinuxWindow::OnUpdate()
+void MacWindow::OnUpdate()
 {
     glfwPollEvents();
     glfwSwapBuffers(m_window);
 }
 
-void LinuxWindow::SetVSync(bool enabled)
+void MacWindow::SetVSync(bool enabled)
 {
     if (enabled)
     {
@@ -45,7 +45,7 @@ void LinuxWindow::SetVSync(bool enabled)
     m_data.vSync = enabled;
 }
 
-void LinuxWindow::init(const WindowProps &props)
+void MacWindow::init(const WindowProps &props)
 {
     m_data.title  = props.title;
     m_data.width  = props.width;
@@ -157,7 +157,7 @@ void LinuxWindow::init(const WindowProps &props)
                              });
 }
 
-void LinuxWindow::shutdown()
+void MacWindow::shutdown()
 {
     glfwDestroyWindow(m_window);
 }

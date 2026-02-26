@@ -41,7 +41,10 @@ public:
     virtual bool IsVSync()                                         = 0;
 
     // 暴露glfw的窗体
-    virtual GLFWwindow* get_nativeWindow() = 0;
+    virtual void *get_nativeWindow() const = 0;
 
     static Window *Create(const WindowProps &props = WindowProps());
+
+protected:
+    Window() = default;
 };

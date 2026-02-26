@@ -20,7 +20,8 @@ public:
     void     SetVSync(bool enabled) override;
     bool     IsVSync() override { return m_data.vSync; }
 
-    GLFWwindow *get_nativeWindow() override { return m_window; }
+    void *get_nativeWindow() const override { return m_window; }
+
 private:
     virtual void init(const WindowProps &props);
     virtual void shutdown();

@@ -6,9 +6,9 @@
 #include "x/core.h" // 平台标识的宏定义在core里面
 
 #if defined(X_PLATFORM_MAC)
-#include "platform/mac_window.h"
+#include "platform/mac/mac_window.h"
 #elif defined(X_PLATFORM_LINUX)
-#include "platform/linux_window.h"
+#include "platform/linux/linux_window.h"
 #else
 #error "Unsupported platform!"
 #endif
