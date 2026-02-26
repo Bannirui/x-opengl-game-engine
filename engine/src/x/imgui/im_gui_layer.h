@@ -6,6 +6,15 @@
 
 #include "x/layer.h"
 
+class WindowResizeEvent;
+class KeyTypedEvent;
+class KeyReleaseEvent;
+class KeyPressEvent;
+class MouseScrolledEvent;
+class MouseMovedEvent;
+class MouseButtonReleasedEvent;
+class MouseButtonPressedEvent;
+
 class ImGuiLayer : public Layer
 {
 public:
@@ -15,7 +24,7 @@ public:
     void OnAttach() override;
     void OnDetach() override;
     void OnUpdate() override;
-    void OnEvent(const Event &e) override;
+    void OnEvent(Event &e) override;
 
 private:
     float m_time{0.0f};

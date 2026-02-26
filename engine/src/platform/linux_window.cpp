@@ -114,6 +114,13 @@ void LinuxWindow::init(const WindowProps &props)
                                }
                            }
                        });
+    glfwSetCharCallback(m_window,
+                        [](GLFWwindow *window, uint32_t keycode)
+                        {
+                            WindowData   &data = *static_cast<WindowData *>(glfwGetWindowUserPointer(window));
+                            KeyTypedEvent event(keycode);
+                            data.eventCallback(event);
+                        });
     glfwSetMouseButtonCallback(m_window,
                                [](GLFWwindow *window, int button, int action, int mods)
                                {

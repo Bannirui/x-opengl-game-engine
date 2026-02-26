@@ -59,6 +59,7 @@ protected:
     }
 
 protected:
+    // 事件要在glfw到imgui之间传播 统一按键编码
     MouseCode m_button;
 };
 

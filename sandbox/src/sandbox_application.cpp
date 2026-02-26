@@ -12,7 +12,7 @@ public:
 
     void OnUpdate() override { X_INFO("ExampleLayer::OnUpdate"); }
 
-    void OnEvent(const Event &e) override { X_INFO("{}", e); }
+    void OnEvent(Event &e) override { X_INFO("{}", e); }
 };
 
 class Sandbox : public XApplication

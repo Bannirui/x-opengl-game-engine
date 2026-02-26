@@ -23,6 +23,7 @@ struct WindowProps
     }
 };
 
+// 封装的窗体 掩藏glfw的细节
 class Window
 {
 public:
@@ -38,6 +39,9 @@ public:
     virtual void SetEventCallback(const EventCallbackFn &callback) = 0;
     virtual void SetVSync(bool enabled)                            = 0;
     virtual bool IsVSync()                                         = 0;
+
+    // 暴露glfw的窗体
+    virtual GLFWwindow* get_nativeWindow() = 0;
 
     static Window *Create(const WindowProps &props = WindowProps());
 };

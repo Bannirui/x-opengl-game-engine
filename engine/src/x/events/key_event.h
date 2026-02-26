@@ -6,6 +6,8 @@
 #include "x/events/event.h"
 #include "x/core/key_codes.h"
 
+#include <imgui.h>
+
 class KeyEvent : public Event {
 public:
     KeyCode get_keyCode() const { return m_keyCode; }
