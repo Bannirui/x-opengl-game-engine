@@ -6,10 +6,42 @@
 
 #define BIT(x) (1 << x)
 
+// ================================
+// Platform detection
+// ================================
+#if defined(_WIN32) || defined(_WIN64)
+    #define X_PLATFORM_WINDOWS
+#elif defined(__APPLE__)
+    #define X_PLATFORM_MAC
+#elif defined(__linux__)
+    #define X_PLATFORM_LINUX
+#else
+    #error "Unknown platform!"
+#endif
+
+// ================================
+// Debug Break (跨平台实现)
+// ================================
+#if defined(X_PLATFORM_WINDOWS)
+    #define X_DEBUGBREAK() __debugbreak()
+#elif defined(X_PLATFORM_MAC) || defined(X_PLATFORM_LINUX)
+    #include <csignal>
+    #define X_DEBUGBREAK() raise(SIGTRAP)
+#else
+    #error "Debugbreak not implemented for this platform"
+#endif
+
+// 调试开关
+#ifdef X_DEBUG
+	#define X_ENABLE_ASSERTS
+#endif
+
 // 没有开启开关的时候支持无参数
 #ifdef X_ENABLE_ASSERTS
-    #define X_ASSERT(x, ...) { if(!(x)) { X_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
-    #define X_CORE_ASSERT(x, ...) { if(!(x)) { X_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
+    #define X_ASSERT(x, ...) \
+        { if(!(x)) { X_ERROR("Assertion Failed: {0}", __VA_ARGS__); X_DEBUGBREAK(); } }
+    #define X_CORE_ASSERT(x, ...) \
+        { if(!(x)) { X_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); X_DEBUGBREAK(); } }
 #else
     #define X_ASSERT(x, ...) ((void)(x))
     #define X_CORE_ASSERT(x, ...) ((void)(x))

@@ -30,22 +30,22 @@ target_precompile_headers(${LIB_NAME}
 
 if(APPLE)
     target_compile_definitions(${LIB_NAME}
-        # 实现跨平台
-        PRIVATE X_PLATFORM_MAC
-                # OpenGL版本
-                OPENGL_VERSION_MAJOR=3
+        # OpenGL版本
+        PRIVATE OPENGL_VERSION_MAJOR=3
                 OPENGL_VERSION_MINOR=3
     )
 endif()
 
-if(WIN32)
-    target_compile_definitions(${LIB_NAME} PUBLIC X_PLATFORM_WINDOWS)
-endif()
-
 if(UNIX AND NOT APPLE)
     target_compile_definitions(${LIB_NAME}
-        PRIVATE X_PLATFORM_LINUX
-                OPENGL_VERSION_MAJOR=4
+        PRIVATE OPENGL_VERSION_MAJOR=4
                 OPENGL_VERSION_MINOR=5
     )
 endif()
+
+# 系统构建类型在pre set中指定 debug就启用X_DEBUG 在cpp中可以使用调试日志 release就不启用
+target_compile_definitions(${LIB_NAME}
+    PUBLIC
+        $<$<CONFIG:Debug>:X_DEBUG>
+        $<$<CONFIG:Release>:X_RELEASE>
+)
