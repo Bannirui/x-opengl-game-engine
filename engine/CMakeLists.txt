@@ -21,20 +21,21 @@ target_link_libraries(${LIB_NAME}
     PUBLIC spdlog
     PUBLIC glad
     PUBLIC glfw
+    PUBLIC imgui
 )
 
 target_precompile_headers(${LIB_NAME}
     PRIVATE ${HDR_DIR}/pch.h
 )
 
-# 要用OpenGL的版本 从cmake的pre set传进来
-target_compile_definitions(${LIB_NAME} PUBLIC
-        OPENGL_VERSION_MAJOR=${OPENGL_VERSION_MAJOR}
-        OPENGL_VERSION_MINOR=${OPENGL_VERSION_MINOR}
-)
-
 if(APPLE)
-    target_compile_definitions(${LIB_NAME} PUBLIC X_PLATFORM_MAC)
+    target_compile_definitions(${LIB_NAME}
+        # 实现跨平台
+        PRIVATE X_PLATFORM_MAC
+                # OpenGL版本
+                OPENGL_VERSION_MAJOR=3
+                OPENGL_VERSION_MINOR=3
+    )
 endif()
 
 if(WIN32)
@@ -42,5 +43,9 @@ if(WIN32)
 endif()
 
 if(UNIX AND NOT APPLE)
-    target_compile_definitions(${LIB_NAME} PUBLIC X_PLATFORM_LINUX)
+    target_compile_definitions(${LIB_NAME}
+        PRIVATE X_PLATFORM_LINUX
+                OPENGL_VERSION_MAJOR=4
+                OPENGL_VERSION_MINOR=5
+    )
 endif()

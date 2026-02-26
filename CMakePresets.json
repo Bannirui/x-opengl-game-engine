@@ -19,9 +19,7 @@
       "binaryDir": "build/linux-gcc-debug",
       "toolchainFile": "cmake/toolchains/linux-gcc.cmake",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug",
-        "OPENGL_VERSION_MAJOR": "4",
-        "OPENGL_VERSION_MINOR": "5"
+        "CMAKE_BUILD_TYPE": "Debug"
       },
       "environment": {
         "http_proxy": "http://127.0.0.1:7890",
@@ -34,9 +32,7 @@
       "displayName": "macOs Clang Debug",
       "binaryDir": "build/mac-clang-debug",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug",
-        "OPENGL_VERSION_MAJOR": "3",
-        "OPENGL_VERSION_MINOR": "3"
+        "CMAKE_BUILD_TYPE": "Debug"
       },
       "environment": {
         "http_proxy": "http://127.0.0.1:7890",
