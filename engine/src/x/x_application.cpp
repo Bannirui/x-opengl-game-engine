@@ -7,7 +7,6 @@
 #include "x/core.h"
 #include "x/layer.h"
 #include "x/x_log.h"
-#include "x/events/event.h"
 #include "x/events/application_event.h"
 #include "x/window.h"
 

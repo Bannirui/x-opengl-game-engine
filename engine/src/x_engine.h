@@ -11,6 +11,9 @@
 #include "x/layer.h"
 #include "x/events/event.h"
 #include "x/imgui/im_gui_layer.h"
+#include "x/input.h"
+#include "x/core/key_codes.h"
+#include "x/core/mouse_codes.h"
 
 // ---Entry Point---
 #include "x/entry_point.h"
