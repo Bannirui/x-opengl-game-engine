@@ -27,3 +27,9 @@
 // OpenGL版本拼接成 #version 450 core
 #define X_GL_VERSION \
 "#version " STR(CAT(OPENGL_VERSION_MAJOR, OPENGL_VERSION_MINOR)0) " core"
+
+/**
+ * 类的成员函数x绑定成可以直接调用的对象
+ * @param fn XApplication::OnEvent
+ */
+#define X_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)

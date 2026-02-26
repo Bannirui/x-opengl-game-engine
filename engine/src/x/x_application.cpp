@@ -4,14 +4,12 @@
 
 #include "x/x_application.h"
 
-#include "layer.h"
+#include "x/core.h"
+#include "x/layer.h"
 #include "x/x_log.h"
 #include "x/events/event.h"
 #include "x/events/application_event.h"
 #include "x/window.h"
-
-// 类的成员函数x绑定成可以直接调用的对象
-#define BIND_EVENT_FN(x) std::bind(&XApplication::x, this, std::placeholders::_1)
 
 XApplication* XApplication::s_instance = nullptr;
 
@@ -20,7 +18,7 @@ XApplication::XApplication()
     X_CORE_ASSERT(!s_instance, "Application alyready exists");
     s_instance = this;
     m_window = std::unique_ptr<Window>(Window::Create());
-    m_window->SetEventCallback(BIND_EVENT_FN(OnEvent));
+    m_window->SetEventCallback(X_BIND_EVENT_FN(XApplication::OnEvent));
 }
 
 XApplication::~XApplication() {}
@@ -42,7 +40,7 @@ void XApplication::Run()
 void XApplication::OnEvent(Event &e)
 {
     EventDispatcher dispatcher(e);
-    dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(onWindowClose));
+    dispatcher.Dispatch<WindowCloseEvent>(X_BIND_EVENT_FN(XApplication::onWindowClose));
     for (auto it = m_layerStack.end(); it != m_layerStack.begin();)
     {
         (*--it)->OnEvent(e);
