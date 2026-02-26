@@ -14,3 +14,16 @@
     #define X_ASSERT(x, ...) ((void)(x))
     #define X_CORE_ASSERT(x, ...) ((void)(x))
 #endif
+
+// ---------- stringify ----------
+#define STR_IMPL(x) #x
+#define STR(x) STR_IMPL(x)
+
+// ---------- token concatenation ----------
+#define CAT_IMPL(a, b) a##b
+#define CAT(a, b) CAT_IMPL(a, b)
+
+// ---------- GLSL version ----------
+// OpenGL版本拼接成 #version 450 core
+#define X_GL_VERSION \
+"#version " STR(CAT(OPENGL_VERSION_MAJOR, OPENGL_VERSION_MINOR)0) " core"

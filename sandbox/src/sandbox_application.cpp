@@ -21,6 +21,7 @@ public:
     Sandbox()
     {
         PushLayer(new ExampleLayer());
+        PushLayer(new ImGuiLayer());
     }
 
     ~Sandbox() override {}

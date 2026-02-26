@@ -13,8 +13,12 @@
 // 类的成员函数x绑定成可以直接调用的对象
 #define BIND_EVENT_FN(x) std::bind(&XApplication::x, this, std::placeholders::_1)
 
+XApplication* XApplication::s_instance = nullptr;
+
 XApplication::XApplication()
 {
+    X_CORE_ASSERT(!s_instance, "Application alyready exists");
+    s_instance = this;
     m_window = std::unique_ptr<Window>(Window::Create());
     m_window->SetEventCallback(BIND_EVENT_FN(OnEvent));
 }
@@ -52,11 +56,13 @@ void XApplication::OnEvent(Event &e)
 void XApplication::PushLayer(Layer *layer)
 {
     m_layerStack.PushLayer(layer);
+    layer->OnAttach();
 }
 
 void XApplication::PushOverlay(Layer *layer)
 {
     m_layerStack.PushOverlay(layer);
+    layer->OnAttach();
 }
 
 bool XApplication::onWindowClose(WindowCloseEvent &e)
