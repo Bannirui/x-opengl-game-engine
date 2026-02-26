@@ -8,7 +8,7 @@
 using MouseCode = uint16_t;
 
 // 鼠标按键编码
-namespace MOUSE
+namespace X_MOUSE
 {
     enum : MouseCode
     {

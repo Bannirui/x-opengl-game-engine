@@ -13,12 +13,16 @@
 #error "Unsupported platform!"
 #endif
 
+Input *Input::s_instance = nullptr;
+
 Input *Input::Create()
 {
 #if defined(X_PLATFORM_MAC)
-    return new MacInput();
+    s_instance = new MacInput();
+    return s_instance;
 #elif defined(X_PLATFORM_LINUX)
-    return new LinuxInput();
+    s_instance = new LinuxInput();
+    return s_instance;
 #else
     return nullptr;
 #endif

@@ -9,7 +9,7 @@
 using KeyCode = uint16_t;
 
 // 键盘按键编码
-namespace KEY
+namespace X_KEY
 {
     enum : KeyCode
     {

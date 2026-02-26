@@ -9,15 +9,18 @@
 #include "x/x_log.h"
 #include "x/events/application_event.h"
 #include "x/window.h"
+#include "x/input.h"
 
-XApplication* XApplication::s_instance = nullptr;
+XApplication *XApplication::s_instance = nullptr;
 
 XApplication::XApplication()
 {
     X_CORE_ASSERT(!s_instance, "Application alyready exists");
     s_instance = this;
-    m_window = std::unique_ptr<Window>(Window::Create());
+    m_window   = std::unique_ptr<Window>(Window::Create());
     m_window->SetEventCallback(X_BIND_EVENT_FN(XApplication::OnEvent));
+    // todo 创建input
+    Input::Create();
 }
 
 XApplication::~XApplication() {}
