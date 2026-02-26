@@ -68,10 +68,8 @@ void LinuxWindow::init(const WindowProps &props)
     glfwMakeContextCurrent(m_window);
     glfwSetWindowUserPointer(m_window, &m_data);
     // 使用glad加载当前opengl版本的所有函数
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
-        X_CORE_ASSERT(false, "Could not load GLAD function");
-    }
+    int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+    X_CORE_ASSERT(status, "Could not load GLAD function");
     SetVSync(true);
     // glfw的回调注册
     glfwSetWindowSizeCallback(m_window,
