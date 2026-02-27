@@ -36,7 +36,7 @@ public:
             {
                 X_TRACE("Tab key is pressed (event)!");
             }
-            X_TRACE("{0}", (char)event.get_keyCode());
+            X_TRACE("{}", (char)event.get_keyCode());
         }
     }
 };

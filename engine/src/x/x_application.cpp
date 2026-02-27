@@ -24,7 +24,7 @@ XApplication::XApplication()
     X_CORE_ASSERT(!s_instance, "Application already exists");
     s_instance = this;
     m_window   = std::unique_ptr<Window>(Window::Create());
-    m_window->SetEventCallback(X_BIND_EVENT_FN(XApplication::OnEvent));
+	m_window->SetEventCallback([this](Event& e){ this->OnEvent(e); });
     // todo 创建input
     Input::Create();
 
@@ -164,7 +164,7 @@ void XApplication::Run()
 void XApplication::OnEvent(Event &e)
 {
     EventDispatcher dispatcher(e);
-    dispatcher.Dispatch<WindowCloseEvent>(X_BIND_EVENT_FN(XApplication::onWindowClose));
+	dispatcher.Dispatch<WindowCloseEvent>([this](WindowCloseEvent &e){ return this->onWindowClose(e); });
     for (auto it = m_layerStack.end(); it != m_layerStack.begin();)
     {
         (*--it)->OnEvent(e);

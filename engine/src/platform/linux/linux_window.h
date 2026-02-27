@@ -35,7 +35,7 @@ private:
         uint32_t        width;
         uint32_t        height;
         bool            vSync;
-        EventCallbackFn eventCallback;
+        EventCallbackFn eventCallback =[](Event &) { }; // it will be called later, set an empty callback for protect
     };
 
     WindowData       m_data;

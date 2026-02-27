@@ -62,9 +62,3 @@
 
 // add "" for string, x=>"x"
 #define X_GLSL(src) X_GL_VERSION "\n" #src
-
-/**
- * 类的成员函数x绑定成可以直接调用的对象
- * @param fn XApplication::OnEvent
- */
-#define X_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
