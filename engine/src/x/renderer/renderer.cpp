@@ -4,4 +4,4 @@
 
 #include "x/renderer/renderer.h"
 
-RendererAPI Renderer::s_rendererAPI = RendererAPI::kOpenGL;
+RendererAPI::API Renderer::s_rendererAPI = RendererAPI::API::kOpenGL;

@@ -4,17 +4,13 @@
 
 #pragma once
 
-enum class RendererAPI : uint8_t
-{
-    kNone   = 0,
-    kOpenGL = 1,
-};
+#include "x/renderer/renderer_api.h"
 
 class Renderer
 {
 public:
-    inline static RendererAPI GetAPI() { return s_rendererAPI; }
+    inline static RendererAPI::API GetAPI() { return s_rendererAPI; }
 
 private:
-    static RendererAPI s_rendererAPI;
+    static RendererAPI::API s_rendererAPI;
 };

@@ -13,12 +13,12 @@ VertexBuffer *VertexBuffer::Create(float *vertices, uint32_t size)
 {
     switch (Renderer::GetAPI())
     {
-        case RendererAPI::kNone:
+        case RendererAPI::API::kNone:
         {
             X_CORE_ASSERT(false, "RendererAPI::kNone is currently not supported!");
             return nullptr;
         }
-        case RendererAPI::kOpenGL:
+        case RendererAPI::API::kOpenGL:
         {
             return new OpenGLVertexBuffer(vertices, size);
         }
@@ -36,12 +36,12 @@ IndexBuffer *IndexBuffer::Create(uint32_t *indices, uint32_t count)
 {
     switch (Renderer::GetAPI())
     {
-        case RendererAPI::kNone:
+        case RendererAPI::API::kNone:
         {
             X_CORE_ASSERT(false, "RendererAPI::kNone is currently not supported!");
             return nullptr;
         }
-        case RendererAPI::kOpenGL:
+        case RendererAPI::API::kOpenGL:
         {
             return new OpenGLIndexBuffer(indices, count);
         }
