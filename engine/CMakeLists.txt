@@ -18,10 +18,7 @@ target_include_directories(${LIB_NAME}
 )
 
 target_link_libraries(${LIB_NAME}
-    PUBLIC spdlog
-    PUBLIC glad
-    PUBLIC glfw
-    PUBLIC imgui
+    PUBLIC spdlog glad glfw imgui glm
 )
 
 target_precompile_headers(${LIB_NAME}
