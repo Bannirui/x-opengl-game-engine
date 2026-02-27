@@ -11,6 +11,7 @@
 #include "x/core.h"
 #include "x/window.h"
 #include "x/x_application.h"
+#include "x/x_log.h"
 
 ImGuiLayer::ImGuiLayer() : Layer("ImGuiLayer") {}
 
@@ -31,7 +32,7 @@ void ImGuiLayer::OnAttach()
     // ImGui绑定glfw 事件自动托管 不用自己手动管理
     ImGui_ImplGlfw_InitForOpenGL(static_cast<GLFWwindow *>(app.get_window().get_nativeWindow()), true);
     // ImGui绑定OpenGL
-    ImGui_ImplOpenGL3_Init(X_GL_VERSION);
+    ImGui_ImplOpenGL3_Init(X_GL_VERSION_CORE);
 }
 
 void ImGuiLayer::OnDetach()

@@ -20,7 +20,7 @@ void Renderer::EndScene() {
 
 void Renderer::Submit(const std::shared_ptr<Shader> &shader, const std::shared_ptr<VertexArray> &vertexArray) {
     shader->Bind();
-    shader->UploadUniformMat4("u_viewProjection", s_sceneData->viewProjectionMatrix);
+    shader->UploadUniformMat4("u_ViewProjection", s_sceneData->viewProjectionMatrix);
 
     vertexArray->Bind();
     RenderCommand::DrawIndexed(vertexArray);

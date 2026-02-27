@@ -51,14 +51,29 @@
 #define STR_IMPL(x) #x
 #define STR(x) STR_IMPL(x)
 
-// ---------- token concatenation ----------
-#define CAT_IMPL(a, b) a##b
-#define CAT(a, b) CAT_IMPL(a, b)
+#ifndef X_GL_VERSION_MAJOR
+#define X_GL_VERSION_MAJOR 3
+#endif
+
+#ifndef X_GL_VERSION_MINOR
+#define X_GL_VERSION_MINOR 3
+#endif
 
 // ---------- GLSL version ----------
-// OpenGL版本拼接成 #version 450 core
-#define X_GL_VERSION \
-"#version " STR(CAT(OPENGL_VERSION_MAJOR, OPENGL_VERSION_MINOR)0) " core"
+// 计算：major * 100 + minor * 10
+#define X_GLSL_VERSION_NUM \
+    (X_GL_VERSION_MAJOR * 100 + X_GL_VERSION_MINOR * 10)
 
-// add "" for string, x=>"x"
-#define X_GLSL(src) X_GL_VERSION "\n" #src
+// 强制展开一次
+#define X_EXPAND(x) x
+#define X_GLSL_VERSION X_EXPAND(X_GLSL_VERSION_NUM)
+
+// ---------- GLSL header ----------
+// OpenGL版本拼接成 #version 450 core
+#define X_GL_VERSION_CORE \
+    "#version " STR(X_GL_VERSION_MAJOR) STR(X_GL_VERSION_MINOR) "0 core"
+
+// ---------- Shader helper ----------
+#define X_GLSL(src) \
+    X_GL_VERSION_CORE "\n" \
+    #src

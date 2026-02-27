@@ -28,15 +28,15 @@ target_precompile_headers(${LIB_NAME}
 if(APPLE)
     target_compile_definitions(${LIB_NAME}
         # OpenGL版本
-        PRIVATE OPENGL_VERSION_MAJOR=3
-                OPENGL_VERSION_MINOR=3
+        PRIVATE X_GL_VERSION_MAJOR=3
+                X_GL_VERSION_MINOR=3
     )
 endif()
 
 if(UNIX AND NOT APPLE)
     target_compile_definitions(${LIB_NAME}
-        PRIVATE OPENGL_VERSION_MAJOR=4
-                OPENGL_VERSION_MINOR=5
+        PRIVATE X_GL_VERSION_MAJOR=4
+                X_GL_VERSION_MINOR=5
     )
 endif()
 

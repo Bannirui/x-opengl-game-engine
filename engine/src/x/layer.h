@@ -3,7 +3,8 @@
 //
 
 #pragma once
-#include "events/key_event.h"
+
+#include "x/core/timestep.h"
 
 class Event;
 
@@ -25,7 +26,7 @@ public:
     /**
      * 系统向各模块发布渲染
      */
-    virtual void OnUpdate() {}
+    virtual void OnUpdate(Timestep ts) {}
     virtual void OnImguiRender() {}
     /**
      * 系统向各模块发布事件
