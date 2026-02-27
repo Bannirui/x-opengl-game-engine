@@ -4,10 +4,12 @@
 
 #include "platform/mac/mac_window.h"
 
+#include "platform/opengl/open_gl_context.h"
 #include "x/x_log.h"
 #include "x/events/application_event.h"
 #include "x/events/key_event.h"
 #include "x/events/mouse_event.h"
+#include "platform/opengl/open_gl_context.h"
 
 static bool s_GLFWInitialized = false;
 
@@ -65,11 +67,12 @@ void MacWindow::init(const WindowProps &props)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     m_window = glfwCreateWindow(static_cast<int>(props.width), static_cast<int>(props.height), props.title.c_str(),
                                 nullptr, nullptr);
-    glfwMakeContextCurrent(m_window);
+
+    m_context = new OpenGLContext(m_window);
+    m_context->Init();
+
     glfwSetWindowUserPointer(m_window, &m_data);
-    // 使用glad加载当前opengl版本的所有函数
-    int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-    X_CORE_ASSERT(status, "Could not load GLAD function");
+
     SetVSync(true);
     // glfw的回调注册
     glfwSetWindowSizeCallback(m_window,

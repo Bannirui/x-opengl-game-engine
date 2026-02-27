@@ -6,6 +6,8 @@
 
 #include "x/window.h"
 
+class GraphicsContext;
+
 class MacWindow : public Window
 {
 public:
@@ -37,6 +39,7 @@ private:
         EventCallbackFn eventCallback;
     };
 
-    WindowData  m_data;
-    GLFWwindow *m_window;
+    WindowData       m_data;
+    GLFWwindow      *m_window;
+    GraphicsContext *m_context;
 };
