@@ -25,35 +25,36 @@ public:
         // VAO
         m_VAO1.reset(VertexArray::Create());
         // VAO托管VBO
-        std::shared_ptr<VertexBuffer> vertexBuffer;
+        X::Ref<VertexBuffer> vertexBuffer;
         vertexBuffer.reset(VertexBuffer::Create(vertices1, sizeof(vertices1)));
         BufferLayout layout = {{ShaderDataType::kFloat3, "a_Position"}, {ShaderDataType::kFloat4, "a_Color"}};
         vertexBuffer->SetLayout(layout);
         m_VAO1->AddVertexBuffer(vertexBuffer);
         // VAO托管EBO
-        std::shared_ptr<IndexBuffer> indexBuffer;
+        X::Ref<IndexBuffer> indexBuffer;
         indexBuffer.reset(IndexBuffer::Create(indices1, sizeof(indices1) / sizeof(uint32_t)));
         m_VAO1->SetIndexBuffer(indexBuffer);
 
         // 正方形
 	    // clang-format off
 	    float vertices2[] = {
-	        -0.5f, -0.5f, 0.0f,
-	         0.5f, -0.5f, 0.0f,
-	         0.5f,  0.5f, 0.0f,
-	        -0.5f,  0.5f, 0.0f
+	    	 // pos(xyz)          // uv(xy)
+	        -0.5f, -0.5f,  0.0f,  0.0f,  0.0f,
+	         0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+	         0.5f,  0.5f,  0.0f,  1.0f,  1.0f,
+	        -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
 	    };
 	    uint32_t indices2[] = {0, 1, 2, 2, 3, 0};
         // clang-format on
         // VAO
         m_VAO2.reset(VertexArray::Create());
         // VAO托管VBO
-        std::shared_ptr<VertexBuffer> squareVB;
+        X::Ref<VertexBuffer> squareVB;
         squareVB.reset(VertexBuffer::Create(vertices2, sizeof(vertices2)));
         squareVB->SetLayout({{ShaderDataType::kFloat3, "a_Position"}});
         m_VAO2->AddVertexBuffer(squareVB);
         // VAO托管EBO
-        std::shared_ptr<IndexBuffer> squareIB;
+        X::Ref<IndexBuffer> squareIB;
         squareIB.reset(IndexBuffer::Create(indices2, sizeof(indices2) / sizeof(uint32_t)));
         m_VAO2->SetIndexBuffer(squareIB);
 
@@ -108,6 +109,35 @@ public:
 		);
         // clang-format on
         m_shader2.reset(Shader::Create(vertexSrc2, fragmentSrc2));
+
+	    // clang-format off
+	    std::string vertexSrc3 = X_GLSL(
+			layout(location = 0) in vec3 a_Position;
+			layout(location = 1) in vec2 a_TexCoord;
+		    uniform mat4 u_ViewProjection;
+		    uniform mat4 u_Transform;
+			out vec2 v_TexCoord;
+			void main()
+			{
+				v_TexCoord = a_TexCoord;
+				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
+			}
+		);
+	    std::string fragmentSrc3 = X_GLSL(
+			in vec2 v_TexCoord;
+			uniform sampler2D u_Textue;
+			layout(location = 0) out vec4 color;
+			void main()
+			{
+				color = texture(u_Textue, v_TexCoord);
+			}
+		);
+        // clang-format on
+        m_shader3.reset(Shader::Create(vertexSrc3, fragmentSrc3));
+
+        m_texture = Texture2D::Create("asset/texture/Checkerboard.png");
+        std::dynamic_pointer_cast<OpenGLShader>(m_shader3)->Bind();
+        std::dynamic_pointer_cast<OpenGLShader>(m_shader3)->UploadUniformInt("u_Texture", 0);
     }
 
     void OnUpdate(Timestep ts) override {
@@ -119,11 +149,11 @@ public:
 
         Renderer::BeginScene(m_camera);
 
-        // 第2个shader
+        // 第2个shader square
         glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 
-    	std::dynamic_pointer_cast<OpenGLShader>(m_shader2)->Bind();
-    	std::dynamic_pointer_cast<OpenGLShader>(m_shader2)->UploadUniformFloat3("u_Color", m_color);
+        std::dynamic_pointer_cast<OpenGLShader>(m_shader2)->Bind();
+        std::dynamic_pointer_cast<OpenGLShader>(m_shader2)->UploadUniformFloat3("u_Color", m_color);
         for (int y = 0; y < 20; ++y) {
             for (int x = 0; x < 20; ++x) {
                 glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
@@ -133,7 +163,10 @@ public:
             }
         }
 
-        // 第1个shader
+        m_texture->Bind();
+        Renderer::Submit(m_shader3, m_VAO2);
+
+        // 第1个shader triangle
         Renderer::Submit(m_shader1, m_VAO1);
 
         Renderer::EndScene();
@@ -146,11 +179,15 @@ public:
     }
 
 private:
-    std::shared_ptr<Shader> m_shader1; // shader1
-    std::shared_ptr<VertexArray> m_VAO1; // shader1的VAO
+    X::Ref<Shader> m_shader1; // shader1
+    X::Ref<VertexArray> m_VAO1; // shader1的VAO
 
-    std::shared_ptr<Shader> m_shader2; // shader2
-    std::shared_ptr<VertexArray> m_VAO2; // shader2的VAO
+    X::Ref<Shader> m_shader2; // shader2
+    X::Ref<VertexArray> m_VAO2; // shader2的VAO
+
+    X::Ref<Shader> m_shader3;
+
+    X::Ref<Texture> m_texture;
 
     OrthographicCamera m_camera;
 
@@ -159,7 +196,7 @@ private:
     float m_cameraRotation{0.0f};
     float m_cameraRotationSpeed{180.0f};
 
-	glm::vec3 m_color{0.2f, 0.3f, 0.8f};
+    glm::vec3 m_color{0.2f, 0.3f, 0.8f};
 };
 
 class Sandbox : public XApplication {

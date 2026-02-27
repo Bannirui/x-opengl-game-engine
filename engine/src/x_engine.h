@@ -23,6 +23,7 @@
 
 #include "x/renderer/buffer.h"
 #include "x/renderer/shader.h"
+#include "x/renderer/texture.h"
 #include "x/renderer/vertex_array.h"
 
 #include "x/renderer/orthographic_camera.h"

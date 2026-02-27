@@ -32,6 +32,7 @@ include(${LIB_DIRECTORY}/glad.cmake)
 include(${LIB_DIRECTORY}/glfw.cmake)
 include(${LIB_DIRECTORY}/imgui.cmake)
 include(${LIB_DIRECTORY}/glm.cmake)
+include(${LIB_DIRECTORY}/stb.cmake)
 
 set(LIB_NAME "${PROJECT_NAME}-core")
 
