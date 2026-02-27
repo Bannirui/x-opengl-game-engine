@@ -7,6 +7,7 @@
 #include "pch.h"
 #include "x/layer_stack.h"
 
+class VertexArray;
 class IndexBuffer;
 class VertexBuffer;
 class Shader;
@@ -41,10 +42,11 @@ private:
     LayerStack              m_layerStack;
     ImGuiLayer             *m_ImGuiLayer;
 
-    uint32_t                      m_VAO{0};
-    std::unique_ptr<Shader>       m_shader;
-    std::unique_ptr<VertexBuffer> m_vertexBuffer;  // VBO
-    std::unique_ptr<IndexBuffer>  m_indexBuffer;   // EBO
+    std::shared_ptr<Shader>      m_shader1;  // shader1
+    std::shared_ptr<VertexArray> m_VAO1;     // shader1的VAO
+
+    std::shared_ptr<Shader>      m_shader2;  // shader2
+    std::shared_ptr<VertexArray> m_VAO2;     // shader2的VAO
 
 private:
     static XApplication *s_instance;

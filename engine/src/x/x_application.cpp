@@ -4,6 +4,7 @@
 
 #include "x/x_application.h"
 
+#include "renderer/vertex_array.h"
 #include "x/core.h"
 #include "x/layer.h"
 #include "x/x_log.h"
@@ -15,64 +16,6 @@
 #include "x/renderer/buffer.h"
 
 XApplication *XApplication::s_instance = nullptr;
-
-static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type)
-{
-    switch (type)
-    {
-        case ShaderDataType::kNone:
-        {
-            X_CORE_ASSERT(false, "Not support ShaderDataType::kNone");
-        }
-        case ShaderDataType::kFloat:
-        {
-            return GL_FLOAT;
-        }
-        case ShaderDataType::kFloat2:
-        {
-            return GL_FLOAT;
-        }
-        case ShaderDataType::kFloat3:
-        {
-            return GL_FLOAT;
-        }
-        case ShaderDataType::kFloat4:
-        {
-            return GL_FLOAT;
-        }
-        case ShaderDataType::kMat3:
-        {
-            return GL_FLOAT;
-        }
-        case ShaderDataType::kMat4:
-        {
-            return GL_FLOAT;
-        }
-        case ShaderDataType::kInt:
-        {
-            return GL_INT;
-        }
-        case ShaderDataType::kInt2:
-        {
-            return GL_INT;
-        }
-        case ShaderDataType::kInt3:
-        {
-            return GL_INT;
-        }
-        case ShaderDataType::kInt4:
-        {
-            return GL_INT;
-        }
-        case ShaderDataType::kBool:
-        {
-            return GL_BOOL;
-        }
-    }
-
-    X_CORE_ASSERT(false, "Unknown ShaderDataType!");
-    return 0;
-}
 
 XApplication::XApplication()
 {
@@ -86,43 +29,53 @@ XApplication::XApplication()
     m_ImGuiLayer = new ImGuiLayer();
     PushOverlay(m_ImGuiLayer);
 
-    glGenVertexArrays(1, &m_VAO);
-    glBindVertexArray(m_VAO);
-    X_CORE_ASSERT(m_VAO, "创建VAO失败");
-
+    // 三角形
     // clang-format off
-    float vertices[] = {
+    float vertices1[] = {
          // pos(xyz)        // color(rgba)
         -0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f,
          0.5f, -0.5f, 0.0f, 0.2f, 0.3f, 0.8f, 1.0f,
          0.0f,  0.5f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f,
     };
+    uint32_t indices1[] = {0, 1, 2};
     // clang-format on
+    // VAO
+    m_VAO1.reset(VertexArray::Create());
+    // VAO托管VBO
+    std::shared_ptr<VertexBuffer> vertexBuffer;
+    vertexBuffer.reset(VertexBuffer::Create(vertices1, sizeof(vertices1)));
+    BufferLayout layout = {{ShaderDataType::kFloat3, "a_Position"}, {ShaderDataType::kFloat4, "a_Color"}};
+    vertexBuffer->SetLayout(layout);
+    m_VAO1->AddVertexBuffer(vertexBuffer);
+    // VAO托管EBO
+    std::shared_ptr<IndexBuffer> indexBuffer;
+    indexBuffer.reset(IndexBuffer::Create(indices1, sizeof(indices1) / sizeof(uint32_t)));
+    m_VAO1->SetIndexBuffer(indexBuffer);
 
-    // VBO
-    m_vertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
-    {
-        BufferLayout layout = {{ShaderDataType::kFloat3, "a_Position"}, {ShaderDataType::kFloat4, "a_Color"}};
-        m_vertexBuffer->SetLayout(layout);
-    }
-
-    uint32_t    index  = 0;
-    const auto &layout = m_vertexBuffer->GetLayout();
-    for (const auto &element : layout)
-    {
-        glEnableVertexAttribArray(index);
-        glVertexAttribPointer(index, element.GetComponentCount(), ShaderDataTypeToOpenGLBaseType(element.type),
-                              element.normalized ? GL_TRUE : GL_FALSE, layout.GetStride(),
-                              reinterpret_cast<const void *>(element.offset));
-        ++index;
-    }
-
-    uint32_t indices[3] = {0, 1, 2};
-    // EBO
-    m_indexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
+    // 正方形
+    // clang-format off
+    float vertices2[] = {
+        -0.75f, -0.75f, 0.0f,
+         0.75f, -0.75f, 0.0f,
+         0.75f,  0.75f, 0.0f,
+        -0.75f,  0.75f, 0.0f
+    };
+    uint32_t indices2[] = {0, 1, 2, 2, 3, 0};
+    // clang-format on
+    // VAO
+    m_VAO2.reset(VertexArray::Create());
+    // VAO托管VBO
+    std::shared_ptr<VertexBuffer> squareVB;
+    squareVB.reset(VertexBuffer::Create(vertices2, sizeof(vertices2)));
+    squareVB->SetLayout({{ShaderDataType::kFloat3, "a_Position"}});
+    m_VAO2->AddVertexBuffer(squareVB);
+    // VAO托管EBO
+    std::shared_ptr<IndexBuffer> squareIB;
+    squareIB.reset(IndexBuffer::Create(indices2, sizeof(indices2) / sizeof(uint32_t)));
+    m_VAO2->SetIndexBuffer(squareIB);
 
     // clang-format off
-    const char* vertexSrc = X_GLSL(
+    const char* vertexSrc1 = X_GLSL(
 	    layout(location = 0) in vec3 a_Position;
 	    layout(location = 1) in vec4 a_Color;
 		out vec3 v_Position;
@@ -135,7 +88,7 @@ XApplication::XApplication()
 		}
 	);
 
-    const char* fragmentSrc = X_GLSL(
+    const char* fragmentSrc1 = X_GLSL(
 		layout(location = 0) out vec4 color;
 		in vec3 v_Position;
 		in vec4 v_Color;
@@ -146,8 +99,28 @@ XApplication::XApplication()
 		}
 	);
     // clang-format on
+    m_shader1.reset(new Shader(vertexSrc1, fragmentSrc1));
 
-    m_shader.reset(new Shader(vertexSrc, fragmentSrc));
+    // clang-format off
+    std::string vertexSrc2 = X_GLSL(
+		layout(location = 0) in vec3 a_Position;
+		out vec3 v_Position;
+		void main()
+		{
+			v_Position = a_Position;
+			gl_Position = vec4(a_Position, 1.0);
+		}
+	);
+    std::string fragmentSrc2 = X_GLSL(
+		layout(location = 0) out vec4 color;
+		in vec3 v_Position;
+		void main()
+		{
+			color = vec4(0.2, 0.3, 0.8, 1.0);
+		}
+	);
+    // clang-format on
+    m_shader2.reset(new Shader(vertexSrc2, fragmentSrc2));
 }
 
 XApplication::~XApplication() {}
@@ -159,8 +132,14 @@ void XApplication::Run()
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glBindVertexArray(m_VAO);
-        glDrawElements(GL_TRIANGLES, m_indexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);
+        // 第2个shader
+        m_shader2->Bind();
+        m_VAO2->Bind();
+        glDrawElements(GL_TRIANGLES, m_VAO2->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+        // 第1个shader
+        m_shader1->Bind();
+        m_VAO1->Bind();
+        glDrawElements(GL_TRIANGLES, m_VAO1->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
 
         for (Layer *layer : m_layerStack)
         {
