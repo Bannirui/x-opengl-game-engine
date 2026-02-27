@@ -4,6 +4,8 @@
 
 #include "x/x_application.h"
 
+#include "x/renderer/render_command.h"
+#include "x/renderer/renderer.h"
 #include "renderer/vertex_array.h"
 #include "x/core.h"
 #include "x/layer.h"
@@ -129,17 +131,19 @@ void XApplication::Run()
 {
     while (m_running)
     {
-        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.0f});
+        RenderCommand::Clear();
+
+        Renderer::BeginScene();
 
         // 第2个shader
         m_shader2->Bind();
-        m_VAO2->Bind();
-        glDrawElements(GL_TRIANGLES, m_VAO2->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+        Renderer::Submit(m_VAO2);
         // 第1个shader
         m_shader1->Bind();
-        m_VAO1->Bind();
-        glDrawElements(GL_TRIANGLES, m_VAO1->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+        Renderer::Submit(m_VAO1);
+
+        Renderer::EndScene();
 
         for (Layer *layer : m_layerStack)
         {

@@ -6,11 +6,19 @@
 
 #include "x/renderer/renderer_api.h"
 
+class VertexArray;
+
 class Renderer
 {
 public:
-    inline static RendererAPI::API GetAPI() { return s_rendererAPI; }
+    static void BeginScene();
+    static void EndScene();
 
-private:
-    static RendererAPI::API s_rendererAPI;
+    /**
+     * 绘制帧 VAO数据灌给GPU
+     * @param vertexArray VAO
+     */
+    static void Submit(const std::shared_ptr<VertexArray> &vertexArray);
+
+    inline static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
 };
