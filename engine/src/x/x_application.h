@@ -7,6 +7,8 @@
 #include "pch.h"
 #include "x/layer_stack.h"
 
+class IndexBuffer;
+class VertexBuffer;
 class Shader;
 class ImGuiLayer;
 class Window;
@@ -39,8 +41,10 @@ private:
     LayerStack              m_layerStack;
     ImGuiLayer             *m_ImGuiLayer;
 
-    uint32_t                m_VBO{0}, m_EBO{0}, m_VAO{0};
-    std::unique_ptr<Shader> m_shader;
+    uint32_t                      m_VAO{0};
+    std::unique_ptr<Shader>       m_shader;
+    std::unique_ptr<VertexBuffer> m_vertexBuffer;  // VBO
+    std::unique_ptr<IndexBuffer>  m_indexBuffer;   // EBO
 
 private:
     static XApplication *s_instance;

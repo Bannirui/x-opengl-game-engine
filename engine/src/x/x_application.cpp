@@ -12,6 +12,7 @@
 #include "x/input.h"
 #include "x/imgui/im_gui_layer.h"
 #include "x/renderer/shader.h"
+#include "x/renderer/buffer.h"
 
 XApplication *XApplication::s_instance = nullptr;
 
@@ -31,10 +32,6 @@ XApplication::XApplication()
     glBindVertexArray(m_VAO);
     X_CORE_ASSERT(m_VAO, "创建VAO失败");
 
-    glGenBuffers(1, &m_VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-    X_CORE_ASSERT(m_VBO, "创建VBO失败");
-
     // clang-format off
     float vertices[] = {
         // pos(xyz)
@@ -44,18 +41,15 @@ XApplication::XApplication()
     };
     // clang-format on
 
-    // cpu数据传给gpu
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    // VBO
+    m_vertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
 
-    glGenBuffers(1, &m_EBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
-    X_CORE_ASSERT(m_EBO, "创建EBO失败");
-
     uint32_t indices[3] = {0, 1, 2};
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    // EBO
+    m_indexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
 
     // clang-format off
     const char* vertexSrc = X_GLSL(
@@ -91,7 +85,7 @@ void XApplication::Run()
         glClear(GL_COLOR_BUFFER_BIT);
 
         glBindVertexArray(m_VAO);
-        glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
+        glDrawElements(GL_TRIANGLES, m_indexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);
 
         for (Layer *layer : m_layerStack)
         {
