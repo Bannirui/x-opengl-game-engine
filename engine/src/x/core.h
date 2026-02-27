@@ -60,6 +60,9 @@
 #define X_GL_VERSION \
 "#version " STR(CAT(OPENGL_VERSION_MAJOR, OPENGL_VERSION_MINOR)0) " core"
 
+// add "" for string, x=>"x"
+#define X_GLSL(src) X_GL_VERSION "\n" #src
+
 /**
  * 类的成员函数x绑定成可以直接调用的对象
  * @param fn XApplication::OnEvent

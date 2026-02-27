@@ -7,6 +7,7 @@
 #include "pch.h"
 #include "x/layer_stack.h"
 
+class Shader;
 class ImGuiLayer;
 class Window;
 class Event;
@@ -37,6 +38,9 @@ private:
     bool                    m_running{true};
     LayerStack              m_layerStack;
     ImGuiLayer             *m_ImGuiLayer;
+
+    uint32_t                m_VBO{0}, m_EBO{0}, m_VAO{0};
+    std::unique_ptr<Shader> m_shader;
 
 private:
     static XApplication *s_instance;

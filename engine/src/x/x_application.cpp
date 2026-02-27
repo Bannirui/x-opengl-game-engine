@@ -11,6 +11,7 @@
 #include "x/window.h"
 #include "x/input.h"
 #include "x/imgui/im_gui_layer.h"
+#include "x/renderer/shader.h"
 
 XApplication *XApplication::s_instance = nullptr;
 
@@ -25,6 +26,59 @@ XApplication::XApplication()
 
     m_ImGuiLayer = new ImGuiLayer();
     PushOverlay(m_ImGuiLayer);
+
+    glGenVertexArrays(1, &m_VAO);
+    glBindVertexArray(m_VAO);
+    X_CORE_ASSERT(m_VAO, "创建VAO失败");
+
+    glGenBuffers(1, &m_VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+    X_CORE_ASSERT(m_VBO, "创建VBO失败");
+
+    // clang-format off
+    float vertices[] = {
+        // pos(xyz)
+        -0.5f, -0.5f, 0.0f,
+         0.5f, -0.5f, 0.0f,
+         0.0f,  0.5f, 0.0f,
+    };
+    // clang-format on
+
+    // cpu数据传给gpu
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
+
+    glGenBuffers(1, &m_EBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
+    X_CORE_ASSERT(m_EBO, "创建EBO失败");
+
+    uint32_t indices[3] = {0, 1, 2};
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+    // clang-format off
+    const char* vertexSrc = X_GLSL(
+	    layout(location = 0) in vec3 a_Position;
+		out vec3 v_Position;
+		void main()
+		{
+			v_Position = a_Position;
+			gl_Position = vec4(a_Position, 1.0);
+		}
+	);
+
+    const char* fragmentSrc = X_GLSL(
+		layout(location = 0) out vec4 color;
+		in vec3 v_Position;
+		void main()
+		{
+			color = vec4(v_Position * 0.5 + 0.5, 1.0);
+		}
+	);
+    // clang-format on
+
+    m_shader.reset(new Shader(vertexSrc, fragmentSrc));
 }
 
 XApplication::~XApplication() {}
@@ -33,8 +87,12 @@ void XApplication::Run()
 {
     while (m_running)
     {
-        glClearColor(1, 0, 1, 1);
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+
+        glBindVertexArray(m_VAO);
+        glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
+
         for (Layer *layer : m_layerStack)
         {
             layer->OnUpdate();
