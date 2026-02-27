@@ -7,6 +7,8 @@
 
 #include <glm/gtx/transform.hpp>
 
+#include "platform/opengl/open_gl_shader.h"
+
 class ExampleLayer : public Layer {
 public:
     ExampleLayer() : Layer("X-EXAMPLE"), m_camera(-1.6f, 1.6f, -0.9f, 0.9f) {
@@ -82,7 +84,7 @@ public:
 			}
 		);
         // clang-format on
-        m_shader1.reset(new Shader(vertexSrc1, fragmentSrc1));
+        m_shader1.reset(Shader::Create(vertexSrc1, fragmentSrc1));
 
 	    // clang-format off
 	    std::string vertexSrc2 = X_GLSL(
@@ -105,7 +107,7 @@ public:
 			}
 		);
         // clang-format on
-        m_shader2.reset(new Shader(vertexSrc2, fragmentSrc2));
+        m_shader2.reset(Shader::Create(vertexSrc2, fragmentSrc2));
     }
 
     void OnUpdate(Timestep ts) override {
@@ -117,7 +119,11 @@ public:
 
         Renderer::BeginScene(m_camera);
 
+        // 第2个shader
         glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
+
+    	std::dynamic_pointer_cast<OpenGLShader>(m_shader2)->Bind();
+    	std::dynamic_pointer_cast<OpenGLShader>(m_shader2)->UploadUniformFloat3("u_Color", m_color);
         for (int y = 0; y < 20; ++y) {
             for (int x = 0; x < 20; ++x) {
                 glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
@@ -152,6 +158,8 @@ private:
     float m_cameraMoveSpeed{5.0f};
     float m_cameraRotation{0.0f};
     float m_cameraRotationSpeed{180.0f};
+
+	glm::vec3 m_color{0.2f, 0.3f, 0.8f};
 };
 
 class Sandbox : public XApplication {

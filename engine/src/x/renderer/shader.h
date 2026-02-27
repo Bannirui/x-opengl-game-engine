@@ -6,19 +6,17 @@
 
 #include "pch.h"
 
-#include <glm/glm.hpp>
-
-class Shader
-{
+// interface
+class Shader {
 public:
-    Shader(const std::string &vertexSrc, const std::string fragmentSrc);
-    ~Shader();
+    virtual ~Shader() = default;
 
-    void Bind() const;
-    void Unbind() const;
+    virtual void Bind() const =0;
 
-    void UploadUniformMat4(const std::string &name, const glm::mat4& matrix);
+    virtual void Unbind() const =0;
 
-private:
-    uint32_t m_rendererId{0};
+    static Shader *Create(const std::string &vertexSrc, const std::string &fragmentSrc);
+
+protected:
+    Shader() = default;
 };
