@@ -26,6 +26,7 @@ public:
      * 系统向各模块发布渲染
      */
     virtual void OnUpdate() {}
+    virtual void OnImguiRender() {}
     /**
      * 系统向各模块发布事件
      * @param e 系统发布的是什么事件

@@ -10,17 +10,21 @@
 #include "x/events/application_event.h"
 #include "x/window.h"
 #include "x/input.h"
+#include "x/imgui/im_gui_layer.h"
 
 XApplication *XApplication::s_instance = nullptr;
 
 XApplication::XApplication()
 {
-    X_CORE_ASSERT(!s_instance, "Application alyready exists");
+    X_CORE_ASSERT(!s_instance, "Application already exists");
     s_instance = this;
     m_window   = std::unique_ptr<Window>(Window::Create());
     m_window->SetEventCallback(X_BIND_EVENT_FN(XApplication::OnEvent));
     // todo 创建input
     Input::Create();
+
+    m_ImGuiLayer = new ImGuiLayer();
+    PushOverlay(m_ImGuiLayer);
 }
 
 XApplication::~XApplication() {}
@@ -35,6 +39,14 @@ void XApplication::Run()
         {
             layer->OnUpdate();
         }
+
+        m_ImGuiLayer->Begin();
+        for (Layer *layer : m_layerStack)
+        {
+            layer->OnImguiRender();
+        }
+        m_ImGuiLayer->End();
+
         m_window->OnUpdate();
     }
 }

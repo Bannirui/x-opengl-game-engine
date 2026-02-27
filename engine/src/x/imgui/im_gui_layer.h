@@ -23,9 +23,8 @@ public:
 
     void OnAttach() override;
     void OnDetach() override;
-    void OnUpdate() override;
-    void OnEvent(Event &e) override;
+    void OnImguiRender() override;
 
-private:
-    float m_time{0.0f};
+    void Begin();
+    void End();
 };

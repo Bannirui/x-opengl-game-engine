@@ -5,6 +5,8 @@
 #include "pch.h"
 #include <x_engine.h>
 
+#include <imgui.h>
+
 class ExampleLayer : public Layer
 {
 public:
@@ -16,6 +18,13 @@ public:
         {
             X_TRACE("Tab is pressed (poll)");
         }
+    }
+
+    void OnImguiRender() override
+    {
+        ImGui::Begin("Test");
+        ImGui::Text("Hello World");
+        ImGui::End();
     }
 
     void OnEvent(Event &e) override
@@ -38,7 +47,6 @@ public:
     Sandbox()
     {
         PushLayer(new ExampleLayer());
-        PushLayer(new ImGuiLayer());
     }
 
     ~Sandbox() override {}

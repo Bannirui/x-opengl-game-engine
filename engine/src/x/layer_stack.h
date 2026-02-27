@@ -17,9 +17,9 @@ public:
     LayerStack();
     ~LayerStack();
 
-    // 向系统添加普通层模块
+    // 向系统添加普通层模块 放普通模块化的时候往分层点放
     void PushLayer(Layer *layer);
-    // 向系统添加覆盖层模块
+    // 向系统添加覆盖层模块 往最后放
     void PushOverlay(Layer *overlay);
     // 从系统移除普通层模块
     void PopLayer(Layer *layer);
@@ -30,7 +30,7 @@ public:
     std::vector<Layer *>::iterator end() { return m_layers.end(); }
 
 private:
-    std::vector<Layer *>           m_layers;
+    std::vector<Layer *> m_layers;
     // 隔开普通层和覆盖层 前面是普通层 后面是覆盖层
-    std::vector<Layer *>::iterator m_layerInsert;
+    uint32_t m_layerInsertIndex{0};
 };

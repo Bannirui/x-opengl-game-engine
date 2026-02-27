@@ -9,6 +9,9 @@ FetchContent_Declare(
 )
 # 下载依赖的源码
 FetchContent_MakeAvailable(imgui)
+
+message(STATUS "IMGUI SOURCE: ${imgui_SOURCE_DIR}")
+
 # ImGui本身不是用cmake组织的 需要手动编译成库
 file(GLOB IMGUI_SOURCES
         ${imgui_SOURCE_DIR}/imgui.cpp
