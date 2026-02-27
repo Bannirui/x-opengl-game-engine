@@ -20,6 +20,7 @@
 XApplication *XApplication::s_instance = nullptr;
 
 XApplication::XApplication()
+	:m_camera(-1.6f, 1.6f, -0.9f, 0.9f)
 {
     X_CORE_ASSERT(!s_instance, "Application already exists");
     s_instance = this;
@@ -80,13 +81,14 @@ XApplication::XApplication()
     const char* vertexSrc1 = X_GLSL(
 	    layout(location = 0) in vec3 a_Position;
 	    layout(location = 1) in vec4 a_Color;
+	    uniform mat4 u_viewProjection;
 		out vec3 v_Position;
 		out vec4 v_Color;
 		void main()
 		{
 			v_Position = a_Position;
 		    v_Color = a_Color;
-			gl_Position = vec4(a_Position, 1.0);
+			gl_Position = u_viewProjection * vec4(a_Position, 1.0);
 		}
 	);
 
@@ -106,11 +108,12 @@ XApplication::XApplication()
     // clang-format off
     std::string vertexSrc2 = X_GLSL(
 		layout(location = 0) in vec3 a_Position;
+	    uniform mat4 u_viewProjection;
 		out vec3 v_Position;
 		void main()
 		{
 			v_Position = a_Position;
-			gl_Position = vec4(a_Position, 1.0);
+			gl_Position = u_viewProjection * vec4(a_Position, 1.0);
 		}
 	);
     std::string fragmentSrc2 = X_GLSL(
@@ -134,14 +137,15 @@ void XApplication::Run()
         RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.0f});
         RenderCommand::Clear();
 
-        Renderer::BeginScene();
+    	m_camera.set_position({0.5f, 0.5f, 0.0f});
+    	m_camera.set_rotation(45.0f);
+
+        Renderer::BeginScene(m_camera);
 
         // 第2个shader
-        m_shader2->Bind();
-        Renderer::Submit(m_VAO2);
+        Renderer::Submit(m_shader2, m_VAO2);
         // 第1个shader
-        m_shader1->Bind();
-        Renderer::Submit(m_VAO1);
+        Renderer::Submit(m_shader1, m_VAO1);
 
         Renderer::EndScene();
 

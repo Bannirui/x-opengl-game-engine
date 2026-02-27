@@ -6,6 +6,7 @@
 
 #include "pch.h"
 #include "x/layer_stack.h"
+#include "x/renderer/orthographic_camera.h"
 
 class VertexArray;
 class IndexBuffer;
@@ -47,6 +48,8 @@ private:
 
     std::shared_ptr<Shader>      m_shader2;  // shader2
     std::shared_ptr<VertexArray> m_VAO2;     // shader2的VAO
+
+    OrthographicCamera m_camera;
 
 private:
     static XApplication *s_instance;
