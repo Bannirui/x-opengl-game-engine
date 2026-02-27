@@ -52,6 +52,7 @@ void MacWindow::init(const WindowProps &props)
     m_data.title  = props.title;
     m_data.width  = props.width;
     m_data.height = props.height;
+    m_data.eventCallback = [](Event&){}; // it will be called later, set a empty callback for protectting
 
     X_CORE_INFO("Create window {0} ({1}, {2})", props.title, props.width, props.height);
 
@@ -67,6 +68,9 @@ void MacWindow::init(const WindowProps &props)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     m_window = glfwCreateWindow(static_cast<int>(props.width), static_cast<int>(props.height), props.title.c_str(),
                                 nullptr, nullptr);
+    X_CORE_ASSERT(m_window, "Failed to create GLFW window");
+
+    glfwMakeContextCurrent(m_window);
 
     m_context = new OpenGLContext(m_window);
     m_context->Init();
