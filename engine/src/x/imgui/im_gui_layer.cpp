@@ -14,8 +14,6 @@
 
 ImGuiLayer::ImGuiLayer() : Layer("ImGuiLayer") {}
 
-ImGuiLayer::~ImGuiLayer() {}
-
 void ImGuiLayer::OnAttach()
 {
     // 整合ImGUI

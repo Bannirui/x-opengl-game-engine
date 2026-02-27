@@ -12,7 +12,7 @@ class Layer
 {
 public:
     Layer(const std::string &name = "Layer");
-    virtual ~Layer();
+    virtual ~Layer() = default;
 
     /**
      * 不同的模块组合进系统
