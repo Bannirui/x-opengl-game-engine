@@ -68,13 +68,11 @@ void XApplication::OnEvent(Event &e)
 void XApplication::PushLayer(Layer *layer)
 {
     m_layerStack.PushLayer(layer);
-    layer->OnAttach();
 }
 
 void XApplication::PushOverlay(Layer *layer)
 {
     m_layerStack.PushOverlay(layer);
-    layer->OnAttach();
 }
 
 bool XApplication::onWindowClose(WindowCloseEvent &e)
