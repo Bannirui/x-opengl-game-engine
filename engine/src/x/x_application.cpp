@@ -16,6 +16,64 @@
 
 XApplication *XApplication::s_instance = nullptr;
 
+static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type)
+{
+    switch (type)
+    {
+        case ShaderDataType::kNone:
+        {
+            X_CORE_ASSERT(false, "Not support ShaderDataType::kNone");
+        }
+        case ShaderDataType::kFloat:
+        {
+            return GL_FLOAT;
+        }
+        case ShaderDataType::kFloat2:
+        {
+            return GL_FLOAT;
+        }
+        case ShaderDataType::kFloat3:
+        {
+            return GL_FLOAT;
+        }
+        case ShaderDataType::kFloat4:
+        {
+            return GL_FLOAT;
+        }
+        case ShaderDataType::kMat3:
+        {
+            return GL_FLOAT;
+        }
+        case ShaderDataType::kMat4:
+        {
+            return GL_FLOAT;
+        }
+        case ShaderDataType::kInt:
+        {
+            return GL_INT;
+        }
+        case ShaderDataType::kInt2:
+        {
+            return GL_INT;
+        }
+        case ShaderDataType::kInt3:
+        {
+            return GL_INT;
+        }
+        case ShaderDataType::kInt4:
+        {
+            return GL_INT;
+        }
+        case ShaderDataType::kBool:
+        {
+            return GL_BOOL;
+        }
+    }
+
+    X_CORE_ASSERT(false, "Unknown ShaderDataType!");
+    return 0;
+}
+
 XApplication::XApplication()
 {
     X_CORE_ASSERT(!s_instance, "Application already exists");
@@ -34,18 +92,30 @@ XApplication::XApplication()
 
     // clang-format off
     float vertices[] = {
-        // pos(xyz)
-        -0.5f, -0.5f, 0.0f,
-         0.5f, -0.5f, 0.0f,
-         0.0f,  0.5f, 0.0f,
+         // pos(xyz)        // color(rgba)
+        -0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f,
+         0.5f, -0.5f, 0.0f, 0.2f, 0.3f, 0.8f, 1.0f,
+         0.0f,  0.5f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f,
     };
     // clang-format on
 
     // VBO
     m_vertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
+    {
+        BufferLayout layout = {{ShaderDataType::kFloat3, "a_Position"}, {ShaderDataType::kFloat4, "a_Color"}};
+        m_vertexBuffer->SetLayout(layout);
+    }
 
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
+    uint32_t    index  = 0;
+    const auto &layout = m_vertexBuffer->GetLayout();
+    for (const auto &element : layout)
+    {
+        glEnableVertexAttribArray(index);
+        glVertexAttribPointer(index, element.GetComponentCount(), ShaderDataTypeToOpenGLBaseType(element.type),
+                              element.normalized ? GL_TRUE : GL_FALSE, layout.GetStride(),
+                              reinterpret_cast<const void *>(element.offset));
+        ++index;
+    }
 
     uint32_t indices[3] = {0, 1, 2};
     // EBO
@@ -54,10 +124,13 @@ XApplication::XApplication()
     // clang-format off
     const char* vertexSrc = X_GLSL(
 	    layout(location = 0) in vec3 a_Position;
+	    layout(location = 1) in vec4 a_Color;
 		out vec3 v_Position;
+		out vec4 v_Color;
 		void main()
 		{
 			v_Position = a_Position;
+		    v_Color = a_Color;
 			gl_Position = vec4(a_Position, 1.0);
 		}
 	);
@@ -65,9 +138,11 @@ XApplication::XApplication()
     const char* fragmentSrc = X_GLSL(
 		layout(location = 0) out vec4 color;
 		in vec3 v_Position;
+		in vec4 v_Color;
 		void main()
 		{
 			color = vec4(v_Position * 0.5 + 0.5, 1.0);
+		    color = v_Color;
 		}
 	);
     // clang-format on

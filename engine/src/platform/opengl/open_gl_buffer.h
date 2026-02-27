@@ -16,8 +16,12 @@ public:
     void Bind() const override;
     void Unbind() const override;
 
+    const BufferLayout &GetLayout() const override { return m_bufferLayout; }
+    void                SetLayout(const BufferLayout &layout) override { m_bufferLayout = layout; }
+
 private:
-    uint32_t m_rendererID;
+    uint32_t     m_rendererID;
+    BufferLayout m_bufferLayout;  // 成员类型是值
 };
 
 // EBO
