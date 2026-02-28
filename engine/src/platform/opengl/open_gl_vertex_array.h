@@ -25,4 +25,5 @@ private:
     uint32_t                                   m_rendererID;     // VAO
     std::vector<std::shared_ptr<VertexBuffer>> m_vertexBuffers;  // VAO管理着的VBO
     std::shared_ptr<IndexBuffer>               m_indexBuffer;    // VAO管理着的EBO
+    uint32_t                                   m_vertexBufferIndex{0};
 };

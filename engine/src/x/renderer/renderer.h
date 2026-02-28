@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "pch.h"
+
 #include "x/renderer/renderer_api.h"
 
 class Shader;
@@ -12,6 +14,9 @@ class VertexArray;
 
 class Renderer {
 public:
+    static void Init();
+    static void OnWindowResize(uint32_t width, uint32_t height);
+
     static void BeginScene(OrthographicCamera &camera);
 
     static void EndScene();

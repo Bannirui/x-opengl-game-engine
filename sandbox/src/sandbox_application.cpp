@@ -9,11 +9,13 @@
 
 #include "platform/opengl/open_gl_shader.h"
 
-class ExampleLayer : public Layer {
+class ExampleLayer : public Layer
+{
 public:
-    ExampleLayer() : Layer("X-EXAMPLE"), m_camera(-1.6f, 1.6f, -0.9f, 0.9f) {
+    ExampleLayer() : Layer("X-EXAMPLE"), m_camera(-1.6f, 1.6f, -0.9f, 0.9f)
+    {
         // 三角形
-	    // clang-format off
+        // clang-format off
 		float vertices1[] = {
 			// pos(xyz)        // color(rgba)
 			-0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f,
@@ -23,20 +25,20 @@ public:
 		uint32_t indices1[] = {0, 1, 2};
         // clang-format on
         // VAO
-        m_VAO1.reset(VertexArray::Create());
+        m_triangleVAO.reset(VertexArray::Create());
         // VAO托管VBO
         X::Ref<VertexBuffer> vertexBuffer;
         vertexBuffer.reset(VertexBuffer::Create(vertices1, sizeof(vertices1)));
         BufferLayout layout = {{ShaderDataType::kFloat3, "a_Position"}, {ShaderDataType::kFloat4, "a_Color"}};
         vertexBuffer->SetLayout(layout);
-        m_VAO1->AddVertexBuffer(vertexBuffer);
+        m_triangleVAO->AddVertexBuffer(vertexBuffer);
         // VAO托管EBO
         X::Ref<IndexBuffer> indexBuffer;
         indexBuffer.reset(IndexBuffer::Create(indices1, sizeof(indices1) / sizeof(uint32_t)));
-        m_VAO1->SetIndexBuffer(indexBuffer);
+        m_triangleVAO->SetIndexBuffer(indexBuffer);
 
         // 正方形
-	    // clang-format off
+        // clang-format off
 	    float vertices2[] = {
 	    	 // pos(xyz)          // uv(xy)
 	        -0.5f, -0.5f,  0.0f,  0.0f,  0.0f,
@@ -47,18 +49,18 @@ public:
 	    uint32_t indices2[] = {0, 1, 2, 2, 3, 0};
         // clang-format on
         // VAO
-        m_VAO2.reset(VertexArray::Create());
+        m_squareVAO.reset(VertexArray::Create());
         // VAO托管VBO
         X::Ref<VertexBuffer> squareVB;
         squareVB.reset(VertexBuffer::Create(vertices2, sizeof(vertices2)));
         squareVB->SetLayout({{ShaderDataType::kFloat3, "a_Position"}});
-        m_VAO2->AddVertexBuffer(squareVB);
+        m_squareVAO->AddVertexBuffer(squareVB);
         // VAO托管EBO
         X::Ref<IndexBuffer> squareIB;
         squareIB.reset(IndexBuffer::Create(indices2, sizeof(indices2) / sizeof(uint32_t)));
-        m_VAO2->SetIndexBuffer(squareIB);
+        m_squareVAO->SetIndexBuffer(squareIB);
 
-		// clang-format off
+        // clang-format off
 	    const char* vertexSrc1 = X_GLSL(
 		    layout(location = 0) in vec3 a_Position;
 		    layout(location = 1) in vec4 a_Color;
@@ -85,9 +87,9 @@ public:
 			}
 		);
         // clang-format on
-        m_shader1.reset(Shader::Create(vertexSrc1, fragmentSrc1));
+        m_triangleShader.reset(Shader::Create(vertexSrc1, fragmentSrc1));
 
-	    // clang-format off
+        // clang-format off
 	    std::string vertexSrc2 = X_GLSL(
 			layout(location = 0) in vec3 a_Position;
 		    uniform mat4 u_ViewProjection;
@@ -108,9 +110,9 @@ public:
 			}
 		);
         // clang-format on
-        m_shader2.reset(Shader::Create(vertexSrc2, fragmentSrc2));
+        m_flatColorShader.reset(Shader::Create(vertexSrc2, fragmentSrc2));
 
-	    // clang-format off
+        // clang-format off
 	    std::string vertexSrc3 = X_GLSL(
 			layout(location = 0) in vec3 a_Position;
 			layout(location = 1) in vec2 a_TexCoord;
@@ -133,14 +135,17 @@ public:
 			}
 		);
         // clang-format on
-        m_shader3.reset(Shader::Create(vertexSrc3, fragmentSrc3));
+        m_textureShader.reset(Shader::Create(vertexSrc3, fragmentSrc3));
 
-        m_texture = Texture2D::Create("asset/texture/Checkerboard.png");
-        std::dynamic_pointer_cast<OpenGLShader>(m_shader3)->Bind();
-        std::dynamic_pointer_cast<OpenGLShader>(m_shader3)->UploadUniformInt("u_Texture", 0);
+        m_texture     = Texture2D::Create("asset/texture/Checkerboard.png");
+        m_logoTexture = Texture2D::Create("asset/texture/ChernoLogo.png");
+
+        std::dynamic_pointer_cast<OpenGLShader>(m_textureShader)->Bind();
+        std::dynamic_pointer_cast<OpenGLShader>(m_textureShader)->UploadUniformInt("u_Texture", 0);
     }
 
-    void OnUpdate(Timestep ts) override {
+    void OnUpdate(Timestep ts) override
+    {
         RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.0f});
         RenderCommand::Clear();
 
@@ -149,45 +154,46 @@ public:
 
         Renderer::BeginScene(m_camera);
 
-        // 第2个shader square
         glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 
-        std::dynamic_pointer_cast<OpenGLShader>(m_shader2)->Bind();
-        std::dynamic_pointer_cast<OpenGLShader>(m_shader2)->UploadUniformFloat3("u_Color", m_color);
-        for (int y = 0; y < 20; ++y) {
-            for (int x = 0; x < 20; ++x) {
+        std::dynamic_pointer_cast<OpenGLShader>(m_flatColorShader)->Bind();
+        std::dynamic_pointer_cast<OpenGLShader>(m_flatColorShader)->UploadUniformFloat3("u_Color", m_color);
+        for (int y = 0; y < 20; ++y)
+        {
+            for (int x = 0; x < 20; ++x)
+            {
                 glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
                 glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
                 // 第2个shader
-                Renderer::Submit(m_shader2, m_VAO2, transform);
+                Renderer::Submit(m_flatColorShader, m_squareVAO, transform);
             }
         }
 
         m_texture->Bind();
-        Renderer::Submit(m_shader3, m_VAO2);
+        Renderer::Submit(m_textureShader, m_squareVAO, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
 
-        // 第1个shader triangle
-        Renderer::Submit(m_shader1, m_VAO1);
+        m_logoTexture->Bind();
+        Renderer::Submit(m_textureShader, m_squareVAO, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+
+        Renderer::Submit(m_triangleShader, m_triangleVAO);
 
         Renderer::EndScene();
     }
 
-    void OnImguiRender() override {
-    }
+    void OnImguiRender() override {}
 
-    void OnEvent(Event &e) override {
-    }
+    void OnEvent(Event &e) override {}
 
 private:
-    X::Ref<Shader> m_shader1; // shader1
-    X::Ref<VertexArray> m_VAO1; // shader1的VAO
+    // shader
+    X::Ref<Shader> m_triangleShader;
+    // VAO
+    X::Ref<VertexArray> m_triangleVAO;
 
-    X::Ref<Shader> m_shader2; // shader2
-    X::Ref<VertexArray> m_VAO2; // shader2的VAO
+    X::Ref<Shader>      m_flatColorShader, m_textureShader;
+    X::Ref<VertexArray> m_squareVAO;
 
-    X::Ref<Shader> m_shader3;
-
-    X::Ref<Texture> m_texture;
+    X::Ref<Texture> m_texture, m_logoTexture;
 
     OrthographicCamera m_camera;
 
@@ -200,16 +206,15 @@ private:
     glm::vec3 m_color{0.2f, 0.3f, 0.8f};
 };
 
-class Sandbox : public XApplication {
+class Sandbox : public XApplication
+{
 public:
-    Sandbox() {
-        PushLayer(new ExampleLayer());
-    }
+    Sandbox() { PushLayer(new ExampleLayer()); }
 
-    ~Sandbox() override {
-    }
+    ~Sandbox() override {}
 };
 
-XApplication *CreateApplication() {
+XApplication *CreateApplication()
+{
     return new Sandbox();
 }

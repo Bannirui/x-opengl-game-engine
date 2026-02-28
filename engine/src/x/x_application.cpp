@@ -4,6 +4,7 @@
 
 #include "x/x_application.h"
 
+#include "renderer/renderer.h"
 #include "x/core.h"
 #include "x/layer.h"
 #include "x/x_log.h"
@@ -38,9 +39,13 @@ void XApplication::Run()
         float time = static_cast<float>(glfwGetTime());
         Timestep timestep = time - m_lastFrameTime;
         m_lastFrameTime = time;
+
+        if (!m_minimized)
+        {
         for (Layer *layer : m_layerStack)
         {
             layer->OnUpdate(timestep);
+        }
         }
 
         m_ImGuiLayer->Begin();
@@ -58,6 +63,7 @@ void XApplication::OnEvent(Event &e)
 {
     EventDispatcher dispatcher(e);
 	dispatcher.Dispatch<WindowCloseEvent>([this](WindowCloseEvent &e){ return this->onWindowClose(e); });
+    dispatcher.Dispatch<WindowResizeEvent>([this](WindowResizeEvent& e){ return this->onWindowResize(e); });
     for (auto it = m_layerStack.end(); it != m_layerStack.begin();)
     {
         (*--it)->OnEvent(e);
@@ -81,5 +87,17 @@ void XApplication::PushOverlay(Layer *layer)
 bool XApplication::onWindowClose(WindowCloseEvent &e)
 {
     m_running = false;
-    return true;
+    return false;
+}
+
+bool XApplication::onWindowResize(WindowResizeEvent &e)
+{
+    if (e.get_width()==0 || e.get_height()==0)
+    {
+        m_minimized = true;
+        return false;
+    }
+    m_minimized = false;
+    Renderer::OnWindowResize(e.get_width(), e.get_height());
+    return false;
 }

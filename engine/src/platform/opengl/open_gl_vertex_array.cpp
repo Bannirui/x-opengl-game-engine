@@ -93,15 +93,14 @@ void OpenGLVertexArray::AddVertexBuffer(const std::shared_ptr<VertexBuffer> &ver
     glBindVertexArray(m_rendererID);
     vertexBuffer->Bind();
 
-    uint32_t    index  = 0;
     const auto &layout = vertexBuffer->GetLayout();
     for (const auto &element : layout)
     {
-        glEnableVertexAttribArray(index);
-        glVertexAttribPointer(index, element.GetComponentCount(), ShaderDataTypeToOpenGLBaseType(element.type),
-                              element.normalized ? GL_TRUE : GL_FALSE, layout.GetStride(),
-                              reinterpret_cast<const void *>(element.offset));
-        index++;
+        glEnableVertexAttribArray(m_vertexBufferIndex);
+        glVertexAttribPointer(m_vertexBufferIndex, element.GetComponentCount(),
+                              ShaderDataTypeToOpenGLBaseType(element.type), element.normalized ? GL_TRUE : GL_FALSE,
+                              layout.GetStride(), reinterpret_cast<const void *>(element.offset));
+        ++m_vertexBufferIndex;
     }
     m_vertexBuffers.push_back(vertexBuffer);
 }

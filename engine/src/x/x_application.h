@@ -7,6 +7,7 @@
 #include "pch.h"
 #include "x/layer_stack.h"
 
+class WindowResizeEvent;
 class ImGuiLayer;
 class Window;
 class Event;
@@ -32,6 +33,7 @@ public:
 
 private:
     bool onWindowClose(WindowCloseEvent &e);
+    bool onWindowResize(WindowResizeEvent& e);
 
 private:
     std::unique_ptr<Window> m_window;
@@ -39,6 +41,7 @@ private:
     LayerStack m_layerStack;
     ImGuiLayer *m_ImGuiLayer;
     float m_lastFrameTime{0.0f};
+    bool m_minimized{false}; // 窗口最小化
 
 private:
     static XApplication *s_instance;

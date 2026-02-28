@@ -31,7 +31,9 @@ void LayerStack::PushOverlay(Layer *overlay)
 
 void LayerStack::PopLayer(Layer *layer)
 {
-    if (auto it = std::find(m_layers.begin(), m_layers.end(), layer); it != m_layers.end())
+    // 只在分隔区间内检索
+    if (auto it = std::find(m_layers.begin(), m_layers.begin() + m_layerInsertIndex, layer);
+        it != m_layers.begin() + m_layerInsertIndex)
     {
         layer->OnDetach();
         m_layers.erase(it);

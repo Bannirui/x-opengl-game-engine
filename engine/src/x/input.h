@@ -9,6 +9,9 @@
 class Input
 {
 public:
+    Input(const Input&) = delete;
+    Input& operator=(const Input&) = delete;
+
     inline static bool IsKeyPressed(int keycode) { return s_instance->isKeyPressedImpl(keycode); }
     inline static bool IsMouseButtonPressed(int button) { return s_instance->isMouseButtonPressedImpl(button); }
     inline static std::pair<float, float> GetMousePos() { return s_instance->getMousePosImpl(); }

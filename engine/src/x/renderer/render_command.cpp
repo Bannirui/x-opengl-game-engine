@@ -6,4 +6,4 @@
 
 #include "platform/opengl/open_gl_renderer_api.h"
 
-RendererAPI *RenderCommand::s_RendererAPI = new OpenGLRendererAPI;
+RendererAPI *RenderCommand::s_rendererAPI = new OpenGLRendererAPI;
