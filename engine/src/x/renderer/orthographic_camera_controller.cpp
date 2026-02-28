@@ -23,19 +23,23 @@ void OrthographicCameraController::OnUpdate(Timestep ts)
 {
     if (Input::IsKeyPressed(X_KEY::A))
     {
-        m_cameraPosition.x -= m_cameraTranslationSpeed * ts;
+        m_cameraPosition.x -= cos(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
+        m_cameraPosition.y -= sin(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
     }
     else if (Input::IsKeyPressed(X_KEY::D))
     {
-        m_cameraPosition.x += m_cameraTranslationSpeed * ts;
+        m_cameraPosition.x += cos(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
+        m_cameraPosition.y += sin(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
     }
     if (Input::IsKeyPressed(X_KEY::W))
     {
-        m_cameraPosition.y += m_cameraTranslationSpeed * ts;
+        m_cameraPosition.x += -sin(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
+        m_cameraPosition.y += cos(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
     }
     else if (Input::IsKeyPressed(X_KEY::S))
     {
-        m_cameraPosition.y -= m_cameraTranslationSpeed * ts;
+        m_cameraPosition.x -= -sin(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
+        m_cameraPosition.y -= cos(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
     }
 
     if (m_rotation)
@@ -44,9 +48,21 @@ void OrthographicCameraController::OnUpdate(Timestep ts)
         {
             m_cameraRotation += m_cameraRotationSpeed * ts;
         }
-        if (Input::IsKeyPressed(X_KEY::E)) m_cameraRotation -= m_cameraRotationSpeed * ts;
+        if (Input::IsKeyPressed(X_KEY::E))
+        {
+            m_cameraRotation -= m_cameraRotationSpeed * ts;
+        }
+
+        if (m_cameraRotation > 180.0f)
+        {
+            m_cameraRotation -= 360.0f;
+        }
+        else if (m_cameraRotation <= -180.0f)
+        {
+            m_cameraRotation += 360.0f;
+        }
+        m_camera.set_rotation(m_cameraRotation);
     }
-    m_camera.set_rotation(m_cameraRotation);
     m_camera.set_position(m_cameraPosition);
     m_cameraTranslationSpeed = m_zoomLevel;
 }
