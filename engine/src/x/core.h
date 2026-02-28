@@ -60,15 +60,6 @@
 #endif
 
 // ---------- GLSL version ----------
-// 计算：major * 100 + minor * 10
-#define X_GLSL_VERSION_NUM \
-    (X_GL_VERSION_MAJOR * 100 + X_GL_VERSION_MINOR * 10)
-
-// 强制展开一次
-#define X_EXPAND(x) x
-#define X_GLSL_VERSION X_EXPAND(X_GLSL_VERSION_NUM)
-
-// ---------- GLSL header ----------
 // OpenGL版本拼接成 #version 450 core
 #define X_GL_VERSION_CORE \
     "#version " STR(X_GL_VERSION_MAJOR) STR(X_GL_VERSION_MINOR) "0 core"
