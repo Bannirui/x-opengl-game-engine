@@ -26,12 +26,8 @@
 #include "x/renderer/renderer.h"
 #include "x/renderer/render_command.h"
 
-#include "x/renderer/buffer.h"
 #include "x/renderer/shader.h"
 #include "x/renderer/texture.h"
+#include "x/renderer/buffer.h"
 #include "x/renderer/vertex_array.h"
 // ---Renderer---
-
-// ---Entry Point---
-#include "x/entry_point.h"
-// ---Entry Point---

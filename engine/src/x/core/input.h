@@ -6,9 +6,13 @@
 
 #include "pch.h"
 
+#include "x/core.h"
+
 class Input
 {
 public:
+    static void Create();
+
     Input(const Input&) = delete;
     Input& operator=(const Input&) = delete;
 
@@ -17,9 +21,6 @@ public:
     inline static std::pair<float, float> GetMousePos() { return s_instance->getMousePosImpl(); }
     inline static float                   GetMouseX() { return s_instance->getMouseXImpl(); }
     inline static float                   GetMouseY() { return s_instance->getMouseYImpl(); }
-
-    static Input *Create();
-
 protected:
     Input() = default;
 
@@ -30,5 +31,5 @@ protected:
     virtual float                   getMouseYImpl()                      = 0;
 
 private:
-    static Input *s_instance;
+    static X::Scope<Input> s_instance;
 };

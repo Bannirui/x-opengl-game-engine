@@ -60,7 +60,7 @@ void LinuxWindow::init(const WindowProps &props) {
 
     glfwMakeContextCurrent(m_window);
 
-    m_context = new OpenGLContext(m_window);
+    m_context = X::CreateScope<OpenGLContext>(m_window);
     m_context->Init();
 
     glfwSetWindowUserPointer(m_window, this);

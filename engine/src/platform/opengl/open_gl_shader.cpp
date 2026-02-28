@@ -21,7 +21,7 @@ static int shaderTypeFromString(const std::string &type)
     {
         return GL_FRAGMENT_SHADER;
     }
-    X_CORE_ASSERT(false, "Unknown shader type!");
+    X_CORE_ASSERT(false, "Unknown shader type");
     return 0;
 }
 

@@ -5,6 +5,7 @@
 #pragma once
 
 #include "pch.h"
+#include "x/core.h"
 
 #include "x/renderer/renderer_api.h"
 
@@ -37,5 +38,5 @@ private:
         glm::mat4 viewProjectionMatrix;
     };
 
-    static SceneData *s_sceneData;
+    static X::Scope<SceneData> s_sceneData;
 };

@@ -3,27 +3,25 @@
 //
 
 #include "x/core/input.h"
+
+#include "platform/mac/mac_input.h"
 #include "x/core.h"
 
 #if defined(X_PLATFORM_MAC)
-#include "../../platform/mac/mac_input.h"
+#include "platform/mac/mac_input.h"
 #elif defined(X_PLATFORM_LINUX)
 #include "platform/linux/linux_input.h"
 #else
 #error "Unsupported platform!"
 #endif
 
-Input *Input::s_instance = nullptr;
+X::Scope<Input> Input::s_instance;
 
-Input *Input::Create()
+void Input::Create()
 {
 #if defined(X_PLATFORM_MAC)
-    s_instance = new MacInput();
-    return s_instance;
+    s_instance = X::CreateScope<MacInput>();
 #elif defined(X_PLATFORM_LINUX)
-    s_instance = new LinuxInput();
-    return s_instance;
-#else
-    return nullptr;
+    s_instance = X::CreateScope<LinuxInput>();
 #endif
 }

@@ -10,7 +10,7 @@
 #include "x/renderer/shader.h"
 #include "platform/opengl/open_gl_shader.h"
 
-Renderer::SceneData *Renderer::s_sceneData = new Renderer::SceneData;
+X::Scope<Renderer::SceneData> Renderer::s_sceneData = X::CreateScope<Renderer::SceneData>();
 
 void Renderer::Init()
 {

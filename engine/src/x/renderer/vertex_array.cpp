@@ -5,14 +5,11 @@
 #include "x/renderer/vertex_array.h"
 
 #include "renderer_api.h"
-#include "renderer_api.h"
 #include "platform/opengl/open_gl_vertex_array.h"
 #include "x/renderer/renderer.h"
-#include "x/renderer/renderer_api.h"
-#include "x/core.h"
 #include "x/core/x_log.h"
 
-VertexArray *VertexArray::Create()
+X::Ref<VertexArray> VertexArray::Create()
 {
     switch (Renderer::GetAPI())
     {
@@ -23,7 +20,7 @@ VertexArray *VertexArray::Create()
         }
         case RendererAPI::API::kOpenGL:
         {
-            return new OpenGLVertexArray();
+            return std::make_shared<OpenGLVertexArray>();
         }
     }
     X_CORE_ASSERT(false, "Unknown RendererAPI!");

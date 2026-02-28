@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "x/core.h"
 #include "x/window.h"
 
 class GraphicsContext;
@@ -41,5 +42,5 @@ private:
 
     WindowData       m_data;
     GLFWwindow      *m_window;
-    GraphicsContext *m_context;
+    X::Scope<GraphicsContext> m_context;
 };

@@ -2,12 +2,14 @@
 // Created by dingrui on 2/23/26.
 //
 
-#include "pch.h"
 #include <x_engine.h>
+#include <x/core/entry_point.h>
 
 #include <glm/gtx/transform.hpp>
 
 #include "platform/opengl/open_gl_shader.h"
+
+#include "sandbox_2D.h"
 
 class ExampleLayer : public Layer
 {
@@ -25,7 +27,7 @@ public:
 		uint32_t indices1[] = {0, 1, 2};
         // clang-format on
         // VAO
-        m_triangleVAO.reset(VertexArray::Create());
+        m_triangleVAO = VertexArray::Create();
         // VAO托管VBO
         X::Ref<VertexBuffer> vertexBuffer;
         vertexBuffer.reset(VertexBuffer::Create(vertices1, sizeof(vertices1)));
@@ -49,7 +51,7 @@ public:
 	    uint32_t indices2[] = {0, 1, 2, 2, 3, 0};
         // clang-format on
         // VAO
-        m_squareVAO.reset(VertexArray::Create());
+        m_squareVAO = VertexArray::Create();
         // VAO托管VBO
         X::Ref<VertexBuffer> squareVB;
         squareVB.reset(VertexBuffer::Create(vertices2, sizeof(vertices2)));
@@ -184,7 +186,10 @@ private:
 class Sandbox : public XApplication
 {
 public:
-    Sandbox() { PushLayer(new ExampleLayer()); }
+    Sandbox() {
+	    // PushLayer(new ExampleLayer());
+	    PushLayer(new Sandbox2D());
+    }
 
     ~Sandbox() override {}
 };
