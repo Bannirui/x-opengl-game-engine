@@ -12,7 +12,7 @@
 class ExampleLayer : public Layer
 {
 public:
-    ExampleLayer() : Layer("X-EXAMPLE"), m_camera(-1.6f, 1.6f, -0.9f, 0.9f)
+    ExampleLayer() : Layer("X-EXAMPLE"), m_cameraController(1280.0f / 720.0f)
     {
         // 三角形
         // clang-format off
@@ -125,13 +125,13 @@ public:
 
     void OnUpdate(Timestep ts) override
     {
+        // update
+        m_cameraController.OnUpdate(ts);
+        // render
         RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.0f});
         RenderCommand::Clear();
 
-        m_camera.set_position({0.5f, 0.5f, 0.0f});
-        m_camera.set_rotation(45.0f);
-
-        Renderer::BeginScene(m_camera);
+        Renderer::BeginScene(m_cameraController.get_camera());
 
         glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 
@@ -162,7 +162,7 @@ public:
 
     void OnImguiRender() override {}
 
-    void OnEvent(Event &e) override {}
+    void OnEvent(Event &e) override { m_cameraController.OnEvent(e); }
 
 private:
     ShaderLib m_shaderLib;
@@ -176,13 +176,7 @@ private:
 
     X::Ref<Texture> m_texture, m_logoTexture;
 
-    OrthographicCamera m_camera;
-
-    // todo
-    // glm::vec3 m_cameraPosition;
-    // float m_cameraMoveSpeed{5.0f};
-    // float m_cameraRotation{0.0f};
-    // float m_cameraRotationSpeed{180.0f};
+    OrthographicCameraController m_cameraController;
 
     glm::vec3 m_color{0.2f, 0.3f, 0.8f};
 };
