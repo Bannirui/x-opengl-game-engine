@@ -17,12 +17,14 @@ public:
      */
     OpenGLShader(const std::string &filepath);
     /**
+     * @name 项目里面会有很多glsl shader程序 给每个一个文件名
      * @param vertexSrc vertex glsl源码
      * @param fragmentSrc frag glsl源码
      */
-    OpenGLShader(const std::string &vertexSrc, const std::string fragmentSrc);
-
+    OpenGLShader(const std::string& name, const std::string &vertexSrc, const std::string fragmentSrc);
     ~OpenGLShader() override;
+
+    const std::string& get_name() const override { return m_name; }
 
     void Bind() const override;
 
@@ -52,4 +54,5 @@ private:
 
 private:
     uint32_t m_rendererId{0};
+    std::string m_name;
 };

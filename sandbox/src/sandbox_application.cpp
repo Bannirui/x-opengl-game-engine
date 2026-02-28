@@ -87,7 +87,7 @@ public:
 			}
 		);
         // clang-format on
-        m_triangleShader.reset(Shader::Create(vertexSrc1, fragmentSrc1));
+        m_triangleShader = Shader::Create("triangleShader", vertexSrc1, fragmentSrc1);
 
         // clang-format off
 	    std::string vertexSrc2 = X_GLSL(
@@ -110,17 +110,17 @@ public:
 			}
 		);
         // clang-format on
-        m_flatColorShader.reset(Shader::Create(vertexSrc2, fragmentSrc2));
+        m_flatColorShader = Shader::Create("flatColorShader", vertexSrc2, fragmentSrc2);
 
         // clang-format off
         // clang-format on
-        m_textureShader.reset(Shader::Create("asset/shader/Texture.glsl"));
+        auto textureShader = m_shaderLib.Load("asset/shader/Texture.glsl");
 
         m_texture     = Texture2D::Create("asset/texture/Checkerboard.png");
         m_logoTexture = Texture2D::Create("asset/texture/ChernoLogo.png");
 
-        std::dynamic_pointer_cast<OpenGLShader>(m_textureShader)->Bind();
-        std::dynamic_pointer_cast<OpenGLShader>(m_textureShader)->UploadUniformInt("u_Texture", 0);
+        std::dynamic_pointer_cast<OpenGLShader>(textureShader)->Bind();
+        std::dynamic_pointer_cast<OpenGLShader>(textureShader)->UploadUniformInt("u_Texture", 0);
     }
 
     void OnUpdate(Timestep ts) override
@@ -148,11 +148,12 @@ public:
             }
         }
 
+        auto textureShader = m_shaderLib.Get("Texture");
         m_texture->Bind();
-        Renderer::Submit(m_textureShader, m_squareVAO, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+        Renderer::Submit(textureShader, m_squareVAO, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
 
         m_logoTexture->Bind();
-        Renderer::Submit(m_textureShader, m_squareVAO, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+        Renderer::Submit(textureShader, m_squareVAO, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
 
         Renderer::Submit(m_triangleShader, m_triangleVAO);
 
@@ -164,12 +165,13 @@ public:
     void OnEvent(Event &e) override {}
 
 private:
+    ShaderLib m_shaderLib;
     // shader
     X::Ref<Shader> m_triangleShader;
     // VAO
     X::Ref<VertexArray> m_triangleVAO;
 
-    X::Ref<Shader>      m_flatColorShader, m_textureShader;
+    X::Ref<Shader>      m_flatColorShader;
     X::Ref<VertexArray> m_squareVAO;
 
     X::Ref<Texture> m_texture, m_logoTexture;

@@ -30,9 +30,16 @@ OpenGLShader::OpenGLShader(const std::string &filepath)
     std::string source        = readFile(filepath);
     auto        shaderSources = preProcess(source);
     compile(shaderSources);
+    // 文件名
+    auto lastSlash = filepath.find_last_of("/\\");
+    lastSlash      = lastSlash == std::string::npos ? 0 : lastSlash + 1;
+    auto lastDot   = filepath.rfind('.');
+    auto count     = lastDot == std::string::npos ? filepath.size() - lastSlash : lastDot - lastSlash;
+    m_name         = filepath.substr(lastSlash, count);
 }
 
-OpenGLShader::OpenGLShader(const std::string &vertexSrc, const std::string fragmentSrc)
+OpenGLShader::OpenGLShader(const std::string &name, const std::string &vertexSrc, const std::string fragmentSrc)
+    : m_name(name)
 {
     std::unordered_map<int, std::string> shaderSources;
     shaderSources[GL_VERTEX_SHADER]   = vertexSrc;
@@ -136,11 +143,13 @@ std::unordered_map<int, std::string> OpenGLShader::preProcess(const std::string 
 
 void OpenGLShader::compile(const std::unordered_map<int, std::string> &shaderSources)
 {
+    X_CORE_ASSERT(shaderSources.size() <= 2, "We only support 2 shaders for now");
     // Vertex and fragment shaders are successfully compiled.
     // Now time to link them together into a program.
     // Get a program object.
-    GLuint           program = glCreateProgram();
-    std::vector<int> glShaderIds(shaderSources.size());
+    GLuint                program = glCreateProgram();
+    std::array<GLenum, 2> glShaderIds;
+    int                   glShaderIDIndex = 0;
     for (auto &kv : shaderSources)
     {
         int               type   = kv.first;
@@ -171,7 +180,7 @@ void OpenGLShader::compile(const std::unordered_map<int, std::string> &shaderSou
         }
         // Attach our shaders to our program
         glAttachShader(program, shader);
-        glShaderIds.push_back(shader);
+        glShaderIds[glShaderIDIndex++] = shader;
     }
     m_rendererId = program;
 
