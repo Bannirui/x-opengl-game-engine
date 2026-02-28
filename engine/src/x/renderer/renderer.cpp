@@ -4,6 +4,7 @@
 
 #include "x/renderer/renderer.h"
 
+#include "x/renderer/renderer_2D.h"
 #include "x/renderer/vertex_array.h"
 #include "x/renderer/render_command.h"
 #include "x/renderer/orthographic_camera.h"
@@ -15,6 +16,7 @@ X::Scope<Renderer::SceneData> Renderer::s_sceneData = X::CreateScope<Renderer::S
 void Renderer::Init()
 {
     RenderCommand::Init();
+    Renderer2D::Init();
 }
 
 void Renderer::OnWindowResize(uint32_t width, uint32_t height)

@@ -25,6 +25,7 @@
 #include "x/renderer/orthographic_camera.h"
 #include "x/renderer/renderer.h"
 #include "x/renderer/render_command.h"
+#include "x/renderer/renderer_2D.h"
 
 #include "x/renderer/shader.h"
 #include "x/renderer/texture.h"
