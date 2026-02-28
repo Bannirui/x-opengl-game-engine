@@ -191,10 +191,11 @@ private:
 
     OrthographicCamera m_camera;
 
-    glm::vec3 m_cameraPosition;
-    float m_cameraMoveSpeed{5.0f};
-    float m_cameraRotation{0.0f};
-    float m_cameraRotationSpeed{180.0f};
+    // todo
+    // glm::vec3 m_cameraPosition;
+    // float m_cameraMoveSpeed{5.0f};
+    // float m_cameraRotation{0.0f};
+    // float m_cameraRotationSpeed{180.0f};
 
     glm::vec3 m_color{0.2f, 0.3f, 0.8f};
 };

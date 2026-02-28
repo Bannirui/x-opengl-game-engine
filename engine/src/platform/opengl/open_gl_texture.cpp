@@ -19,15 +19,30 @@ OpenGLTexture2D::OpenGLTexture2D(const std::string &path)
     m_width = width;
     m_height = height;
 
-    glCreateTextures(GL_TEXTURE_2D, 1, &m_rendererId);
-    glTextureStorage2D(m_rendererId, 1, GL_RGB8, m_width, m_height);
+    // 生成纹理对象
+    glGenTextures(1, &m_rendererId);
+    // 激活纹理对象
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, m_rendererId);
 
-    glTextureParameteri(m_rendererId, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTextureParameteri(m_rendererId, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    glTextureSubImage2D(m_rendererId, 0, 0, 0, m_width, m_height,GL_RGB, GL_UNSIGNED_BYTE, data);
+    // 分配cpu内存
+    GLenum internalFormat = GL_RGB8;
+    GLenum format = GL_RGB;
+    if (channels == 4)
+    {
+        internalFormat = GL_RGBA8;
+        format = GL_RGBA;
+    }
+    glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_width, m_height, 0, format, GL_UNSIGNED_BYTE, data);
 
     stbi_image_free(data);
+
+    // 设置纹理对象参数
+    glad_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glad_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    // 解绑纹理对象
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 OpenGLTexture2D::~OpenGLTexture2D() {
@@ -37,5 +52,7 @@ OpenGLTexture2D::~OpenGLTexture2D() {
 }
 
 void OpenGLTexture2D::Bind(uint32_t slot) const {
-    glBindTextureUnit(GL_TEXTURE0 + slot, m_rendererId);
+    // OpenGL是状态机 不知道当前状态机的纹理单元 所以要先切换纹理单元 然后绑定纹理对象
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, m_rendererId);
 }

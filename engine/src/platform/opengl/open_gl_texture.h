@@ -6,6 +6,7 @@
 
 #include "x/renderer/texture.h"
 
+// mac对OpenGL的支持只到3.3 只支持先绑定再操作 不支持DSA(不绑定直接操作) 所以统一用传统方式先绑定再操作
 class OpenGLTexture2D : public Texture2D {
 public:
     OpenGLTexture2D(const std::string &path);
