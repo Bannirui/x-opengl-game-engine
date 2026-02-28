@@ -17,7 +17,7 @@
 #include "x/core/mouse_codes.h"
 #include "x/core/timestep.h"
 
-#include "x/orthographic_camera_controller.h"
+#include "x/core/orthographic_camera_controller.h"
 
 // ---Renderer---
 #include "x/renderer/renderer.h"

@@ -2,7 +2,7 @@
 // Created by rui ding on 2026/2/28.
 //
 
-#include "x/orthographic_camera_controller.h"
+#include "x/core/orthographic_camera_controller.h"
 
 #include "x/core/input.h"
 #include "x/core/key_codes.h"
