@@ -9,6 +9,21 @@
 #include "x/x_log.h"
 #include "x/core.h"
 
+Shader *Shader::Create(const std::string &filepath)
+{
+    switch (Renderer::GetAPI()) {
+        case RendererAPI::API::kNone: {
+            X_CORE_ASSERT(false, "RendererAPI::kNone is currently not supported!");
+            return nullptr;
+        }
+        case RendererAPI::API::kOpenGL: {
+            return new OpenGLShader(filepath);
+        }
+    }
+    X_CORE_ASSERT(false, "Unknown RendererAPI!");
+    return nullptr;
+}
+
 Shader *Shader::Create(const std::string &vertexSrc, const std::string &fragmentSrc) {
     switch (Renderer::GetAPI()) {
         case RendererAPI::API::kNone: {
