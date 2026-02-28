@@ -125,18 +125,19 @@ std::unordered_map<int, std::string> OpenGLShader::preProcess(const std::string 
     std::unordered_map<int, std::string> shaderSources;
     const char                          *typeToken       = "#type";  // vertex跟frag的区分用#type vertex跟#type frag
     size_t                               typeTokenLength = strlen(typeToken);
-    size_t                               pos             = glslSrc.find(typeToken, 0);
+    size_t                               pos             = glslSrc.find(typeToken, 0);  // 找到第一个#type标识
     while (pos != std::string::npos)
     {
-        size_t eol = glslSrc.find_first_of("\r\n", pos);
+        size_t eol = glslSrc.find_first_of("\r\n", pos);  // 定位位#type那一行最后 中间就是#type的内容
         X_CORE_ASSERT(eol != std::string::npos, "Syntax error");
         size_t      begin = pos + typeTokenLength + 1;
         std::string type  = glslSrc.substr(begin, eol - begin);  // vertex or frag
         X_CORE_ASSERT(shaderTypeFromString(type), "Invalid shader type specified");
         size_t nextLinePos = glslSrc.find_first_not_of("\r\n", eol);
-        pos                = glslSrc.find(typeToken, nextLinePos);
+        X_CORE_ASSERT(nextLinePos != std::string::npos, "Syntax error");
+        pos = glslSrc.find(typeToken, nextLinePos);
         shaderSources[shaderTypeFromString(type)] =
-            glslSrc.substr(nextLinePos, pos - (nextLinePos == std::string::npos ? glslSrc.size() - 1 : nextLinePos));
+            (pos == std::string::npos) ? glslSrc.substr(nextLinePos) : glslSrc.substr(nextLinePos, pos - nextLinePos);
     }
     return shaderSources;
 }
