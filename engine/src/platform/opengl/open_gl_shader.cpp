@@ -215,5 +215,6 @@ void OpenGLShader::compile(const std::unordered_map<int, std::string> &shaderSou
     for (auto id : glShaderIds)
     {
         glDetachShader(program, id);
+        glDeleteShader(id);
     }
 }
