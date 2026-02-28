@@ -7,8 +7,8 @@
 // For use by engine application
 
 #include "x/core.h"
-#include "x/x_application.h"
-#include "x/x_log.h"
+#include "x/core/x_application.h"
+#include "x/core/x_log.h"
 #include "x/layer.h"
 #include "x/events/event.h"
 #include "x/imgui/im_gui_layer.h"

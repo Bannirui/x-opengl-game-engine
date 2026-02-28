@@ -10,7 +10,7 @@
 #include "x/renderer/renderer.h"
 #include "x/renderer/renderer_api.h"
 #include "x/core.h"
-#include "x/x_log.h"
+#include "x/core/x_log.h"
 
 VertexArray *VertexArray::Create()
 {

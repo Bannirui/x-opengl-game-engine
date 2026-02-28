@@ -10,8 +10,8 @@
 
 #include "x/core.h"
 #include "x/window.h"
-#include "x/x_application.h"
-#include "x/x_log.h"
+#include "x/core/x_application.h"
+#include "x/core/x_log.h"
 
 ImGuiLayer::ImGuiLayer() : Layer("ImGuiLayer") {}
 

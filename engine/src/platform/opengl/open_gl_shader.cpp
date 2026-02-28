@@ -7,7 +7,7 @@
 #include <glad/glad.h>
 #include <glm/gtc/type_ptr.inl>
 
-#include "x/x_log.h"
+#include "x/core/x_log.h"
 #include "x/core.h"
 
 // shader源码用#type vertex跟#type fragment区分

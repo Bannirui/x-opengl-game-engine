@@ -5,7 +5,7 @@
 #include "mac_input.h"
 
 #include "x/window.h"
-#include "x/x_application.h"
+#include "x/core/x_application.h"
 
 bool MacInput::isKeyPressedImpl(int keycode)
 {

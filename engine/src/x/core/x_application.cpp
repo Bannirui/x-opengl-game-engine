@@ -2,12 +2,12 @@
 // Created by dingrui on 2/23/26.
 //
 
-#include "x/x_application.h"
+#include "x/core/x_application.h"
 
-#include "renderer/renderer.h"
+#include "x/renderer/renderer.h"
 #include "x/core.h"
 #include "x/layer.h"
-#include "x/x_log.h"
+#include "x_log.h"
 #include "x/events/application_event.h"
 #include "x/window.h"
 #include "x/input.h"

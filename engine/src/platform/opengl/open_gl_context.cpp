@@ -8,7 +8,7 @@
 #include <GLFW/glfw3.h>
 
 #include "x/core.h"
-#include "x/x_log.h"
+#include "x/core/x_log.h"
 
 OpenGLContext::OpenGLContext(GLFWwindow *windowHandle) : m_windowHandle(windowHandle)
 {

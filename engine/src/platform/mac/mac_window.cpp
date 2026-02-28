@@ -5,7 +5,7 @@
 #include "platform/mac/mac_window.h"
 
 #include "platform/opengl/open_gl_context.h"
-#include "x/x_log.h"
+#include "x/core/x_log.h"
 #include "x/events/application_event.h"
 #include "x/events/key_event.h"
 #include "x/events/mouse_event.h"
