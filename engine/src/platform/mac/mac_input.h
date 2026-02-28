@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "../../x/core/input.h"
+#include "x/core/input.h"
 
 class MacInput : public Input
 {

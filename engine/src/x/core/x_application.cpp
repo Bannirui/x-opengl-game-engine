@@ -6,11 +6,11 @@
 
 #include "x/renderer/renderer.h"
 #include "x/core.h"
-#include "layer.h"
-#include "x_log.h"
+#include "x/core/layer.h"
+#include "x/core/x_log.h"
 #include "x/events/application_event.h"
 #include "x/window.h"
-#include "input.h"
+#include "x/core/input.h"
 #include "x/imgui/im_gui_layer.h"
 #include "x/core/timestep.h"
 
