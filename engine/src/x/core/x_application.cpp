@@ -10,7 +10,7 @@
 #include "x_log.h"
 #include "x/events/application_event.h"
 #include "x/window.h"
-#include "x/input.h"
+#include "input.h"
 #include "x/imgui/im_gui_layer.h"
 #include "x/core/timestep.h"
 

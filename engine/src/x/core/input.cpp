@@ -2,11 +2,11 @@
 // Created by rui ding on 2026/2/26.
 //
 
-#include "x/input.h"
-#include "x/core.h"  // 平台标识的宏定义在core里面
+#include "x/core/input.h"
+#include "x/core.h"
 
 #if defined(X_PLATFORM_MAC)
-#include "platform/mac/mac_input.h"
+#include "../../platform/mac/mac_input.h"
 #elif defined(X_PLATFORM_LINUX)
 #include "platform/linux/linux_input.h"
 #else

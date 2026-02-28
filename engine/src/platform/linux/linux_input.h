@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "x/input.h"
+#include "../../x/core/input.h"
 
 class LinuxInput : public Input
 {

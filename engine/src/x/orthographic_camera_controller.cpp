@@ -4,11 +4,11 @@
 
 #include "x/orthographic_camera_controller.h"
 
-#include "input.h"
-#include "core/key_codes.h"
-#include "events/application_event.h"
-#include "events/event.h"
-#include "events/mouse_event.h"
+#include "x/core/input.h"
+#include "x/core/key_codes.h"
+#include "x/events/application_event.h"
+#include "x/events/event.h"
+#include "x/events/mouse_event.h"
 #include "x/core/timestep.h"
 #include "x/renderer/orthographic_camera.h"
 
