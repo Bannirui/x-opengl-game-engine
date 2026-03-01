@@ -7,47 +7,6 @@
 #include <imgui.h>
 #include <glm/gtc/type_ptr.inl>
 
-#include <chrono>
-
-template <typename Fn>
-class Timer
-{
-public:
-    Timer(const char *name, Fn &&func) : m_name(name), m_func(std::forward<Fn>(func))
-    {
-        m_startTimepoint = std::chrono::steady_clock::now();
-    }
-
-    ~Timer()
-    {
-        if (!m_stopped)
-        {
-            stop();
-        }
-    }
-
-    Timer(const Timer &)            = delete;
-    Timer &operator=(const Timer &) = delete;
-
-private:
-    void stop()
-    {
-        auto end       = std::chrono::steady_clock::now();
-        m_stopped      = true;
-        float duration = std::chrono::duration<float, std::milli>(end - m_startTimepoint).count();
-        m_func({m_name, duration});
-    }
-
-private:
-    const char                                        *m_name;
-    Fn                                                 m_func;
-    std::chrono::time_point<std::chrono::steady_clock> m_startTimepoint;
-    bool                                               m_stopped{false};
-};
-
-#define PROFILE_SCOPE(name) \
-    Timer timer##__LINE__(name, [&](ProfileResult profileResult) { m_profileResults.push_back(profileResult); })
-
 Sandbox2D::Sandbox2D() : Layer("Sandbox2D"), m_cameraController(1280.0f / 720.0f) {}
 
 Sandbox2D::~Sandbox2D() {}
@@ -61,23 +20,22 @@ void Sandbox2D::OnDetach() {}
 
 void Sandbox2D::OnUpdate(Timestep ts)
 {
-    PROFILE_SCOPE("Sandbox2D::OnUpdate");
-
+    X_PROFILE_FUNCTION();
     // update
     {
-        PROFILE_SCOPE("CameraController::OnUpdate");
+        X_PROFILE_SCOPE("CameraController::OnUpdate");
         m_cameraController.OnUpdate(ts);
     }
 
     // render
     {
-        PROFILE_SCOPE("Renderer Prep");
+        X_PROFILE_SCOPE("Renderer Prep");
         RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.0f});
         RenderCommand::Clear();
     }
 
     {
-        PROFILE_SCOPE("Renderer Draw");
+        X_PROFILE_SCOPE("Renderer Draw");
         Renderer2D::BeginScene(m_cameraController.get_camera());
         Renderer2D::DrawQuad({0.0f, 0.0f}, {1.0f, 1.0f}, {0.8f, 0.2f, 0.3f, 1.0f});
         Renderer2D::DrawQuad({0.5, -0.5f}, {0.5f, 0.75f}, {0.2f, 0.3f, 0.8f, 1.0f});
@@ -88,17 +46,9 @@ void Sandbox2D::OnUpdate(Timestep ts)
 
 void Sandbox2D::OnImguiRender()
 {
+    X_PROFILE_FUNCTION();
     ImGui::Begin("Settings");
     ImGui::ColorEdit4("Square color", glm::value_ptr(m_squareColor));
-    {
-        for (auto &result : m_profileResults)
-        {
-            char label[50];
-            strcpy(label, "%.3fms ");
-            strcat(label, result.name);
-            ImGui::Text(label, result.time);
-        }
-    }
     ImGui::End();
 }
 
