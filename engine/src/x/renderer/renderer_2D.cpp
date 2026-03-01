@@ -24,6 +24,7 @@ static Renderer2DStorage *s_data;
 
 void Renderer2D::Init()
 {
+    X_PROFILE_FUNCTION();
     // clang-format off
 	float squareVertices[] = {
 	     // pos(xyz)          // uv(xy)
@@ -59,16 +60,21 @@ void Renderer2D::Init()
 
 void Renderer2D::Shutdown()
 {
+    X_PROFILE_FUNCTION();
     delete s_data;
 }
 
 void Renderer2D::BeginScene(const OrthographicCamera &camera)
 {
+    X_PROFILE_FUNCTION();
     s_data->textureShader->Bind();
     s_data->textureShader->SetMat4("u_ViewProjection", camera.get_viewProjectionMatrix());
 }
 
-void Renderer2D::EndScene() {}
+void Renderer2D::EndScene()
+{
+    X_PROFILE_FUNCTION();
+}
 
 void Renderer2D::DrawQuad(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color)
 {
@@ -77,6 +83,7 @@ void Renderer2D::DrawQuad(const glm::vec2 &position, const glm::vec2 &size, cons
 
 void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4 &color)
 {
+    X_PROFILE_FUNCTION();
     s_data->textureShader->Bind();
     s_data->textureShader->SetFloat4("u_Color", color);
 
@@ -95,6 +102,7 @@ void Renderer2D::DrawQuad(const glm::vec2 &position, const glm::vec2 &size, cons
 
 void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, const X::Ref<Texture2D> &texture)
 {
+    X_PROFILE_FUNCTION();
     s_data->textureShader->SetFloat4("u_Color", glm::vec4(1.0));
     texture->Bind();
 

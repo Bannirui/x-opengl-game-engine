@@ -4,13 +4,12 @@
 
 #include "x/core/x_application.h"
 
+#include "pch.h"
+
 #include "x/renderer/renderer.h"
-#include "x/core/core.h"
 #include "x/core/layer.h"
-#include "x/core/x_log.h"
 #include "x/events/application_event.h"
 #include "x/window.h"
-#include "x/core/input.h"
 #include "x/imgui/im_gui_layer.h"
 #include "x/core/timestep.h"
 
@@ -18,6 +17,7 @@ XApplication *XApplication::s_instance = nullptr;
 
 XApplication::XApplication()
 {
+    X_PROFILE_FUNCTION();
     X_CORE_ASSERT(!s_instance, "Application already exists");
     s_instance = this;
     m_window   = Window::Create();
@@ -31,38 +31,46 @@ XApplication::XApplication()
 
 XApplication::~XApplication()
 {
+    X_PROFILE_FUNCTION();
     Renderer::Shutdown();
 }
 
 void XApplication::Run()
 {
+    X_PROFILE_FUNCTION();
     while (m_running)
     {
+        X_PROFILE_SCOPE("RunLoop");
         float    time     = static_cast<float>(glfwGetTime());
         Timestep timestep = time - m_lastFrameTime;
         m_lastFrameTime   = time;
 
         if (!m_minimized)
         {
-            for (Layer *layer : m_layerStack)
             {
-                layer->OnUpdate(timestep);
+                X_PROFILE_SCOPE("LayerStack OnUpdate");
+                for (Layer *layer : m_layerStack)
+                {
+                    layer->OnUpdate(timestep);
+                }
             }
+            m_ImGuiLayer->Begin();
+            {
+                X_PROFILE_SCOPE("LayerStack OnImguiRender");
+                for (Layer *layer : m_layerStack)
+                {
+                    layer->OnImguiRender();
+                }
+            }
+            m_ImGuiLayer->End();
         }
-
-        m_ImGuiLayer->Begin();
-        for (Layer *layer : m_layerStack)
-        {
-            layer->OnImguiRender();
-        }
-        m_ImGuiLayer->End();
-
         m_window->OnUpdate();
     }
 }
 
 void XApplication::OnEvent(Event &e)
 {
+    X_PROFILE_FUNCTION();
     EventDispatcher dispatcher(e);
     dispatcher.Dispatch<WindowCloseEvent>([this](WindowCloseEvent &e) { return this->onWindowClose(e); });
     dispatcher.Dispatch<WindowResizeEvent>([this](WindowResizeEvent &e) { return this->onWindowResize(e); });
@@ -78,12 +86,16 @@ void XApplication::OnEvent(Event &e)
 
 void XApplication::PushLayer(Layer *layer)
 {
+    X_PROFILE_FUNCTION();
     m_layerStack.PushLayer(layer);
+    layer->OnAttach();
 }
 
 void XApplication::PushOverlay(Layer *layer)
 {
+    X_PROFILE_FUNCTION();
     m_layerStack.PushOverlay(layer);
+    layer->OnAttach();
 }
 
 bool XApplication::onWindowClose(WindowCloseEvent &e)
@@ -94,6 +106,7 @@ bool XApplication::onWindowClose(WindowCloseEvent &e)
 
 bool XApplication::onWindowResize(WindowResizeEvent &e)
 {
+    X_PROFILE_FUNCTION();
     if (e.get_width() == 0 || e.get_height() == 0)
     {
         m_minimized = true;

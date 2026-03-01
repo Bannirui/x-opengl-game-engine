@@ -14,6 +14,7 @@ X::Scope<Renderer::SceneData> Renderer::s_sceneData = X::CreateScope<Renderer::S
 
 void Renderer::Init()
 {
+    X_PROFILE_FUNCTION();
     RenderCommand::Init();
     Renderer2D::Init();
 }

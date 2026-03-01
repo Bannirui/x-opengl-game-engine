@@ -12,9 +12,14 @@
 
 OpenGLTexture2D::OpenGLTexture2D(const std::string &path) : m_path(path)
 {
+    X_PROFILE_FUNCTION();
     int width, height, channels;
     stbi_set_flip_vertically_on_load(1);
-    stbi_uc *data = stbi_load(path.c_str(), &width, &height, &channels, 0);
+    stbi_uc *data{nullptr};
+    {
+        X_PROFILE_SCOPE("stbi_load - OpenGLTexture2D::OpenGLTexture2D(const std::string&)");
+        data = stbi_load(path.c_str(), &width, &height, &channels, 0);
+    }
     X_CORE_ASSERT(data, "Failed to load image");
     m_width  = width;
     m_height = height;
@@ -58,6 +63,7 @@ OpenGLTexture2D::OpenGLTexture2D(const std::string &path) : m_path(path)
 
 OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height) : m_width(width), m_height(height)
 {
+    X_PROFILE_FUNCTION();
     m_internalFormat = GL_RGBA8;
     m_dataFormat     = GL_RGBA;
 
@@ -85,6 +91,7 @@ OpenGLTexture2D::~OpenGLTexture2D()
 
 void OpenGLTexture2D::SetData(void *data, uint32_t size)
 {
+    X_PROFILE_FUNCTION();
     uint32_t bpp = m_dataFormat == GL_RGBA ? 4 : 3;
     X_CORE_ASSERT(size == m_width * m_height * bpp, "Incorrect size!");
     glTextureSubImage2D(m_rendererId, 0, 0, 0, m_width, m_height, m_dataFormat, GL_UNSIGNED_BYTE, data);
@@ -92,6 +99,7 @@ void OpenGLTexture2D::SetData(void *data, uint32_t size)
 
 void OpenGLTexture2D::Bind(uint32_t slot) const
 {
+    X_PROFILE_FUNCTION();
     // OpenGL是状态机 不知道当前状态机的纹理单元 所以要先切换纹理单元 然后绑定纹理对象
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, m_rendererId);

@@ -20,22 +20,26 @@ static void glfwErrorCallback(int error, const char *description)
 
 MacWindow::MacWindow(const WindowProps &props)
 {
+    X_PROFILE_FUNCTION();
     init(props);
 }
 
 MacWindow::~MacWindow()
 {
+    X_PROFILE_FUNCTION();
     shutdown();
 }
 
 void MacWindow::OnUpdate()
 {
+    X_PROFILE_FUNCTION();
     glfwPollEvents();
     glfwSwapBuffers(m_window);
 }
 
 void MacWindow::SetVSync(bool enabled)
 {
+    X_PROFILE_FUNCTION();
     if (enabled)
     {
         glfwSwapInterval(1);
@@ -49,6 +53,7 @@ void MacWindow::SetVSync(bool enabled)
 
 void MacWindow::init(const WindowProps &props)
 {
+    X_PROFILE_FUNCTION();
     m_data.title  = props.title;
     m_data.width  = props.width;
     m_data.height = props.height;
@@ -57,6 +62,7 @@ void MacWindow::init(const WindowProps &props)
 
     if (s_GLFWWindowCount == 0)
     {
+        X_PROFILE_SCOPE("glfwInit");
         int succ = glfwInit();
         X_CORE_ASSERT(succ, "Could not init GLFW");
         glfwSetErrorCallback(glfwErrorCallback);
@@ -64,9 +70,12 @@ void MacWindow::init(const WindowProps &props)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, X_GL_VERSION_MAJOR);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, X_GL_VERSION_MINOR);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    m_window = glfwCreateWindow(static_cast<int>(props.width), static_cast<int>(props.height), props.title.c_str(),
-                                nullptr, nullptr);
-    ++s_GLFWWindowCount;
+    {
+        X_PROFILE_SCOPE("glfwCreateWindow");
+        m_window = glfwCreateWindow(static_cast<int>(props.width), static_cast<int>(props.height), props.title.c_str(),
+                                    nullptr, nullptr);
+        ++s_GLFWWindowCount;
+    }
     X_CORE_ASSERT(m_window, "Failed to create GLFW window");
 
     glfwMakeContextCurrent(m_window);
@@ -165,6 +174,7 @@ void MacWindow::init(const WindowProps &props)
 
 void MacWindow::shutdown()
 {
+    X_PROFILE_FUNCTION();
     glfwDestroyWindow(m_window);
     --s_GLFWWindowCount;
     if (s_GLFWWindowCount == 0)

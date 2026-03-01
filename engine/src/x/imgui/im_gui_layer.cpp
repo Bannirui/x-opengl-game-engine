@@ -11,12 +11,12 @@
 #include "x/core/core.h"
 #include "x/window.h"
 #include "x/core/x_application.h"
-#include "x/core/x_log.h"
 
 ImGuiLayer::ImGuiLayer() : Layer("ImGuiLayer") {}
 
 void ImGuiLayer::OnAttach()
 {
+    X_PROFILE_FUNCTION();
     // 整合ImGUI
     IMGUI_CHECKVERSION();
     // 创建上下文
@@ -37,6 +37,7 @@ void ImGuiLayer::OnAttach()
 
 void ImGuiLayer::OnDetach()
 {
+    X_PROFILE_FUNCTION();
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
@@ -44,6 +45,7 @@ void ImGuiLayer::OnDetach()
 
 void ImGuiLayer::Begin()
 {
+    X_PROFILE_FUNCTION();
     // 开始新帧
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
@@ -52,6 +54,7 @@ void ImGuiLayer::Begin()
 
 void ImGuiLayer::End()
 {
+    X_PROFILE_FUNCTION();
     ImGuiIO      &io  = ImGui::GetIO();
     XApplication &app = XApplication::Get();
     io.DisplaySize =

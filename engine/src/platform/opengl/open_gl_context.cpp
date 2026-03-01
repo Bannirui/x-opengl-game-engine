@@ -17,6 +17,7 @@ OpenGLContext::OpenGLContext(GLFWwindow *windowHandle) : m_windowHandle(windowHa
 
 void OpenGLContext::Init()
 {
+    X_PROFILE_FUNCTION();
     glfwMakeContextCurrent(m_windowHandle);
     // 使用glad加载当前opengl版本的所有函数
     int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
@@ -39,5 +40,6 @@ void OpenGLContext::Init()
 
 void OpenGLContext::SwapBuffers()
 {
+    X_PROFILE_FUNCTION();
     glfwSwapBuffers(m_windowHandle);
 }

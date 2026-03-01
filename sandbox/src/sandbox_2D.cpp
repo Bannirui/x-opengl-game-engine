@@ -13,19 +13,20 @@ Sandbox2D::~Sandbox2D() {}
 
 void Sandbox2D::OnAttach()
 {
+    X_PROFILE_FUNCTION();
     m_checkerboardTexture = Texture2D::Create("asset/texture/Checkerboard.png");
 }
 
-void Sandbox2D::OnDetach() {}
+void Sandbox2D::OnDetach()
+{
+    X_PROFILE_FUNCTION();
+}
 
 void Sandbox2D::OnUpdate(Timestep ts)
 {
     X_PROFILE_FUNCTION();
     // update
-    {
-        X_PROFILE_SCOPE("CameraController::OnUpdate");
-        m_cameraController.OnUpdate(ts);
-    }
+    m_cameraController.OnUpdate(ts);
 
     // render
     {

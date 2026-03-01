@@ -27,6 +27,7 @@ static int shaderTypeFromString(const std::string &type)
 
 OpenGLShader::OpenGLShader(const std::string &filepath)
 {
+    X_PROFILE_FUNCTION();
     std::string source        = readFile(filepath);
     auto        shaderSources = preProcess(source);
     compile(shaderSources);
@@ -41,6 +42,7 @@ OpenGLShader::OpenGLShader(const std::string &filepath)
 OpenGLShader::OpenGLShader(const std::string &name, const std::string &vertexSrc, const std::string fragmentSrc)
     : m_name(name)
 {
+    X_PROFILE_FUNCTION();
     std::unordered_map<int, std::string> shaderSources;
     shaderSources[GL_VERTEX_SHADER]   = vertexSrc;
     shaderSources[GL_FRAGMENT_SHADER] = fragmentSrc;
@@ -49,6 +51,7 @@ OpenGLShader::OpenGLShader(const std::string &name, const std::string &vertexSrc
 
 OpenGLShader::~OpenGLShader()
 {
+    X_PROFILE_FUNCTION();
     if (m_rendererId > 0)
     {
         glDeleteProgram(m_rendererId);
@@ -57,31 +60,37 @@ OpenGLShader::~OpenGLShader()
 
 void OpenGLShader::Bind() const
 {
+    X_PROFILE_FUNCTION();
     glUseProgram(m_rendererId);
 }
 
 void OpenGLShader::Unbind() const
 {
+    X_PROFILE_FUNCTION();
     glUseProgram(0);
 }
 
 void OpenGLShader::SetInt(const std::string &name, int value)
 {
+    X_PROFILE_FUNCTION();
     uploadUniformInt(name, value);
 }
 
 void OpenGLShader::SetFloat3(const std::string &name, const glm::vec3 &value)
 {
+    X_PROFILE_FUNCTION();
     uploadUniformFloat3(name, value);
 }
 
 void OpenGLShader::SetFloat4(const std::string &name, const glm::vec4 &value)
 {
+    X_PROFILE_FUNCTION();
     uploadUniformFloat4(name, value);
 }
 
 void OpenGLShader::SetMat4(const std::string &name, const glm::mat4 &value)
 {
+    X_PROFILE_FUNCTION();
     uploadUniformMat4(name, value);
 }
 
@@ -129,6 +138,7 @@ void OpenGLShader::uploadUniformMat4(const std::string &name, const glm::mat4 &m
 
 std::string OpenGLShader::readFile(const std::string &filepath)
 {
+    X_PROFILE_FUNCTION();
     std::string   ret;
     std::ifstream in(filepath, std::ios::in | std::ios::binary);
     X_CORE_ASSERT(in, "Could not open file {}", filepath);
@@ -144,6 +154,7 @@ std::string OpenGLShader::readFile(const std::string &filepath)
 
 std::unordered_map<int, std::string> OpenGLShader::preProcess(const std::string &glslSrc)
 {
+    X_PROFILE_FUNCTION();
     std::unordered_map<int, std::string> shaderSources;
     const char                          *typeToken       = "#type";  // vertex跟frag的区分用#type vertex跟#type frag
     size_t                               typeTokenLength = strlen(typeToken);
@@ -166,6 +177,7 @@ std::unordered_map<int, std::string> OpenGLShader::preProcess(const std::string 
 
 void OpenGLShader::compile(const std::unordered_map<int, std::string> &shaderSources)
 {
+    X_PROFILE_FUNCTION();
     X_CORE_ASSERT(shaderSources.size() <= 2, "We only support 2 shaders for now");
     // Vertex and fragment shaders are successfully compiled.
     // Now time to link them together into a program.
