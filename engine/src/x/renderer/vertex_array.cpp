@@ -4,7 +4,7 @@
 
 #include "x/renderer/vertex_array.h"
 
-#include "renderer_api.h"
+#include "x/renderer/renderer_api.h"
 #include "platform/opengl/open_gl_vertex_array.h"
 #include "x/renderer/renderer.h"
 #include "x/core/x_log.h"
@@ -20,7 +20,7 @@ X::Ref<VertexArray> VertexArray::Create()
         }
         case RendererAPI::API::kOpenGL:
         {
-            return std::make_shared<OpenGLVertexArray>();
+            return X::CreateRef<OpenGLVertexArray>();
         }
     }
     X_CORE_ASSERT(false, "Unknown RendererAPI!");

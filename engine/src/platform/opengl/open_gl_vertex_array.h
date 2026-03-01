@@ -15,15 +15,15 @@ public:
     void Bind() const override;
     void Unbind() const override;
 
-    void AddVertexBuffer(const std::shared_ptr<VertexBuffer> &vertexBuffer) override;
-    void SetIndexBuffer(const std::shared_ptr<IndexBuffer> &indexBuffer) override;
+    void AddVertexBuffer(const X::Ref<VertexBuffer> &vertexBuffer) override;
+    void SetIndexBuffer(const X::Ref<IndexBuffer> &indexBuffer) override;
 
-    const std::vector<std::shared_ptr<VertexBuffer>> &GetVertexBuffers() const override { return m_vertexBuffers; }
-    const std::shared_ptr<IndexBuffer>               &GetIndexBuffer() const override { return m_indexBuffer; }
+    const std::vector<X::Ref<VertexBuffer>> &GetVertexBuffers() const override { return m_vertexBuffers; }
+    const X::Ref<IndexBuffer>               &GetIndexBuffer() const override { return m_indexBuffer; }
 
 private:
-    uint32_t                                   m_rendererID;     // VAO
-    std::vector<std::shared_ptr<VertexBuffer>> m_vertexBuffers;  // VAO管理着的VBO
-    std::shared_ptr<IndexBuffer>               m_indexBuffer;    // VAO管理着的EBO
-    uint32_t                                   m_vertexBufferIndex{0};
+    uint32_t                          m_rendererID;     // VAO
+    std::vector<X::Ref<VertexBuffer>> m_vertexBuffers;  // VAO管理着的VBO
+    X::Ref<IndexBuffer>               m_indexBuffer;    // VAO管理着的EBO
+    uint32_t                          m_vertexBufferIndex{0};
 };

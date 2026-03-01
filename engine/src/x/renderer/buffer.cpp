@@ -9,7 +9,7 @@
 #include "x/core/core.h"
 #include "x/core/x_log.h"
 
-VertexBuffer *VertexBuffer::Create(float *vertices, uint32_t size)
+X::Ref<VertexBuffer> VertexBuffer::Create(float *vertices, uint32_t size)
 {
     switch (Renderer::GetAPI())
     {
@@ -20,19 +20,14 @@ VertexBuffer *VertexBuffer::Create(float *vertices, uint32_t size)
         }
         case RendererAPI::API::kOpenGL:
         {
-            return new OpenGLVertexBuffer(vertices, size);
+            return X::CreateRef<OpenGLVertexBuffer>(vertices, size);
         }
     }
     X_CORE_ASSERT(false, "Unknown RendererAPI!");
     return nullptr;
 }
 
-/**
- * @param indices index array
- * @param count how many vertex
- * @return
- */
-IndexBuffer *IndexBuffer::Create(uint32_t *indices, uint32_t count)
+X::Ref<IndexBuffer> IndexBuffer::Create(uint32_t *indices, uint32_t count)
 {
     switch (Renderer::GetAPI())
     {
@@ -43,7 +38,7 @@ IndexBuffer *IndexBuffer::Create(uint32_t *indices, uint32_t count)
         }
         case RendererAPI::API::kOpenGL:
         {
-            return new OpenGLIndexBuffer(indices, count);
+            return X::CreateRef<OpenGLIndexBuffer>(indices, count);
         }
     }
     X_CORE_ASSERT(false, "Unknown RendererAPI!");

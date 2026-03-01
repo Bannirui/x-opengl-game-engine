@@ -7,8 +7,6 @@
 
 #include <glm/gtx/transform.hpp>
 
-#include "platform/opengl/open_gl_shader.h"
-
 #include "sandbox_2D.h"
 
 class ExampleLayer : public Layer
@@ -29,14 +27,12 @@ public:
         // VAO
         m_triangleVAO = VertexArray::Create();
         // VAO托管VBO
-        X::Ref<VertexBuffer> vertexBuffer;
-        vertexBuffer.reset(VertexBuffer::Create(vertices1, sizeof(vertices1)));
-        BufferLayout layout = {{ShaderDataType::kFloat3, "a_Position"}, {ShaderDataType::kFloat4, "a_Color"}};
+        X::Ref<VertexBuffer> vertexBuffer = VertexBuffer::Create(vertices1, sizeof(vertices1));
+        BufferLayout         layout = {{ShaderDataType::kFloat3, "a_Position"}, {ShaderDataType::kFloat4, "a_Color"}};
         vertexBuffer->SetLayout(layout);
         m_triangleVAO->AddVertexBuffer(vertexBuffer);
         // VAO托管EBO
-        X::Ref<IndexBuffer> indexBuffer;
-        indexBuffer.reset(IndexBuffer::Create(indices1, sizeof(indices1) / sizeof(uint32_t)));
+        X::Ref<IndexBuffer> indexBuffer = IndexBuffer::Create(indices1, sizeof(indices1) / sizeof(uint32_t));
         m_triangleVAO->SetIndexBuffer(indexBuffer);
 
         // 正方形
@@ -53,13 +49,11 @@ public:
         // VAO
         m_squareVAO = VertexArray::Create();
         // VAO托管VBO
-        X::Ref<VertexBuffer> squareVB;
-        squareVB.reset(VertexBuffer::Create(vertices2, sizeof(vertices2)));
+        X::Ref<VertexBuffer> squareVB = VertexBuffer::Create(vertices2, sizeof(vertices2));
         squareVB->SetLayout({{ShaderDataType::kFloat3, "a_Position"}});
         m_squareVAO->AddVertexBuffer(squareVB);
         // VAO托管EBO
-        X::Ref<IndexBuffer> squareIB;
-        squareIB.reset(IndexBuffer::Create(indices2, sizeof(indices2) / sizeof(uint32_t)));
+        X::Ref<IndexBuffer> squareIB = IndexBuffer::Create(indices2, sizeof(indices2) / sizeof(uint32_t));
         m_squareVAO->SetIndexBuffer(squareIB);
 
         // clang-format off
@@ -121,8 +115,8 @@ public:
         m_texture     = Texture2D::Create("asset/texture/Checkerboard.png");
         m_logoTexture = Texture2D::Create("asset/texture/ChernoLogo.png");
 
-        std::dynamic_pointer_cast<OpenGLShader>(textureShader)->Bind();
-        std::dynamic_pointer_cast<OpenGLShader>(textureShader)->SetInt("u_Texture", 0);
+        textureShader->Bind();
+        textureShader->SetInt("u_Texture", 0);
     }
 
     void OnUpdate(Timestep ts) override
@@ -137,8 +131,8 @@ public:
 
         glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 
-        std::dynamic_pointer_cast<OpenGLShader>(m_flatColorShader)->Bind();
-        std::dynamic_pointer_cast<OpenGLShader>(m_flatColorShader)->SetFloat3("u_Color", m_color);
+        m_flatColorShader->Bind();
+        m_flatColorShader->SetFloat3("u_Color", m_color);
         for (int y = 0; y < 20; ++y)
         {
             for (int x = 0; x < 20; ++x)
@@ -186,9 +180,10 @@ private:
 class Sandbox : public XApplication
 {
 public:
-    Sandbox() {
-	    // PushLayer(new ExampleLayer());
-	    PushLayer(new Sandbox2D());
+    Sandbox()
+    {
+        // PushLayer(new ExampleLayer());
+        PushLayer(new Sandbox2D());
     }
 
     ~Sandbox() override {}

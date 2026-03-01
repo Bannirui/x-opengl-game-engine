@@ -9,7 +9,8 @@
 #include "x/core/core.h"
 #include "x/core/x_log.h"
 
-enum class ShaderDataType : uint16_t {
+enum class ShaderDataType : uint16_t
+{
     kNone = 0,
     kFloat,
     kFloat2,
@@ -25,42 +26,56 @@ enum class ShaderDataType : uint16_t {
 };
 
 // 数据类型占几个字节
-static uint32_t ShaderDataTypeSize(ShaderDataType type) {
-    switch (type) {
-        case ShaderDataType::kNone: {
+static uint32_t ShaderDataTypeSize(ShaderDataType type)
+{
+    switch (type)
+    {
+        case ShaderDataType::kNone:
+        {
             return 0;
         }
-        case ShaderDataType::kFloat: {
+        case ShaderDataType::kFloat:
+        {
             return sizeof(float);
         }
-        case ShaderDataType::kFloat2: {
+        case ShaderDataType::kFloat2:
+        {
             return 2 * sizeof(float);
         }
-        case ShaderDataType::kFloat3: {
+        case ShaderDataType::kFloat3:
+        {
             return 3 * sizeof(float);
         }
-        case ShaderDataType::kFloat4: {
+        case ShaderDataType::kFloat4:
+        {
             return 4 * sizeof(float);
         }
-        case ShaderDataType::kMat3: {
+        case ShaderDataType::kMat3:
+        {
             return 3 * 3 * sizeof(float);
         }
-        case ShaderDataType::kMat4: {
+        case ShaderDataType::kMat4:
+        {
             return 4 * 4 * sizeof(float);
         }
-        case ShaderDataType::kInt: {
+        case ShaderDataType::kInt:
+        {
             return sizeof(int);
         }
-        case ShaderDataType::kInt2: {
+        case ShaderDataType::kInt2:
+        {
             return 2 * sizeof(int);
         }
-        case ShaderDataType::kInt3: {
+        case ShaderDataType::kInt3:
+        {
             return 3 * sizeof(int);
         }
-        case ShaderDataType::kInt4: {
+        case ShaderDataType::kInt4:
+        {
             return 4 * sizeof(int);
         }
-        case ShaderDataType::kBool: {
+        case ShaderDataType::kBool:
+        {
             return 1;
         }
     }
@@ -68,55 +83,71 @@ static uint32_t ShaderDataTypeSize(ShaderDataType type) {
     return 0;
 }
 
-struct BufferElement {
-    std::string name;
+struct BufferElement
+{
+    std::string    name;
     ShaderDataType type;
-    uint32_t size;
-    size_t offset;
-    bool normalized;
+    uint32_t       size;
+    size_t         offset;
+    bool           normalized;
 
     BufferElement() = default;
 
     BufferElement(ShaderDataType type, const std::string &name, bool normalized = false)
-        : name(name), type(type), size(ShaderDataTypeSize(type)), offset(0), normalized(normalized) {
+        : name(name), type(type), size(ShaderDataTypeSize(type)), offset(0), normalized(normalized)
+    {
     }
 
-    uint32_t GetComponentCount() const {
-        switch (type) {
-            case ShaderDataType::kNone: {
+    uint32_t GetComponentCount() const
+    {
+        switch (type)
+        {
+            case ShaderDataType::kNone:
+            {
                 return 0;
             }
-            case ShaderDataType::kFloat: {
+            case ShaderDataType::kFloat:
+            {
                 return 1;
             }
-            case ShaderDataType::kFloat2: {
+            case ShaderDataType::kFloat2:
+            {
                 return 2;
             }
-            case ShaderDataType::kFloat3: {
+            case ShaderDataType::kFloat3:
+            {
                 return 3;
             }
-            case ShaderDataType::kFloat4: {
+            case ShaderDataType::kFloat4:
+            {
                 return 4;
             }
-            case ShaderDataType::kMat3: {
+            case ShaderDataType::kMat3:
+            {
                 return 3 * 3;
             }
-            case ShaderDataType::kMat4: {
+            case ShaderDataType::kMat4:
+            {
                 return 4 * 4;
             }
-            case ShaderDataType::kInt: {
+            case ShaderDataType::kInt:
+            {
                 return 1;
             }
-            case ShaderDataType::kInt2: {
+            case ShaderDataType::kInt2:
+            {
                 return 2;
             }
-            case ShaderDataType::kInt3: {
+            case ShaderDataType::kInt3:
+            {
                 return 3;
             }
-            case ShaderDataType::kInt4: {
+            case ShaderDataType::kInt4:
+            {
                 return 4;
             }
-            case ShaderDataType::kBool: {
+            case ShaderDataType::kBool:
+            {
                 return 1;
             }
         }
@@ -125,28 +156,31 @@ struct BufferElement {
     }
 };
 
-class BufferLayout {
+class BufferLayout
+{
 public:
-    BufferLayout() {
-    }
+    BufferLayout() {}
 
-    BufferLayout(const std::initializer_list<BufferElement> &elements) : m_elements(elements) {
+    BufferLayout(const std::initializer_list<BufferElement> &elements) : m_elements(elements)
+    {
         calculateOffsetsAndStride();
     }
 
-    inline uint32_t GetStride() const { return m_stride; }
+    inline uint32_t                          GetStride() const { return m_stride; }
     inline const std::vector<BufferElement> &GetElements() const { return m_elements; }
 
-    std::vector<BufferElement>::iterator begin() { return m_elements.begin(); }
-    std::vector<BufferElement>::iterator end() { return m_elements.end(); }
+    std::vector<BufferElement>::iterator       begin() { return m_elements.begin(); }
+    std::vector<BufferElement>::iterator       end() { return m_elements.end(); }
     std::vector<BufferElement>::const_iterator begin() const { return m_elements.begin(); }
     std::vector<BufferElement>::const_iterator end() const { return m_elements.end(); }
 
 private:
-    void calculateOffsetsAndStride() {
+    void calculateOffsetsAndStride()
+    {
         size_t offset = 0;
-        m_stride = 0;
-        for (auto &element: m_elements) {
+        m_stride      = 0;
+        for (auto &element : m_elements)
+        {
             element.offset = offset;
             offset += element.size;
             m_stride += element.size;
@@ -155,11 +189,12 @@ private:
 
 private:
     std::vector<BufferElement> m_elements;
-    uint32_t m_stride = 0;
+    uint32_t                   m_stride = 0;
 };
 
 // VBO
-class VertexBuffer {
+class VertexBuffer
+{
 public:
     virtual ~VertexBuffer() = default;
 
@@ -174,13 +209,13 @@ public:
     /**
      * @param vertices float array
      * @param size how many bytes of the array
-     * @return
      */
-    static VertexBuffer *Create(float *vertices, uint32_t size);
+    static X::Ref<VertexBuffer> Create(float *vertices, uint32_t size);
 };
 
 // EBO
-class IndexBuffer {
+class IndexBuffer
+{
 public:
     virtual ~IndexBuffer() = default;
 
@@ -191,5 +226,5 @@ public:
     // how many vertex in the index array
     virtual uint32_t GetCount() const = 0;
 
-    static IndexBuffer *Create(uint32_t *indices, uint32_t size);
+    static X::Ref<IndexBuffer> Create(uint32_t *indices, uint32_t size);
 };

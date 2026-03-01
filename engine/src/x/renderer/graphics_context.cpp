@@ -1,17 +1,11 @@
-//
-// Created by rui ding on 2026/2/27.
-//
+#include "x/renderer/graphics_context.h"
 
-#include "x/renderer/renderer_api.h"
-
+#include "platform/opengl/open_gl_context.h"
 #include "x/renderer/renderer.h"
 #include "x/core/core.h"
 #include "x/core/x_log.h"
-#include "platform/opengl/open_gl_renderer_api.h"
 
-RendererAPI::API RendererAPI::s_API = RendererAPI::API::kOpenGL;
-
-X::Scope<RendererAPI> RendererAPI::Create()
+X::Scope<GraphicsContext> GraphicsContext::Create(void *window)
 {
     switch (Renderer::GetAPI())
     {
@@ -22,7 +16,7 @@ X::Scope<RendererAPI> RendererAPI::Create()
         }
         case RendererAPI::API::kOpenGL:
         {
-            return X::CreateScope<OpenGLRendererAPI>();
+            return X::CreateScope<OpenGLContext>(static_cast<GLFWwindow *>(window));
         }
     }
     X_CORE_ASSERT(false, "Unknown RendererAPI!");

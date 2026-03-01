@@ -8,6 +8,7 @@
 #include <GLFW/glfw3.h>
 
 #include "pch.h"
+#include "x/core/core.h"
 
 class Event;
 
@@ -43,7 +44,7 @@ public:
     // 暴露glfw的窗体
     virtual void *get_nativeWindow() const = 0;
 
-    static Window *Create(const WindowProps &props = WindowProps());
+    static X::Scope<Window> Create(const WindowProps &props = WindowProps());
 
 protected:
     Window() = default;

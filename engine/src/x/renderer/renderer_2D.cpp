@@ -38,16 +38,14 @@ void Renderer2D::Init()
     s_data                  = new Renderer2DStorage();
     s_data->quadVertexArray = VertexArray::Create();
 
-    X::Ref<VertexBuffer> squareVB;
-    squareVB.reset(VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
+    X::Ref<VertexBuffer> squareVB = VertexBuffer::Create(squareVertices, sizeof(squareVertices));
     squareVB->SetLayout({
         {ShaderDataType::kFloat3, "a_Position"},
         {ShaderDataType::kFloat2, "a_TexCoord"},
     });
     s_data->quadVertexArray->AddVertexBuffer(squareVB);
 
-    X::Ref<IndexBuffer> squareIB;
-    squareIB.reset(IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
+    X::Ref<IndexBuffer> squareIB = IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
     s_data->quadVertexArray->SetIndexBuffer(squareIB);
 
     s_data->textureShader = Shader::Create("asset/shader/Texture.glsl");

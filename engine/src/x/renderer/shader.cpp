@@ -20,7 +20,7 @@ X::Ref<Shader> Shader::Create(const std::string &filepath)
         }
         case RendererAPI::API::kOpenGL:
         {
-            return std::make_shared<OpenGLShader>(filepath);
+            return X::CreateRef<OpenGLShader>(filepath);
         }
     }
     X_CORE_ASSERT(false, "Unknown RendererAPI!");
@@ -38,7 +38,7 @@ X::Ref<Shader> Shader::Create(const std::string &name, const std::string &vertex
         }
         case RendererAPI::API::kOpenGL:
         {
-            return std::make_shared<OpenGLShader>(name, vertexSrc, fragmentSrc);
+            return X::CreateRef<OpenGLShader>(name, vertexSrc, fragmentSrc);
         }
     }
     X_CORE_ASSERT(false, "Unknown RendererAPI!");

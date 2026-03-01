@@ -10,20 +10,22 @@
 
 class Input
 {
+protected:
+    Input() = default;
+
 public:
     static void Create();
 
-    Input(const Input&) = delete;
-    Input& operator=(const Input&) = delete;
+    Input(const Input &)            = delete;
+    Input &operator=(const Input &) = delete;
 
     inline static bool IsKeyPressed(int keycode) { return s_instance->isKeyPressedImpl(keycode); }
     inline static bool IsMouseButtonPressed(int button) { return s_instance->isMouseButtonPressedImpl(button); }
     inline static std::pair<float, float> GetMousePos() { return s_instance->getMousePosImpl(); }
     inline static float                   GetMouseX() { return s_instance->getMouseXImpl(); }
     inline static float                   GetMouseY() { return s_instance->getMouseYImpl(); }
-protected:
-    Input() = default;
 
+protected:
     virtual bool                    isKeyPressedImpl(int keycode)        = 0;
     virtual bool                    isMouseButtonPressedImpl(int button) = 0;
     virtual std::pair<float, float> getMousePosImpl()                    = 0;

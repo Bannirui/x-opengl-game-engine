@@ -2,10 +2,11 @@
 
 #include <spdlog/sinks/stdout_color_sinks.h>
 
-std::shared_ptr<spdlog::logger> XLog::s_coreLogger;
-std::shared_ptr<spdlog::logger> XLog::s_clientLogger;
+X::Ref<spdlog::logger> XLog::s_coreLogger;
+X::Ref<spdlog::logger> XLog::s_clientLogger;
 
-void XLog::Init() {
+void XLog::Init()
+{
     auto sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
     sink->set_pattern("[%H:%M:%S %z] [%n] [%^---%L---%$] [thread %t] %v");
 

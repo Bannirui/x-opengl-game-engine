@@ -86,11 +86,11 @@ public:
     EventDispatcher(Event &event) : m_event(event) {}
 
     template <typename T, typename F>
-    bool Dispatch(const F& func)
+    bool Dispatch(const F &func)
     {
         if (m_event.GetEventType() == T::GetStaticType())
         {
-            m_event.Handled = func(static_cast<T&>(m_event));
+            m_event.Handled = func(static_cast<T &>(m_event));
             return true;
         }
         return false;

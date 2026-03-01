@@ -6,15 +6,16 @@
 
 #include "x/events/event.h"
 
-class WindowResizeEvent : public Event {
+class WindowResizeEvent : public Event
+{
 public:
-    WindowResizeEvent(uint32_t width, uint32_t height) : m_width(width), m_height(height) {
-    }
+    WindowResizeEvent(uint32_t width, uint32_t height) : m_width(width), m_height(height) {}
 
     uint32_t get_width() const { return m_width; }
     uint32_t get_height() const { return m_height; }
 
-    std::string ToString() const override {
+    std::string ToString() const override
+    {
         std::stringstream ss;
         ss << "WindowResizeEvent: " << m_width << ", " << m_height;
         return ss.str();
@@ -27,7 +28,8 @@ private:
     uint32_t m_width, m_height;
 };
 
-class WindowCloseEvent : public Event {
+class WindowCloseEvent : public Event
+{
 public:
     WindowCloseEvent() = default;
 
@@ -35,7 +37,8 @@ public:
     EVENT_CLASS_CATEGORY(kEventCategoryApplication)
 };
 
-class AppTickEvent : public Event {
+class AppTickEvent : public Event
+{
 public:
     AppTickEvent() = default;
 
@@ -43,7 +46,8 @@ public:
     EVENT_CLASS_CATEGORY(kEventCategoryApplication)
 };
 
-class AppUpdateEvent : public Event {
+class AppUpdateEvent : public Event
+{
 public:
     AppUpdateEvent() = default;
 
@@ -51,7 +55,8 @@ public:
     EVENT_CLASS_CATEGORY(kEventCategoryApplication)
 };
 
-class AppRenderEvent : public Event {
+class AppRenderEvent : public Event
+{
 public:
     AppRenderEvent() = default;
 
