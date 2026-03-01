@@ -11,7 +11,7 @@
 #include "x/events/mouse_event.h"
 #include "platform/opengl/open_gl_context.h"
 
-static bool s_GLFWInitialized = false;
+static uint8_t s_GLFWWindowCount = 0;
 
 static void glfwErrorCallback(int error, const char *description) {
     X_CORE_ERROR("GLFW error ({0}): {1}", error, description);
@@ -46,17 +46,17 @@ void MacWindow::init(const WindowProps &props) {
 
     X_CORE_INFO("Create window {0} ({1}, {2})", props.title, props.width, props.height);
 
-    if (!s_GLFWInitialized) {
+    if (s_GLFWWindowCount == 0) {
         int succ = glfwInit();
         X_CORE_ASSERT(succ, "Could not init GLFW");
         glfwSetErrorCallback(glfwErrorCallback);
-        s_GLFWInitialized = true;
     }
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, X_GL_VERSION_MAJOR);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, X_GL_VERSION_MINOR);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     m_window = glfwCreateWindow(static_cast<int>(props.width), static_cast<int>(props.height), props.title.c_str(),
                                 nullptr, nullptr);
+    ++s_GLFWWindowCount;
     X_CORE_ASSERT(m_window, "Failed to create GLFW window");
 
     glfwMakeContextCurrent(m_window);
@@ -141,4 +141,8 @@ void MacWindow::init(const WindowProps &props) {
 
 void MacWindow::shutdown() {
     glfwDestroyWindow(m_window);
+    if (--s_GLFWWindowCount == 0) {
+        X_CORE_INFO("Terminating GLFW window");
+        glfwTerminate();
+    }
 }
