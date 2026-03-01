@@ -6,7 +6,8 @@
 
 #include "x_engine.h"
 
-class Sandbox2D : public Layer {
+class Sandbox2D : public Layer
+{
 public:
     Sandbox2D();
 
@@ -24,8 +25,15 @@ public:
 
 private:
     OrthographicCameraController m_cameraController;
-    X::Ref<VertexArray> m_squareVA;
-    X::Ref<Shader> m_flatShader;
-    X::Ref<Texture2D> m_checkerboardTexture;
-    glm::vec4 m_squareColor = {0.2f, 0.3f, 0.8f, 1.0f};
+    X::Ref<VertexArray>          m_squareVA;
+    X::Ref<Shader>               m_flatShader;
+    X::Ref<Texture2D>            m_checkerboardTexture;
+    glm::vec4                    m_squareColor = {0.2f, 0.3f, 0.8f, 1.0f};
+
+    struct ProfileResult
+    {
+        const char *name;
+        float       time;  // milliseconds
+    };
+    std::vector<ProfileResult> m_profileResults;
 };

@@ -42,12 +42,6 @@ void ImGuiLayer::OnDetach()
     ImGui::DestroyContext();
 }
 
-void ImGuiLayer::OnImguiRender()
-{
-    static bool show = true;
-    ImGui::ShowDemoWindow(&show);
-}
-
 void ImGuiLayer::Begin()
 {
     // 开始新帧
