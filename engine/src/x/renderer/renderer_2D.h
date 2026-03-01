@@ -4,7 +4,10 @@
 
 #pragma once
 
+#include "x/core.h"
 #include "x/renderer/orthographic_camera.h"
+
+class Texture2D;
 
 class Renderer2D {
 public:
@@ -19,4 +22,6 @@ public:
     static void DrawQuad(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color);
 
     static void DrawQuad(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4 &color);
+    static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const X::Ref<Texture2D>& texture);
+    static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const X::Ref<Texture2D>& texture);
 };

@@ -7,8 +7,6 @@
 #include <imgui.h>
 #include <glm/gtc/type_ptr.inl>
 
-#include "platform/opengl/open_gl_shader.h"
-
 Sandbox2D::Sandbox2D()
     : Layer("Sandbox2D"), m_cameraController(1280.0f / 720.0f) {
 }
@@ -17,6 +15,7 @@ Sandbox2D::~Sandbox2D() {
 }
 
 void Sandbox2D::OnAttach() {
+    m_checkerboardTexture = Texture2D::Create("asset/texture/Checkerboard.png");
 }
 
 void Sandbox2D::OnDetach() {
@@ -31,6 +30,8 @@ void Sandbox2D::OnUpdate(Timestep ts) {
 
     Renderer2D::BeginScene(m_cameraController.get_camera());
     Renderer2D::DrawQuad({0.0f, 0.0f}, {1.0f, 1.0f}, {0.8f, 0.2f, 0.3f, 1.0f});
+    Renderer2D::DrawQuad({0.5, -0.5f}, {0.5f, 0.75f}, {0.2f, 0.3f, 0.8f, 1.0f});
+    Renderer2D::DrawQuad({0.0f, 0.0f, -1.0f}, {10.0f, 10.0f}, m_checkerboardTexture);
     Renderer2D::EndScene();
 }
 

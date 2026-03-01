@@ -47,6 +47,9 @@ OpenGLTexture2D::OpenGLTexture2D(const std::string &path) : m_path(path)
     glad_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glad_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+    glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
     // 解绑纹理对象
     glBindTexture(GL_TEXTURE_2D, 0);
 }

@@ -122,7 +122,7 @@ public:
         m_logoTexture = Texture2D::Create("asset/texture/ChernoLogo.png");
 
         std::dynamic_pointer_cast<OpenGLShader>(textureShader)->Bind();
-        std::dynamic_pointer_cast<OpenGLShader>(textureShader)->UploadUniformInt("u_Texture", 0);
+        std::dynamic_pointer_cast<OpenGLShader>(textureShader)->SetInt("u_Texture", 0);
     }
 
     void OnUpdate(Timestep ts) override
@@ -138,7 +138,7 @@ public:
         glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 
         std::dynamic_pointer_cast<OpenGLShader>(m_flatColorShader)->Bind();
-        std::dynamic_pointer_cast<OpenGLShader>(m_flatColorShader)->UploadUniformFloat3("u_Color", m_color);
+        std::dynamic_pointer_cast<OpenGLShader>(m_flatColorShader)->SetFloat3("u_Color", m_color);
         for (int y = 0; y < 20; ++y)
         {
             for (int x = 0; x < 20; ++x)

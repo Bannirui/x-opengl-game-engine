@@ -7,6 +7,8 @@
 #include "pch.h"
 #include "x/core.h"
 
+#include <glm/glm.hpp>
+
 // interface
 class Shader {
 public:
@@ -17,6 +19,13 @@ public:
     virtual void Bind() const =0;
 
     virtual void Unbind() const =0;
+
+    // --- uniform variable ---
+    virtual void SetInt(const std::string& name, int value) = 0;
+    virtual void SetFloat3(const std::string& name, const glm::vec3& value) = 0;
+    virtual void SetFloat4(const std::string& name, const glm::vec4& value) = 0;
+    virtual void SetMat4(const std::string& name, const glm::mat4& value) = 0;
+    // --- uniform variable ---
 
     /**
      * @param filepath glsl源码路径 vertex跟frag在同一个文件 用type区分
