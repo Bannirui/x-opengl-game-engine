@@ -5,7 +5,7 @@
 #pragma once
 
 #include "pch.h"
-#include "x/core.h"
+#include "x/core/core.h"
 
 // interface
 class Texture

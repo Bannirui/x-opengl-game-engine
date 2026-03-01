@@ -6,7 +6,7 @@
 
 #include <glm/glm.hpp>
 
-#include "x/core.h"
+#include "x/core/core.h"
 #include "x/renderer/renderer_api.h"
 
 class VertexArray;

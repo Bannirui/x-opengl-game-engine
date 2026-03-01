@@ -8,7 +8,7 @@
 #include <imgui_impl_opengl3.h>
 #include <imgui_impl_glfw.h>
 
-#include "x/core.h"
+#include "x/core/core.h"
 #include "x/window.h"
 #include "x/core/x_application.h"
 #include "x/core/x_log.h"

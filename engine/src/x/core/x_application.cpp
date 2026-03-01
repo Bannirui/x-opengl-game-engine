@@ -5,7 +5,7 @@
 #include "x/core/x_application.h"
 
 #include "x/renderer/renderer.h"
-#include "x/core.h"
+#include "x/core/core.h"
 #include "x/core/layer.h"
 #include "x/core/x_log.h"
 #include "x/events/application_event.h"

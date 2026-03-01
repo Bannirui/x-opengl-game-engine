@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "x/core.h"
+#include "x/core/core.h"
 #include "x/renderer/orthographic_camera.h"
 
 class Texture2D;

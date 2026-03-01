@@ -7,7 +7,7 @@
 #include <stb_image.h>
 #include <glad/glad.h>
 
-#include "x/core.h"
+#include "x/core/core.h"
 #include "x/core/x_log.h"
 
 OpenGLTexture2D::OpenGLTexture2D(const std::string &path) : m_path(path)

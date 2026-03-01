@@ -5,7 +5,7 @@
 #include "x/core/input.h"
 
 #include "platform/mac/mac_input.h"
-#include "x/core.h"
+#include "x/core/core.h"
 
 #if defined(X_PLATFORM_MAC)
 #include "platform/mac/mac_input.h"

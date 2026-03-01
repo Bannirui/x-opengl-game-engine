@@ -3,7 +3,7 @@
 //
 
 #include "x/window.h"
-#include "x/core.h" // 平台标识的宏定义在core里面
+#include "x/core/core.h"
 
 #if defined(X_PLATFORM_MAC)
 #include "platform/mac/mac_window.h"
