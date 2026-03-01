@@ -65,19 +65,23 @@ void OpenGLShader::Unbind() const
     glUseProgram(0);
 }
 
-void OpenGLShader::SetInt(const std::string &name, int value) {
+void OpenGLShader::SetInt(const std::string &name, int value)
+{
     uploadUniformInt(name, value);
 }
 
-void OpenGLShader::SetFloat3(const std::string &name, const glm::vec3 &value) {
+void OpenGLShader::SetFloat3(const std::string &name, const glm::vec3 &value)
+{
     uploadUniformFloat3(name, value);
 }
 
-void OpenGLShader::SetFloat4(const std::string &name, const glm::vec4 &value) {
+void OpenGLShader::SetFloat4(const std::string &name, const glm::vec4 &value)
+{
     uploadUniformFloat4(name, value);
 }
 
-void OpenGLShader::SetMat4(const std::string &name, const glm::mat4 &value) {
+void OpenGLShader::SetMat4(const std::string &name, const glm::mat4 &value)
+{
     uploadUniformMat4(name, value);
 }
 
@@ -129,7 +133,9 @@ std::string OpenGLShader::readFile(const std::string &filepath)
     std::ifstream in(filepath, std::ios::in | std::ios::binary);
     X_CORE_ASSERT(in, "Could not open file {}", filepath);
     in.seekg(0, std::ios::end);
-    ret.resize(in.tellg());
+    size_t size = in.tellg();
+    X_CORE_ASSERT(size != 1, "Could not read from file {}", filepath);
+    ret.resize(size);
     in.seekg(0, std::ios::beg);
     in.read(&ret[0], ret.size());
     in.close();
