@@ -29,8 +29,8 @@ public:
 
     void PushOverlay(Layer *layer);
 
-    inline Window &get_window() const { return *m_window; }
-    inline static XApplication &Get() { return *s_instance; }
+    Window &get_window() const { return *m_window; }
+    static XApplication &Get() { return *s_instance; }
 
 private:
     void run();

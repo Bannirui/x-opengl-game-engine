@@ -36,7 +36,7 @@ public:
      */
     virtual void OnEvent(Event &e) {}
 
-    inline const std::string &get_name() const { return m_debugName; }
+    const std::string &get_name() const { return m_debugName; }
 
 protected:
     std::string m_debugName;

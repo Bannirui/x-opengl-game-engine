@@ -9,8 +9,8 @@ class XLog
 public:
     static void Init();
 
-    inline static X::Ref<spdlog::logger> get_coreLogger() { return s_coreLogger; }
-    inline static X::Ref<spdlog::logger> get_clientLogger() { return s_clientLogger; }
+    static X::Ref<spdlog::logger> get_coreLogger() { return s_coreLogger; }
+    static X::Ref<spdlog::logger> get_clientLogger() { return s_clientLogger; }
 
 private:
     static X::Ref<spdlog::logger> s_coreLogger;

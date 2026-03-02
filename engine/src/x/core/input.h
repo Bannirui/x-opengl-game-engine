@@ -24,11 +24,11 @@ public:
     Input(const Input &)            = delete;
     Input &operator=(const Input &) = delete;
 
-    inline static bool IsKeyPressed(KeyCode keycode) { return s_instance->isKeyPressedImpl(keycode); }
-    inline static bool IsMouseButtonPressed(MouseCode button) { return s_instance->isMouseButtonPressedImpl(button); }
-    inline static std::pair<float, float> GetMousePos() { return s_instance->getMousePosImpl(); }
-    inline static float                   GetMouseX() { return s_instance->getMouseXImpl(); }
-    inline static float                   GetMouseY() { return s_instance->getMouseYImpl(); }
+    static bool IsKeyPressed(KeyCode keycode) { return s_instance->isKeyPressedImpl(keycode); }
+    static bool IsMouseButtonPressed(MouseCode button) { return s_instance->isMouseButtonPressedImpl(button); }
+    static std::pair<float, float> GetMousePos() { return s_instance->getMousePosImpl(); }
+    static float                   GetMouseX() { return s_instance->getMouseXImpl(); }
+    static float                   GetMouseY() { return s_instance->getMouseYImpl(); }
 
 protected:
     virtual bool                    isKeyPressedImpl(KeyCode keycode)          = 0;

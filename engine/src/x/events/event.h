@@ -71,7 +71,7 @@ public:
 
     virtual std::string ToString() const { return GetName(); }
 
-    inline bool IsInCategory(EventCategory category) { return GetCategory() & category; }
+    bool IsInCategory(EventCategory category) { return GetCategory() & category; }
 
 protected:
     Event() = default;

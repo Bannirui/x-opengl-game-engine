@@ -166,8 +166,8 @@ public:
         calculateOffsetsAndStride();
     }
 
-    inline uint32_t                          GetStride() const { return m_stride; }
-    inline const std::vector<BufferElement> &GetElements() const { return m_elements; }
+    uint32_t                          GetStride() const { return m_stride; }
+    const std::vector<BufferElement> &GetElements() const { return m_elements; }
 
     std::vector<BufferElement>::iterator       begin() { return m_elements.begin(); }
     std::vector<BufferElement>::iterator       end() { return m_elements.end(); }
@@ -198,18 +198,18 @@ class VertexBuffer
 public:
     virtual ~VertexBuffer() = default;
 
-    virtual void Bind() const = 0;
+    virtual void Bind() const   = 0;
     virtual void Unbind() const = 0;
 
-    virtual const BufferLayout &GetLayout() const = 0;
-    virtual void SetLayout(const BufferLayout &layout) = 0;
+    virtual const BufferLayout &GetLayout() const                     = 0;
+    virtual void                SetLayout(const BufferLayout &layout) = 0;
 
     /**
      * 往空的VBO里面灌数据
      * @param data 要灌的数据
      * @param size 数据多少个字节
      */
-    virtual void SetData(const void* data, uint32_t size) = 0;
+    virtual void SetData(const void *data, uint32_t size) = 0;
 
     /**
      * @param vertices float array
@@ -229,7 +229,7 @@ class IndexBuffer
 public:
     virtual ~IndexBuffer() = default;
 
-    virtual void Bind() const = 0;
+    virtual void Bind() const   = 0;
     virtual void Unbind() const = 0;
 
     // how many vertex in the index array
