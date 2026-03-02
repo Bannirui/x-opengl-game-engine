@@ -35,7 +35,37 @@ XApplication::~XApplication()
     Renderer::Shutdown();
 }
 
-void XApplication::Run()
+void XApplication::OnEvent(Event &e)
+{
+    X_PROFILE_FUNCTION();
+    EventDispatcher dispatcher(e);
+    dispatcher.Dispatch<WindowCloseEvent>([this](WindowCloseEvent &e) { return this->onWindowClose(e); });
+    dispatcher.Dispatch<WindowResizeEvent>([this](WindowResizeEvent &e) { return this->onWindowResize(e); });
+    for (auto it = m_layerStack.rbegin(); it != m_layerStack.rend(); ++it)
+    {
+        (*it)->OnEvent(e);
+        if (e.Handled)
+        {
+            break;
+        }
+    }
+}
+
+void XApplication::PushLayer(Layer *layer)
+{
+    X_PROFILE_FUNCTION();
+    m_layerStack.PushLayer(layer);
+    layer->OnAttach();
+}
+
+void XApplication::PushOverlay(Layer *layer)
+{
+    X_PROFILE_FUNCTION();
+    m_layerStack.PushOverlay(layer);
+    layer->OnAttach();
+}
+
+void XApplication::run()
 {
     X_PROFILE_FUNCTION();
     while (m_running)
@@ -66,36 +96,6 @@ void XApplication::Run()
         }
         m_window->OnUpdate();
     }
-}
-
-void XApplication::OnEvent(Event &e)
-{
-    X_PROFILE_FUNCTION();
-    EventDispatcher dispatcher(e);
-    dispatcher.Dispatch<WindowCloseEvent>([this](WindowCloseEvent &e) { return this->onWindowClose(e); });
-    dispatcher.Dispatch<WindowResizeEvent>([this](WindowResizeEvent &e) { return this->onWindowResize(e); });
-    for (auto it = m_layerStack.rbegin(); it != m_layerStack.rend(); ++it)
-    {
-        (*it)->OnEvent(e);
-        if (e.Handled)
-        {
-            break;
-        }
-    }
-}
-
-void XApplication::PushLayer(Layer *layer)
-{
-    X_PROFILE_FUNCTION();
-    m_layerStack.PushLayer(layer);
-    layer->OnAttach();
-}
-
-void XApplication::PushOverlay(Layer *layer)
-{
-    X_PROFILE_FUNCTION();
-    m_layerStack.PushOverlay(layer);
-    layer->OnAttach();
 }
 
 bool XApplication::onWindowClose(WindowCloseEvent &e)

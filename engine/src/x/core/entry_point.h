@@ -14,7 +14,7 @@ int main(int argc, char **argv)
     X_PROFILE_END_SESSION();
 
     X_PROFILE_BEGIN_SESSION("Runtime", "asset/output/XProfile-Runtime.json");
-    app->Run();
+    app->run();
     X_PROFILE_END_SESSION();
 
     X_PROFILE_BEGIN_SESSION("Runtime", "asset/output/XProfile-Shutdown.json");

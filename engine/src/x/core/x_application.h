@@ -14,13 +14,14 @@ class Event;
 class WindowCloseEvent;
 class Layer;
 
+int main(int argc, char** argv);
+
 class XApplication {
 public:
     XApplication();
 
     virtual ~XApplication();
 
-    void Run();
 
     void OnEvent(Event &e);
 
@@ -32,6 +33,7 @@ public:
     inline static XApplication &Get() { return *s_instance; }
 
 private:
+    void run();
     bool onWindowClose(WindowCloseEvent &e);
     bool onWindowResize(WindowResizeEvent& e);
 
@@ -45,6 +47,7 @@ private:
 
 private:
     static XApplication *s_instance;
+    friend int main(int argc, char** argv);
 };
 
 // To be defined in the CLIENT
