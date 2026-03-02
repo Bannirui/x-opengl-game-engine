@@ -31,4 +31,5 @@
 #include "x/renderer/texture.h"
 #include "x/renderer/buffer.h"
 #include "x/renderer/vertex_array.h"
+#include "x/renderer/frame_buffer.h"
 // ---Renderer---
