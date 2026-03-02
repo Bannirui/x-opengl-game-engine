@@ -11,7 +11,7 @@
 #include "x/renderer/texture.h"
 #include "x/renderer/shader.h"
 #include "x/renderer/vertex_array.h"
-#include "x/core/core.h"
+#include "x/core/base.h"
 
 // VBO 正方形顶点
 struct QuadVertex

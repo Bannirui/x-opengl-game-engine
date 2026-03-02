@@ -6,7 +6,7 @@
 
 // For use by engine application
 
-#include "x/core/core.h"
+#include "x/core/base.h"
 
 #include "x/core/x_application.h"
 #include "x/core/x_log.h"

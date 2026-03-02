@@ -5,7 +5,7 @@
 #include "x/renderer/renderer_api.h"
 
 #include "x/renderer/renderer.h"
-#include "x/core/core.h"
+#include "x/core/base.h"
 #include "x/core/x_log.h"
 #include "platform/opengl/open_gl_renderer_api.h"
 

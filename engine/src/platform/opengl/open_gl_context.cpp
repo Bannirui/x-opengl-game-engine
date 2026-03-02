@@ -7,7 +7,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "x/core/core.h"
+#include "x/core/base.h"
 #include "x/core/x_log.h"
 
 OpenGLContext::OpenGLContext(GLFWwindow *windowHandle) : m_windowHandle(windowHandle)

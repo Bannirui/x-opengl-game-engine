@@ -3,7 +3,7 @@
 //
 
 #include "x/window.h"
-#include "x/core/core.h"
+#include "x/core/base.h"
 
 #if defined(X_PLATFORM_MAC)
 #include "platform/mac/mac_window.h"

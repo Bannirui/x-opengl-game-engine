@@ -5,7 +5,7 @@
 #pragma once
 
 #include "x/core/layer.h"
-#include "x/core/core.h"
+#include "x/core/base.h"
 #include "x/renderer/orthographic_camera_controller.h"
 #include "x/renderer/shader.h"
 

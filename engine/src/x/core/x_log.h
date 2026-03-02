@@ -2,7 +2,7 @@
 
 #include <spdlog/spdlog.h>
 
-#include "x/core/core.h"
+#include "x/core/base.h"
 
 class XLog
 {

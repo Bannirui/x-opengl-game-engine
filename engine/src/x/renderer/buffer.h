@@ -6,7 +6,7 @@
 
 #include "pch.h"
 
-#include "x/core/core.h"
+#include "x/core/base.h"
 #include "x/core/x_log.h"
 
 enum class ShaderDataType : uint16_t

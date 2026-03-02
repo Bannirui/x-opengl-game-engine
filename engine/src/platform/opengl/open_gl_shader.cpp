@@ -8,7 +8,7 @@
 #include <glm/gtc/type_ptr.inl>
 
 #include "x/core/x_log.h"
-#include "x/core/core.h"
+#include "x/core/base.h"
 
 static std::string replaceVersion(std::string source, const std::string &versionStr)
 {
