@@ -69,14 +69,11 @@ public:
     void WriteProfile(const ProfileResult &result)
     {
         std::stringstream json;
-        std::string       name = result.name;
-        std::replace(name.begin(), name.end(), '"', '\'');
-
         json << std::setprecision(3) << std::fixed;
         json << ",{";
         json << "\"cat\":\"function\",";
         json << "\"dur\":" << (result.elapsedTime.count()) << ',';
-        json << "\"name\":\"" << name << "\",";
+        json << "\"name\":\"" << result.name << "\",";
         json << "\"ph\":\"X\",";
         json << "\"pid\":0,";
         json << "\"tid\":" << result.threadID << ",";
@@ -156,7 +153,7 @@ private:
 #define X_FUNC_SIG __PRETTY_FUNCTION__
 #elif defined(__DMC__) && (__DMC__ >= 0x810)
 #define X_FUNC_SIG __PRETTY_FUNCTION__
-#elif defined(__FUNCSIG__)
+#elif defined(__FUNCSIG__) || (_MSC_VERION)
 #define X_FUNC_SIG __FUNCSIG__
 #elif (defined(__INTEL_COMPILER) && (__INTEL_COMPILER >= 600)) || (defined(__IBMCPP__) && (__IBMCPP__ >= 500))
 #define X_FUNC_SIG __FUNCTION__
