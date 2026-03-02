@@ -25,9 +25,9 @@ struct QuadVertex
 
 struct Renderer2DData
 {
-    const uint32_t        maxQuads        = 10000;
-    const uint32_t        maxVertices     = maxQuads * 4;
-    const uint32_t        maxIndices      = maxQuads * 6;
+    static const uint32_t maxQuads        = 20000;
+    static const uint32_t maxVertices     = maxQuads * 4;
+    static const uint32_t maxIndices      = maxQuads * 6;
     static const uint32_t maxTextureSlots = 16;
 
     X::Ref<VertexArray>  quadVertexArray;   // EAO
@@ -41,6 +41,7 @@ struct Renderer2DData
     std::array<X::Ref<Texture2D>, maxTextureSlots> textureSlots;          // 纹理采样对象
     uint32_t                                       textureSlotIndex = 1;  // 0 = white texture
     glm::vec4                                      quadVertexPositions[4];
+    Renderer2D::Statistics                         stats;
 };
 
 static Renderer2DData s_data;
@@ -134,6 +135,8 @@ void Renderer2D::Flush()
     {
         s_data.textureSlots[i]->Bind(i);
     }
+    RenderCommand::DrawIndexed(s_data.quadVertexArray, s_data.quadIndexCount);
+    s_data.stats.drawCalls++;
 }
 
 void Renderer2D::DrawQuad(const glm::vec2 &position, const glm::vec2 &size, const glm::vec4 &color)
@@ -144,7 +147,10 @@ void Renderer2D::DrawQuad(const glm::vec2 &position, const glm::vec2 &size, cons
 void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, const glm::vec4 &color)
 {
     X_PROFILE_FUNCTION();
-
+    if (s_data.quadIndexCount >= Renderer2DData::maxIndices)
+    {
+        FlushAndReset();
+    }
     const float texIndex     = 0.0f;  // White Texture
     const float tilingFactor = 1.0f;
 
@@ -179,6 +185,7 @@ void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, cons
     s_data.quadVertexBufferPtr++;
 
     s_data.quadIndexCount += 6;
+    s_data.stats.quadCount++;
 }
 
 void Renderer2D::DrawQuad(const glm::vec2 &position, const glm::vec2 &size, const X::Ref<Texture2D> &texture,
@@ -191,6 +198,10 @@ void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, cons
                           float tilingFactor, const glm::vec4 &tintColor)
 {
     X_PROFILE_FUNCTION();
+    if (s_data.quadIndexCount >= Renderer2DData::maxIndices)
+    {
+        FlushAndReset();
+    }
     constexpr glm::vec4 color = {1.0f, 1.0f, 1.0f, 1.0f};
 
     float textureIndex = 0.0f;
@@ -241,6 +252,7 @@ void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, cons
     s_data.quadVertexBufferPtr++;
 
     s_data.quadIndexCount += 6;
+    s_data.stats.quadCount++;
 }
 
 void Renderer2D::DrawRotatedQuad(const glm::vec2 &position, const glm::vec2 &size, float rotation,
@@ -253,7 +265,10 @@ void Renderer2D::DrawRotatedQuad(const glm::vec3 &position, const glm::vec2 &siz
                                  const glm::vec4 &color)
 {
     X_PROFILE_FUNCTION();
-
+    if (s_data.quadIndexCount >= Renderer2DData::maxIndices)
+    {
+        FlushAndReset();
+    }
     const float textureIndex = 0.0f;  // White Texture
     const float tilingFactor = 1.0f;
 
@@ -290,6 +305,7 @@ void Renderer2D::DrawRotatedQuad(const glm::vec3 &position, const glm::vec2 &siz
     s_data.quadVertexBufferPtr++;
 
     s_data.quadIndexCount += 6;
+    s_data.stats.quadCount++;
 }
 
 void Renderer2D::DrawRotatedQuad(const glm::vec2 &position, const glm::vec2 &size, float rotation,
@@ -302,6 +318,10 @@ void Renderer2D::DrawRotatedQuad(const glm::vec3 &position, const glm::vec2 &siz
                                  const X::Ref<Texture2D> &texture, float tilingFactor, const glm::vec4 &tintColor)
 {
     X_PROFILE_FUNCTION();
+    if (s_data.quadIndexCount >= Renderer2DData::maxIndices)
+    {
+        FlushAndReset();
+    }
     constexpr glm::vec4 color = {1.0f, 1.0f, 1.0f, 1.0f};
 
     float textureIndex = 0.0f;
@@ -354,4 +374,23 @@ void Renderer2D::DrawRotatedQuad(const glm::vec3 &position, const glm::vec2 &siz
     s_data.quadVertexBufferPtr++;
 
     s_data.quadIndexCount += 6;
+    s_data.stats.quadCount++;
+}
+
+void Renderer2D::ResetStats()
+{
+    memset(&s_data.stats, 0, sizeof(Statistics));
+}
+
+Renderer2D::Statistics Renderer2D::GetStats()
+{
+    return s_data.stats;
+}
+
+void Renderer2D::FlushAndReset()
+{
+    EndScene();
+    s_data.quadIndexCount      = 0;
+    s_data.quadVertexBufferPtr = s_data.quadVertexBufferBase;
+    s_data.textureSlotIndex    = 1;
 }
