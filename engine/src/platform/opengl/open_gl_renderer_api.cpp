@@ -9,6 +9,8 @@
 #include "x/renderer/vertex_array.h"
 #include "x/renderer/buffer.h"
 
+OpenGLRendererAPI::~OpenGLRendererAPI() {}
+
 void OpenGLRendererAPI::Init()
 {
     X_PROFILE_FUNCTION();

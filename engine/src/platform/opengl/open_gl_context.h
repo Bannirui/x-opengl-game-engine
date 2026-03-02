@@ -12,6 +12,7 @@ class OpenGLContext : public GraphicsContext
 {
 public:
     OpenGLContext(GLFWwindow *windowHandle);
+    ~OpenGLContext() override;
 
     void Init() override;
     void SwapBuffers() override;

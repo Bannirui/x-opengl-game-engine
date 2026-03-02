@@ -54,8 +54,8 @@ OpenGLTexture2D::OpenGLTexture2D(const std::string &path) : m_path(path)
     glad_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glad_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-    glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
     // 解绑纹理对象
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -74,8 +74,8 @@ OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height) : m_width(widt
     glad_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glad_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-    glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
     // 解绑纹理对象
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -94,7 +94,15 @@ void OpenGLTexture2D::SetData(void *data, uint32_t size)
     X_PROFILE_FUNCTION();
     uint32_t bpp = m_dataFormat == GL_RGBA ? 4 : 3;
     X_CORE_ASSERT(size == m_width * m_height * bpp, "Incorrect size!");
-    glTextureSubImage2D(m_rendererId, 0, 0, 0, m_width, m_height, m_dataFormat, GL_UNSIGNED_BYTE, data);
+    // 绑定纹理对象
+    glBindTexture(GL_TEXTURE_2D, m_rendererId);
+    // 更新数据
+    glTexSubImage2D(m_rendererId,
+                    0,     // mip level
+                    0, 0,  // offset
+                    m_width, m_height, m_dataFormat, GL_UNSIGNED_BYTE, data);
+    // 解绑
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void OpenGLTexture2D::Bind(uint32_t slot) const

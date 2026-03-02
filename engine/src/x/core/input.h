@@ -16,6 +16,7 @@ protected:
 public:
     static void Create();
 
+    virtual ~Input()                = default;
     Input(const Input &)            = delete;
     Input &operator=(const Input &) = delete;
 

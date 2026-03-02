@@ -15,6 +15,8 @@ OpenGLContext::OpenGLContext(GLFWwindow *windowHandle) : m_windowHandle(windowHa
     X_CORE_ASSERT(windowHandle, "windowHandle is null");
 }
 
+OpenGLContext::~OpenGLContext() {}
+
 void OpenGLContext::Init()
 {
     X_PROFILE_FUNCTION();
