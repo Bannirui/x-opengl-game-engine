@@ -10,6 +10,20 @@
 #include "x/core/x_log.h"
 #include "x/core/core.h"
 
+static std::string replaceVersion(std::string source, const std::string &versionStr)
+{
+    const char *versionToken = "#version";
+    size_t      versionPos   = source.find(versionToken, 0);
+    while (versionPos != std::string::npos)
+    {
+        size_t eol = source.find_first_of("\r\n", versionPos);
+        source.replace(versionPos, eol - versionPos, versionStr);
+        size_t nextLinePos = source.find_first_not_of("\r\n", eol);
+        versionPos         = source.find(versionToken, nextLinePos);
+    }
+    return source;
+}
+
 // shader源码用#type vertex跟#type fragment区分
 static int shaderTypeFromString(const std::string &type)
 {
@@ -173,22 +187,30 @@ std::string OpenGLShader::readFile(const std::string &filepath)
 std::unordered_map<int, std::string> OpenGLShader::preProcess(const std::string &glslSrc)
 {
     X_PROFILE_FUNCTION();
+    std::string modifiedSource = glslSrc;
+    // 动态替换#version占位符
+    if (modifiedSource.find("#version") != std::string::npos)
+    {
+        X_CORE_INFO("shader using OpenGL:{}", X_GL_VERSION_CORE);
+        modifiedSource = replaceVersion(modifiedSource, X_GL_VERSION_CORE);
+    }
     std::unordered_map<int, std::string> shaderSources;
     const char                          *typeToken       = "#type";  // vertex跟frag的区分用#type vertex跟#type frag
     size_t                               typeTokenLength = strlen(typeToken);
-    size_t                               pos             = glslSrc.find(typeToken, 0);  // 找到第一个#type标识
+    size_t                               pos             = modifiedSource.find(typeToken, 0);  // 找到第一个#type标识
     while (pos != std::string::npos)
     {
-        size_t eol = glslSrc.find_first_of("\r\n", pos);  // 定位位#type那一行最后 中间就是#type的内容
+        size_t eol = modifiedSource.find_first_of("\r\n", pos);  // 定位位#type那一行最后 中间就是#type的内容
         X_CORE_ASSERT(eol != std::string::npos, "Syntax error");
         size_t      begin = pos + typeTokenLength + 1;
-        std::string type  = glslSrc.substr(begin, eol - begin);  // vertex or frag
+        std::string type  = modifiedSource.substr(begin, eol - begin);  // vertex or frag
         X_CORE_ASSERT(shaderTypeFromString(type), "Invalid shader type specified");
-        size_t nextLinePos = glslSrc.find_first_not_of("\r\n", eol);
+        size_t nextLinePos = modifiedSource.find_first_not_of("\r\n", eol);
         X_CORE_ASSERT(nextLinePos != std::string::npos, "Syntax error");
-        pos = glslSrc.find(typeToken, nextLinePos);
-        shaderSources[shaderTypeFromString(type)] =
-            (pos == std::string::npos) ? glslSrc.substr(nextLinePos) : glslSrc.substr(nextLinePos, pos - nextLinePos);
+        pos                                       = modifiedSource.find(typeToken, nextLinePos);
+        shaderSources[shaderTypeFromString(type)] = (pos == std::string::npos)
+                                                        ? modifiedSource.substr(nextLinePos)
+                                                        : modifiedSource.substr(nextLinePos, pos - nextLinePos);
     }
     return shaderSources;
 }

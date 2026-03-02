@@ -6,8 +6,6 @@
 
 #include "pch.h"
 
-#include <thread>
-
 using FloatingPointMicroseconds = std::chrono::duration<double, std::micro>;
 
 struct ProfileResult

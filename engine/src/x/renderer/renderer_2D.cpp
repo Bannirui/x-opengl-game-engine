@@ -317,7 +317,7 @@ void Renderer2D::DrawRotatedQuad(const glm::vec3 &position, const glm::vec2 &siz
 
 void Renderer2D::ResetStats()
 {
-    memset(&s_data.stats, 0, sizeof(Statistics));
+    s_data.stats = {};
 }
 
 Renderer2D::Statistics Renderer2D::GetStats()
