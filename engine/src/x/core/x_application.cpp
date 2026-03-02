@@ -65,6 +65,11 @@ void XApplication::PushOverlay(Layer *layer)
     layer->OnAttach();
 }
 
+void XApplication::Close()
+{
+    m_running = false;
+}
+
 void XApplication::run()
 {
     X_PROFILE_FUNCTION();

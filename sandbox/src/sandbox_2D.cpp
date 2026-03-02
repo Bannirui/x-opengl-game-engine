@@ -74,6 +74,8 @@ void Sandbox2D::OnImguiRender()
     ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
     ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
     ImGui::ColorEdit4("Square color", glm::value_ptr(m_squareColor));
+    uint32_t textureID = m_checkerboardTexture->GetRendererID();
+    ImGui::Image(reinterpret_cast<void *>((uintptr_t)textureID), ImVec2{256.0f, 256.0f});
     ImGui::End();
 }
 
