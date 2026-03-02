@@ -107,7 +107,7 @@ if (NOT EXISTS ${GLAD_C_FILE} OR NOT EXISTS ${GLAD_H_FILE})
     set(HTTPS_PROXY "http://127.0.0.1:7890")
     # Show full command being executed for debugging purposes
     # glad2没做隔离 会把所有函数都生成 禁用所有扩展 避免看到4.x的高版本gl函数
-    set(GLAD_COMMAND "${MY_PYTHON} -m glad --generator c --spec gl --api gl=${GLAD_API_VER} --profile core --out-path ${GLAD_GENERATED_DIR} --extensions=''")
+    set(GLAD_COMMAND "${MY_PYTHON} -m glad --generator c --spec gl --api gl=${GLAD_API_VER} --profile core --out-path ${GLAD_GENERATED_DIR} --extensions=GL_KHR_debug")
     message(STATUS "Running command: ${GLAD_COMMAND}")
     message(STATUS "Using Python at: ${MY_PYTHON}")
             #PATH=${MY_VENV}/bin:$ENV{PATH}
