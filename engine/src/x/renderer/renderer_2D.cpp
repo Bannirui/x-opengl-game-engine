@@ -105,6 +105,7 @@ void Renderer2D::Init()
 void Renderer2D::Shutdown()
 {
     X_PROFILE_FUNCTION();
+    delete[] s_data.quadVertexBufferBase;
 }
 
 void Renderer2D::BeginScene(const OrthographicCamera &camera)
