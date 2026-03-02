@@ -16,9 +16,11 @@ protected:
     Input() = default;
 
 public:
-    static void Create();
+    static X::Scope<Input> Create();
 
-    virtual ~Input()                = default;
+    virtual ~Input() = default;
+
+    // 禁止掉拷贝构造 在Create函数中要用移动构造
     Input(const Input &)            = delete;
     Input &operator=(const Input &) = delete;
 
@@ -29,11 +31,11 @@ public:
     inline static float                   GetMouseY() { return s_instance->getMouseYImpl(); }
 
 protected:
-    virtual bool                    isKeyPressedImpl(KeyCode keycode)        = 0;
+    virtual bool                    isKeyPressedImpl(KeyCode keycode)          = 0;
     virtual bool                    isMouseButtonPressedImpl(MouseCode button) = 0;
-    virtual std::pair<float, float> getMousePosImpl()                    = 0;
-    virtual float                   getMouseXImpl()                      = 0;
-    virtual float                   getMouseYImpl()                      = 0;
+    virtual std::pair<float, float> getMousePosImpl()                          = 0;
+    virtual float                   getMouseXImpl()                            = 0;
+    virtual float                   getMouseYImpl()                            = 0;
 
 private:
     static X::Scope<Input> s_instance;

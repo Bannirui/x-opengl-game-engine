@@ -15,13 +15,13 @@
 #error "Unsupported platform!"
 #endif
 
-X::Scope<Input> Input::s_instance;
+X::Scope<Input> Input::s_instance = Input::Create();
 
-void Input::Create()
+X::Scope<Input> Input::Create()
 {
 #if defined(X_PLATFORM_MAC)
-    s_instance = X::CreateScope<MacInput>();
+    return X::CreateScope<MacInput>();
 #elif defined(X_PLATFORM_LINUX)
-    s_instance = X::CreateScope<LinuxInput>();
+    return X::CreateScope<LinuxInput>();
 #endif
 }
