@@ -11,6 +11,7 @@
 #include "x/core/core.h"
 #include "x/window.h"
 #include "x/core/x_application.h"
+#include "x/events/event.h"
 
 ImGuiLayer::ImGuiLayer() : Layer("ImGuiLayer") {}
 
@@ -41,6 +42,17 @@ void ImGuiLayer::OnDetach()
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
+}
+
+void ImGuiLayer::OnUpdate(Timestep ts) {}
+
+void ImGuiLayer::OnImguiRender() {}
+
+void ImGuiLayer::OnEvent(Event &e)
+{
+    ImGuiIO &io = ImGui::GetIO();
+    e.Handled |= e.IsInCategory(kEventCategoryMouse) & io.WantCaptureMouse;
+    e.Handled |= e.IsInCategory(kEventCategoryKeyboard) & io.WantCaptureKeyboard;
 }
 
 void ImGuiLayer::Begin()

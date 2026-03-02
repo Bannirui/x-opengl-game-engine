@@ -19,14 +19,11 @@ int main(int argc, char** argv);
 class XApplication {
 public:
     XApplication();
-
     virtual ~XApplication();
-
 
     void OnEvent(Event &e);
 
     void PushLayer(Layer *layer);
-
     void PushOverlay(Layer *layer);
 
     Window &get_window() const { return *m_window; }

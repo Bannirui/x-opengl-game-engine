@@ -43,11 +43,11 @@ void XApplication::OnEvent(Event &e)
     dispatcher.Dispatch<WindowResizeEvent>([this](WindowResizeEvent &e) { return this->onWindowResize(e); });
     for (auto it = m_layerStack.rbegin(); it != m_layerStack.rend(); ++it)
     {
-        (*it)->OnEvent(e);
         if (e.Handled)
         {
             break;
         }
+        (*it)->OnEvent(e);
     }
 }
 

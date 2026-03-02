@@ -24,6 +24,10 @@ public:
     void OnAttach() override;
     void OnDetach() override;
 
+    void OnUpdate(Timestep ts) override;
+    void OnImguiRender() override;
+    void OnEvent(Event &e) override;
+
     void Begin();
     void End();
 };
