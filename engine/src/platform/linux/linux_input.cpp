@@ -7,14 +7,14 @@
 #include "x/window.h"
 #include "x/core/x_application.h"
 
-bool LinuxInput::isKeyPressedImpl(int keycode)
+bool LinuxInput::isKeyPressedImpl(KeyCode keycode)
 {
     auto window = static_cast<GLFWwindow *>(XApplication::Get().get_window().get_nativeWindow());
     int  state  = glfwGetKey(window, keycode);
     return state == GLFW_PRESS || state == GLFW_REPEAT;
 }
 
-bool LinuxInput::isMouseButtonPressedImpl(int button)
+bool LinuxInput::isMouseButtonPressedImpl(MouseCode button)
 {
     auto window = static_cast<GLFWwindow *>(XApplication::Get().get_window().get_nativeWindow());
     int  state  = glfwGetMouseButton(window, button);
