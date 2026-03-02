@@ -15,12 +15,12 @@
 
 XApplication *XApplication::s_instance = nullptr;
 
-XApplication::XApplication()
+XApplication::XApplication(const std::string &name)
 {
     X_PROFILE_FUNCTION();
     X_CORE_ASSERT(!s_instance, "Application already exists");
     s_instance = this;
-    m_window   = Window::Create();
+    m_window   = Window::Create(WindowProps(name));
     m_window->SetEventCallback([this](Event &e) { this->OnEvent(e); });
 
     Renderer::Init();

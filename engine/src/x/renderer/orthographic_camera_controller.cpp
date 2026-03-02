@@ -76,6 +76,12 @@ void OrthographicCameraController::OnEvent(Event &e)
     dispatcher.Dispatch<WindowResizeEvent>([this](WindowResizeEvent &event) { return onWindowResized(event); });
 }
 
+void OrthographicCameraController::OnResize(float width, float height)
+{
+    m_aspectRatio = width / height;
+    m_camera.SetProjection(-m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel, m_zoomLevel);
+}
+
 bool OrthographicCameraController::onMouseScrolled(MouseScrolledEvent &e)
 {
     X_PROFILE_FUNCTION();
@@ -88,7 +94,6 @@ bool OrthographicCameraController::onMouseScrolled(MouseScrolledEvent &e)
 bool OrthographicCameraController::onWindowResized(WindowResizeEvent &e)
 {
     X_PROFILE_FUNCTION();
-    m_aspectRatio = static_cast<float>(e.get_width()) / static_cast<float>(e.get_height());
-    m_camera.SetProjection(-m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel, m_zoomLevel);
+    OnResize(static_cast<float>(e.get_width()), static_cast<float>(e.get_height()));
     return false;
 }

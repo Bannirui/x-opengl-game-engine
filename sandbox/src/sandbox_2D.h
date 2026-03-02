@@ -26,7 +26,6 @@ private:
     X::Ref<Shader>               m_flatShader;
     X::Ref<Texture2D>            m_checkerboardTexture;
     glm::vec4                    m_squareColor = {0.2f, 0.3f, 0.8f, 1.0f};
-    X::Ref<FrameBuffer>          m_framebuffer;
 
     std::vector<ProfileResult> m_profileResults;
 };

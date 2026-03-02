@@ -19,7 +19,7 @@ int main(int argc, char **argv);
 class XApplication
 {
 public:
-    XApplication();
+    XApplication(const std::string& name = "X APP");
     virtual ~XApplication();
 
     void OnEvent(Event &e);
