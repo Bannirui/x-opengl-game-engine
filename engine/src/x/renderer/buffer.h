@@ -199,18 +199,28 @@ public:
     virtual ~VertexBuffer() = default;
 
     virtual void Bind() const = 0;
-
     virtual void Unbind() const = 0;
 
     virtual const BufferLayout &GetLayout() const = 0;
-
     virtual void SetLayout(const BufferLayout &layout) = 0;
+
+    /**
+     * 往空的VBO里面灌数据
+     * @param data 要灌的数据
+     * @param size 数据多少个字节
+     */
+    virtual void SetData(const void* data, uint32_t size) = 0;
 
     /**
      * @param vertices float array
      * @param size how many bytes of the array
      */
     static X::Ref<VertexBuffer> Create(float *vertices, uint32_t size);
+    /**
+     * 空的VBO 没有数据
+     * @param size VBO要多大空间 后面再放数据
+     */
+    static X::Ref<VertexBuffer> Create(uint32_t size);
 };
 
 // EBO
@@ -220,11 +230,14 @@ public:
     virtual ~IndexBuffer() = default;
 
     virtual void Bind() const = 0;
-
     virtual void Unbind() const = 0;
 
     // how many vertex in the index array
     virtual uint32_t GetCount() const = 0;
 
-    static X::Ref<IndexBuffer> Create(uint32_t *indices, uint32_t size);
+    /**
+     * @param indices VAO数据
+     * @param count EBO里面多少个顶点
+     */
+    static X::Ref<IndexBuffer> Create(uint32_t *indices, uint32_t count);
 };

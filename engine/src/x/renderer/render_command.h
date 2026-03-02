@@ -24,7 +24,7 @@ public:
 
     inline static void Clear() { s_rendererAPI->Clear(); }
 
-    inline static void DrawIndexed(const X::Ref<VertexArray> &vertexArray) { s_rendererAPI->DrawIndexed(vertexArray); }
+    inline static void DrawIndexed(const X::Ref<VertexArray> &vertexArray,uint32_t count = 0) { s_rendererAPI->DrawIndexed(vertexArray, count); }
 
 private:
     static X::Scope<RendererAPI> s_rendererAPI;

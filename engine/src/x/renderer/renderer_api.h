@@ -31,7 +31,11 @@ public:
     virtual void SetClearColor(const glm::vec4 &color)                                = 0;
     virtual void Clear()                                                              = 0;
 
-    virtual void DrawIndexed(const std::shared_ptr<VertexArray> &vertexArray) = 0;
+    /**
+     * @param vertexArray VAO
+     * @param indexCount VAO管理的EBO里面有多少个顶点索引
+     */
+    virtual void DrawIndexed(const X::Ref<VertexArray> &vertexArray, uint32_t indexCount = 0) = 0;
 
     inline static API GetAPI() { return s_API; }
 

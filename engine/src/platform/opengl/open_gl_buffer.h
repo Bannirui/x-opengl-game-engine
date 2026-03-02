@@ -10,7 +10,17 @@
 class OpenGLVertexBuffer : public VertexBuffer
 {
 public:
+    /**
+     * @param vertices VBO要放的顶点数据
+     * @param size 顶点数据多大
+     */
     OpenGLVertexBuffer(float *vertices, uint32_t size);
+    /**
+     * 空VBO 先不放数据 后面再放
+     * @param size 顶点数据多大
+     */
+    OpenGLVertexBuffer(uint32_t size);
+
     ~OpenGLVertexBuffer() override;
 
     void Bind() const override;
@@ -18,6 +28,8 @@ public:
 
     const BufferLayout &GetLayout() const override { return m_bufferLayout; }
     void                SetLayout(const BufferLayout &layout) override { m_bufferLayout = layout; }
+
+    void SetData(const void *data, uint32_t size) override;
 
 private:
     uint32_t     m_rendererID;

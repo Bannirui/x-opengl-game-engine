@@ -27,6 +27,24 @@ X::Ref<VertexBuffer> VertexBuffer::Create(float *vertices, uint32_t size)
     return nullptr;
 }
 
+X::Ref<VertexBuffer> VertexBuffer::Create(uint32_t size)
+{
+    switch (Renderer::GetAPI())
+    {
+        case RendererAPI::API::kNone:
+        {
+            X_CORE_ASSERT(false, "RendererAPI::kNone is currently not supported!");
+            return nullptr;
+        }
+        case RendererAPI::API::kOpenGL:
+        {
+            return X::CreateRef<OpenGLVertexBuffer>(size);
+        }
+    }
+    X_CORE_ASSERT(false, "Unknown RendererAPI!");
+    return nullptr;
+}
+
 X::Ref<IndexBuffer> IndexBuffer::Create(uint32_t *indices, uint32_t count)
 {
     switch (Renderer::GetAPI())
