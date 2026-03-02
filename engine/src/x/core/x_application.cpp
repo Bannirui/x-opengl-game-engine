@@ -74,9 +74,9 @@ void XApplication::OnEvent(Event &e)
     EventDispatcher dispatcher(e);
     dispatcher.Dispatch<WindowCloseEvent>([this](WindowCloseEvent &e) { return this->onWindowClose(e); });
     dispatcher.Dispatch<WindowResizeEvent>([this](WindowResizeEvent &e) { return this->onWindowResize(e); });
-    for (auto it = m_layerStack.end(); it != m_layerStack.begin();)
+    for (auto it = m_layerStack.rbegin(); it != m_layerStack.rend(); ++it)
     {
-        (*--it)->OnEvent(e);
+        (*it)->OnEvent(e);
         if (e.Handled)
         {
             break;
