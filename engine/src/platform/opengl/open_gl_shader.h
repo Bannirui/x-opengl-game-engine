@@ -35,6 +35,7 @@ public:
 
     // --- 开放的接口 传递uniform变量---
     void SetInt(const std::string &name, int value) override;
+    void SetIntArray(const std::string &name, int *values, int count) override;
     void SetFloat(const std::string &name, float value) override;
     void SetFloat3(const std::string &name, const glm::vec3 &value) override;
     void SetFloat4(const std::string &name, const glm::vec4 &value) override;
@@ -43,17 +44,12 @@ public:
 
 private:
     void uploadUniformInt(const std::string &name, int value);
-
+    void uploadUniformIntArray(const std::string &name, int* values, uint32_t count);
     void uploadUniformFloat(const std::string &name, float value);
-
     void uploadUniformFloat2(const std::string &name, const glm::vec2 &value);
-
     void uploadUniformFloat3(const std::string &name, const glm::vec3 &value);
-
     void uploadUniformFloat4(const std::string &name, const glm::vec4 &value);
-
     void uploadUniformMat3(const std::string &name, const glm::mat3 &matrix);
-
     void uploadUniformMat4(const std::string &name, const glm::mat4 &matrix);
 
 private:

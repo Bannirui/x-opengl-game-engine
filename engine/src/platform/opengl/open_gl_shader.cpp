@@ -76,6 +76,12 @@ void OpenGLShader::SetInt(const std::string &name, int value)
     uploadUniformInt(name, value);
 }
 
+void OpenGLShader::SetIntArray(const std::string &name, int *values, int count)
+{
+    X_PROFILE_FUNCTION();
+    uploadUniformIntArray(name, values, count);
+}
+
 void OpenGLShader::SetFloat(const std::string &name, float value)
 {
     X_PROFILE_FUNCTION();
@@ -104,6 +110,12 @@ void OpenGLShader::uploadUniformInt(const std::string &name, int value)
 {
     GLint location = glGetUniformLocation(m_rendererId, name.c_str());
     glUniform1i(location, value);
+}
+
+void OpenGLShader::uploadUniformIntArray(const std::string &name, int *values, uint32_t count)
+{
+    GLint location = glGetUniformLocation(m_rendererId, name.c_str());
+    glUniform1iv(location, count, values);
 }
 
 void OpenGLShader::uploadUniformFloat(const std::string &name, float value)
