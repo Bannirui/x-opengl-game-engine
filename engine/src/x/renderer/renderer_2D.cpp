@@ -120,8 +120,8 @@ void Renderer2D::BeginScene(const OrthographicCamera &camera)
 void Renderer2D::EndScene()
 {
     X_PROFILE_FUNCTION();
-    uint32_t dataSize = reinterpret_cast<uint8_t *>(s_data.quadVertexBufferPtr) -
-                        reinterpret_cast<uint8_t *>(s_data.quadVertexBufferBase);
+    uint32_t dataSize = (uint32_t)(reinterpret_cast<uint8_t *>(s_data.quadVertexBufferPtr) -
+                                   reinterpret_cast<uint8_t *>(s_data.quadVertexBufferBase));
     s_data.quadVertexBuffer->SetData(s_data.quadVertexBufferBase, dataSize);
 
     Flush();
