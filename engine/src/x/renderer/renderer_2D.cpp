@@ -184,7 +184,6 @@ void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, cons
 {
     X_PROFILE_FUNCTION();
     constexpr size_t    quadVertexCount = 4;
-    constexpr glm::vec4 color           = {1.0f, 1.0f, 1.0f, 1.0f};
     constexpr glm::vec2 textureCoords[] = {{0.0f, 0.0f}, {1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f}};
     if (s_data.quadIndexCount >= Renderer2DData::maxIndices)
     {
@@ -217,7 +216,7 @@ void Renderer2D::DrawQuad(const glm::vec3 &position, const glm::vec2 &size, cons
     for (size_t i = 0; i < quadVertexCount; ++i)
     {
         s_data.quadVertexBufferPtr->position     = transform * s_data.quadVertexPositions[i];
-        s_data.quadVertexBufferPtr->color        = color;
+        s_data.quadVertexBufferPtr->color        = tintColor;
         s_data.quadVertexBufferPtr->texCoord     = textureCoords[i];
         s_data.quadVertexBufferPtr->texIndex     = textureIndex;
         s_data.quadVertexBufferPtr->tilingFactor = tilingFactor;
@@ -273,7 +272,6 @@ void Renderer2D::DrawRotatedQuad(const glm::vec3 &position, const glm::vec2 &siz
 {
     X_PROFILE_FUNCTION();
     constexpr size_t    quadVertexCount = 4;
-    constexpr glm::vec4 color           = {1.0f, 1.0f, 1.0f, 1.0f};
     constexpr glm::vec2 textureCoords[] = {{0.0f, 0.0f}, {1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f}};
     if (s_data.quadIndexCount >= Renderer2DData::maxIndices)
     {
@@ -307,7 +305,7 @@ void Renderer2D::DrawRotatedQuad(const glm::vec3 &position, const glm::vec2 &siz
     for (size_t i = 0; i < quadVertexCount; ++i)
     {
         s_data.quadVertexBufferPtr->position     = transform * s_data.quadVertexPositions[i];
-        s_data.quadVertexBufferPtr->color        = color;
+        s_data.quadVertexBufferPtr->color        = tintColor;
         s_data.quadVertexBufferPtr->texCoord     = textureCoords[i];
         s_data.quadVertexBufferPtr->texIndex     = textureIndex;
         s_data.quadVertexBufferPtr->tilingFactor = tilingFactor;
