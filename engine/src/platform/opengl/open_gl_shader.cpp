@@ -76,6 +76,12 @@ void OpenGLShader::SetInt(const std::string &name, int value)
     uploadUniformInt(name, value);
 }
 
+void OpenGLShader::SetFloat(const std::string &name, float value)
+{
+    X_PROFILE_FUNCTION();
+    uploadUniformFloat(name, value);
+}
+
 void OpenGLShader::SetFloat3(const std::string &name, const glm::vec3 &value)
 {
     X_PROFILE_FUNCTION();
