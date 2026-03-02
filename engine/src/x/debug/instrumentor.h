@@ -10,9 +10,9 @@
 
 struct ProfileResult
 {
-    std::string name;
-    long long   start, end;
-    uint32_t    threadID;
+    std::string     name;
+    long long       start, end;
+    std::thread::id threadID;
 };
 
 struct InstrumentationSession
@@ -23,48 +23,69 @@ struct InstrumentationSession
 class Instrumentor
 {
 private:
+    std::mutex              m_mutex;
     InstrumentationSession *m_currentSession;
     std::ofstream           m_outputStream;
-    int                     m_profileCount;
 
 public:
-    Instrumentor() : m_currentSession(nullptr), m_profileCount(0) {}
+    Instrumentor() : m_currentSession(nullptr) {}
 
     void BeginSession(const std::string &name, const std::string &filepath = "asset/out/result.json")
     {
+        std::lock_guard<std::mutex> lock(m_mutex);
+        if (m_currentSession)
+        {
+            if (XLog::get_coreLogger())
+            {  // Edge case: BeginSession() might be before Log::Init()
+                X_CORE_ERROR("Instrumentor::BeginSession('{0}') when session '{1}' already open.", name,
+                             m_currentSession->name);
+            }
+            internalEndSession();
+        }
+
         m_outputStream.open(filepath);
-        writeHeader();
-        m_currentSession = new InstrumentationSession{name};
+        if (m_outputStream.is_open())
+        {
+            m_currentSession = new InstrumentationSession({name});
+            writeHeader();
+        }
+        else
+        {
+            if (XLog::get_coreLogger())
+            {
+                // Edge case: BeginSession() might be before Log::Init()
+                X_CORE_ERROR("Instrumentor could not open results file '{0}'.", filepath);
+            }
+        }
     }
 
     void EndSession()
     {
-        writeFooter();
-        m_outputStream.close();
-        delete m_currentSession;
-        m_currentSession = nullptr;
-        m_profileCount   = 0;
+        std::lock_guard<std::mutex> lock(m_mutex);
+        internalEndSession();
     }
 
     void WriteProfile(const ProfileResult &result)
     {
-        if (m_profileCount++ > 0)
-        {
-            m_outputStream << ",";
-        }
-        std::string name = result.name;
+        std::stringstream json;
+        std::string       name = result.name;
         std::replace(name.begin(), name.end(), '"', '\'');
 
-        m_outputStream << "{";
-        m_outputStream << "\"cat\":\"function\",";
-        m_outputStream << "\"dur\":" << (result.end - result.start) << ',';
-        m_outputStream << "\"name\":\"" << name << "\",";
-        m_outputStream << "\"ph\":\"X\",";
-        m_outputStream << "\"pid\":0,";
-        m_outputStream << "\"tid\":" << result.threadID << ",";
-        m_outputStream << "\"ts\":" << result.start;
-        m_outputStream << "}";
-        m_outputStream.flush();
+        json << ",{";
+        json << "\"cat\":\"function\",";
+        json << "\"dur\":" << (result.end - result.start) << ',';
+        json << "\"name\":\"" << name << "\",";
+        json << "\"ph\":\"X\",";
+        json << "\"pid\":0,";
+        json << "\"tid\":" << result.threadID << ",";
+        json << "\"ts\":" << result.start;
+        json << "}";
+        std::lock_guard<std::mutex> lock(m_mutex);
+        if (m_currentSession)
+        {
+            m_outputStream << json.str();
+            m_outputStream.flush();
+        }
     }
 
     static Instrumentor &Get()
@@ -76,13 +97,23 @@ public:
 private:
     void writeHeader()
     {
-        m_outputStream << "{\"otherData\": {}, \"traceEvents\":[";
+        m_outputStream << "{\"otherData\": {}, \"traceEvents\":[{}";
         m_outputStream.flush();
     }
     void writeFooter()
     {
         m_outputStream << "]}";
         m_outputStream.flush();
+    }
+    void internalEndSession()
+    {
+        if (m_currentSession)
+        {
+            writeFooter();
+            m_outputStream.close();
+            delete m_currentSession;
+            m_currentSession = nullptr;
+        }
     }
 };
 
@@ -109,8 +140,7 @@ private:
             std::chrono::time_point_cast<std::chrono::microseconds>(m_startTimePoint).time_since_epoch().count();
         long long end =
             std::chrono::time_point_cast<std::chrono::microseconds>(endTimepoint).time_since_epoch().count();
-        uint32_t threadID = std::hash<std::thread::id>{}(std::this_thread::get_id());
-        Instrumentor::Get().WriteProfile({m_name, start, end, threadID});
+        Instrumentor::Get().WriteProfile({m_name, start, end, std::this_thread::get_id()});
         m_stopped = true;
     }
 
