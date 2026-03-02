@@ -101,11 +101,44 @@ void OpenGLVertexArray::AddVertexBuffer(const X::Ref<VertexBuffer> &vertexBuffer
     const auto &layout = vertexBuffer->GetLayout();
     for (const auto &element : layout)
     {
-        glEnableVertexAttribArray(m_vertexBufferIndex);
-        glVertexAttribPointer(m_vertexBufferIndex, element.GetComponentCount(),
-                              ShaderDataTypeToOpenGLBaseType(element.type), element.normalized ? GL_TRUE : GL_FALSE,
-                              layout.GetStride(), reinterpret_cast<const void *>(element.offset));
-        ++m_vertexBufferIndex;
+        switch (element.type)
+        {
+            case ShaderDataType::kFloat:
+            case ShaderDataType::kFloat2:
+            case ShaderDataType::kFloat3:
+            case ShaderDataType::kFloat4:
+            case ShaderDataType::kInt:
+            case ShaderDataType::kInt2:
+            case ShaderDataType::kInt3:
+            case ShaderDataType::kInt4:
+            case ShaderDataType::kBool:
+            {
+                glEnableVertexAttribArray(m_vertexBufferIndex);
+                glVertexAttribPointer(m_vertexBufferIndex, element.GetComponentCount(),
+                                      ShaderDataTypeToOpenGLBaseType(element.type),
+                                      element.normalized ? GL_TRUE : GL_FALSE, layout.GetStride(),
+                                      reinterpret_cast<const void *>(element.offset));
+                m_vertexBufferIndex++;
+                break;
+            }
+            case ShaderDataType::kMat3:
+            case ShaderDataType::kMat4:
+            {
+                uint8_t count = element.GetComponentCount();
+                for (uint8_t i = 0; i < count; i++)
+                {
+                    glEnableVertexAttribArray(m_vertexBufferIndex);
+                    glVertexAttribPointer(m_vertexBufferIndex, count, ShaderDataTypeToOpenGLBaseType(element.type),
+                                          element.normalized ? GL_TRUE : GL_FALSE, layout.GetStride(),
+                                          reinterpret_cast<const void *>(sizeof(float) * count * i));
+                    glVertexAttribDivisor(m_vertexBufferIndex, 1);
+                    m_vertexBufferIndex++;
+                }
+                break;
+            }
+            default:
+                X_CORE_ASSERT(false, "Unknown ShaderDataType!");
+        }
     }
     m_vertexBuffers.push_back(vertexBuffer);
 }

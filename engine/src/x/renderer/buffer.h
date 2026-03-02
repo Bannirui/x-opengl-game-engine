@@ -124,11 +124,11 @@ struct BufferElement
             }
             case ShaderDataType::kMat3:
             {
-                return 3 * 3;
+                return 3; // 3*float3
             }
             case ShaderDataType::kMat4:
             {
-                return 4 * 4;
+                return 4; // 4*float4
             }
             case ShaderDataType::kInt:
             {
