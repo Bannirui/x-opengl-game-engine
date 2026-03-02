@@ -130,7 +130,10 @@ void Renderer2D::EndScene()
 
 void Renderer2D::Flush()
 {
-    RenderCommand::DrawIndexed(s_data.quadVertexArray, s_data.quadIndexCount);
+    if (s_data.quadIndexCount == 0)
+    {
+        return;
+    }
     // Bind textures
     for (uint32_t i = 0; i < s_data.textureSlotIndex; i++)
     {
