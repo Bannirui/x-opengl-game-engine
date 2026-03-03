@@ -23,15 +23,11 @@ struct InstrumentationSession
 
 class Instrumentor
 {
-private:
-    std::mutex              m_mutex;
-    InstrumentationSession *m_currentSession;
-    std::ofstream           m_outputStream;
-
 public:
-    Instrumentor() : m_currentSession(nullptr) {}
+    Instrumentor(const Instrumentor&) = delete;
+    Instrumentor(Instrumentor&&)      = delete;
 
-    void BeginSession(const std::string &name, const std::string &filepath = "asset/out/result.json")
+    void BeginSession(const std::string& name, const std::string& filepath = "asset/out/result.json")
     {
         std::lock_guard<std::mutex> lock(m_mutex);
         if (m_currentSession)
@@ -66,7 +62,7 @@ public:
         internalEndSession();
     }
 
-    void WriteProfile(const ProfileResult &result)
+    void WriteProfile(const ProfileResult& result)
     {
         std::stringstream json;
         json << std::setprecision(3) << std::fixed;
@@ -87,13 +83,16 @@ public:
         }
     }
 
-    static Instrumentor &Get()
+    static Instrumentor& Get()
     {
         static Instrumentor instance;
         return instance;
     }
 
 private:
+    Instrumentor() : m_currentSession(nullptr) {}
+    ~Instrumentor() { EndSession(); }
+
     void writeHeader()
     {
         m_outputStream << "{\"otherData\": {}, \"traceEvents\":[{}";
@@ -114,12 +113,17 @@ private:
             m_currentSession = nullptr;
         }
     }
+
+private:
+    std::mutex              m_mutex;
+    InstrumentationSession* m_currentSession;
+    std::ofstream           m_outputStream;
 };
 
 class InstrumentationTimer
 {
 public:
-    InstrumentationTimer(const char *name) : m_name(name) { m_startTimePoint = std::chrono::steady_clock::now(); }
+    InstrumentationTimer(const char* name) : m_name(name) { m_startTimePoint = std::chrono::steady_clock::now(); }
     ~InstrumentationTimer()
     {
         if (!m_stopped)
@@ -140,7 +144,7 @@ private:
     }
 
 private:
-    const char                                        *m_name;
+    const char*                                        m_name;
     std::chrono::time_point<std::chrono::steady_clock> m_startTimePoint;
     bool                                               m_stopped{false};
 };
