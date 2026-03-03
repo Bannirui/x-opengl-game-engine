@@ -4,6 +4,7 @@
 
 #include "editor_layer.h"
 
+#include "x/core/input.h"
 #include "x/core/x_application.h"
 #include "x/imgui/im_gui_layer.h"
 
@@ -46,6 +47,35 @@ void EditorLayer::OnAttach()
     m_secondCamera = m_activeScene->CreateEntity("Clip-Space Entity");
     auto& cc       = m_secondCamera.AddComponent<CameraComponent>();
     cc.m_primary   = false;
+
+    class CameraController : public ScriptableEntity
+    {
+    public:
+        void OnCreate() {}
+        void OnDestroy() {}
+        void OnUpdate(Timestep ts)
+        {
+            auto& transform = GetComponent<TransformComponent>().m_transform;
+            float speed{5.0f};
+            if (Input::IsKeyPressed(X_KEY::A))
+            {
+                transform[3][0] -= speed * ts;
+            }
+            if (Input::IsKeyPressed(X_KEY::D))
+            {
+                transform[3][0] += speed * ts;
+            }
+            if (Input::IsKeyPressed(X_KEY::W))
+            {
+                transform[3][1] += speed * ts;
+            }
+            if (Input::IsKeyPressed(X_KEY::S))
+            {
+                transform[3][1] -= speed * ts;
+            }
+        }
+    };
+    m_cameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
 }
 
 void EditorLayer::OnDetach()

@@ -23,6 +23,7 @@
 #include "x/scene/scene.h"
 #include "x/scene/component.h"
 #include "x/scene/entity.h"
+#include "x/scene/scriptable_entity.h"
 
 // ---Renderer---
 #include "x/renderer/orthographic_camera_controller.h"

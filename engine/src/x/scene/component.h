@@ -5,10 +5,12 @@
 #pragma once
 
 #include "pch.h"
+#include "x/core/timestep.h"
 
 #include <glm/glm.hpp>
 
 #include "x/scene/scene_camera.h"
+#include "x/scene/scriptable_entity.h"
 
 struct TagComponent
 {
@@ -48,4 +50,30 @@ struct CameraComponent
 
     CameraComponent()                       = default;
     CameraComponent(const CameraComponent&) = default;
+};
+
+struct NativeScriptComponent
+{
+    ScriptableEntity* m_instance = nullptr;
+
+    std::function<void()> m_instantiateFunction;
+    std::function<void()> m_destroyInstanceFunction;
+
+    std::function<void(ScriptableEntity*)>           m_onCreateFunction;
+    std::function<void(ScriptableEntity*)>           m_onDestroyFunction;
+    std::function<void(ScriptableEntity*, Timestep)> m_onUpdateFunction;
+
+    template <typename T>
+    void Bind()
+    {
+        m_instantiateFunction     = [&]() { m_instance = new T(); };
+        m_destroyInstanceFunction = [&]()
+        {
+            delete (T*)m_instance;
+            m_instance = nullptr;
+        };
+        m_onCreateFunction  = [&](ScriptableEntity* instance) { ((T*)instance)->OnCreate(); };
+        m_onDestroyFunction = [&](ScriptableEntity* instance) { ((T*)instance)->OnDestroy(); };
+        m_onUpdateFunction  = [&](ScriptableEntity* instance, Timestep ts) { ((T*)instance)->OnUpdate(ts); };
+    }
 };
