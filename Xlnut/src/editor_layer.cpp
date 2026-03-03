@@ -48,6 +48,14 @@ void EditorLayer::OnDetach()
 void EditorLayer::OnUpdate(Timestep ts)
 {
     X_PROFILE_FUNCTION();
+    // Resize
+    if (FramebufferSpecification spec = m_frameBuffer->GetSpecification();
+        m_viewportSize.x > 0.0f && m_viewportSize.y > 0.0f &&  // zero sized framebuffer is invalid
+        (spec.width != m_viewportSize.x || spec.height != m_viewportSize.y))
+    {
+        m_frameBuffer->Resize((uint32_t)m_viewportSize.x, (uint32_t)m_viewportSize.y);
+        m_cameraController.OnResize(m_viewportSize.x, m_viewportSize.y);
+    }
     // Update
     if (m_viewportFocused)
     {
@@ -136,13 +144,9 @@ void EditorLayer::OnImguiRender()
     XApplication::Get().get_ImGuiLayer()->BlockEvents(!m_viewportFocused || !m_viewportHovered);
 
     ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-    if (m_viewportSize != *((glm::vec2*)&viewportPanelSize) && viewportPanelSize.x > 0 && viewportPanelSize.y > 0)
-    {
-        m_frameBuffer->Resize((uint32_t)viewportPanelSize.x, (uint32_t)viewportPanelSize.y);
-        m_viewportSize = {viewportPanelSize.x, viewportPanelSize.y};
-        m_cameraController.OnResize(viewportPanelSize.x, viewportPanelSize.y);
-    }
-    uint32_t textureID = m_frameBuffer->GetColorAttachmentRendererID();
+    // 更新让OnUpdate检测进行窗体resize
+    m_viewportSize           = {viewportPanelSize.x, viewportPanelSize.y};
+    uint32_t textureID       = m_frameBuffer->GetColorAttachmentRendererID();
     ImGui::Image(textureID, ImVec2{m_viewportSize.x, m_viewportSize.y}, ImVec2{0, 1}, ImVec2{1, 0});
     ImGui::End();
     ImGui::PopStyleVar();
