@@ -51,7 +51,11 @@ void EditorLayer::OnAttach()
     class CameraController : public ScriptableEntity
     {
     public:
-        void OnCreate() {}
+        void OnCreate()
+        {
+            auto& transform = GetComponent<TransformComponent>().m_transform;
+            transform[3][0] = rand() % 10 - 5.0f;
+        }
         void OnDestroy() {}
         void OnUpdate(Timestep ts)
         {
@@ -76,6 +80,7 @@ void EditorLayer::OnAttach()
         }
     };
     m_cameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
+    m_secondCamera.AddComponent<NativeScriptComponent>().Bind<CameraController>();
 }
 
 void EditorLayer::OnDetach()
