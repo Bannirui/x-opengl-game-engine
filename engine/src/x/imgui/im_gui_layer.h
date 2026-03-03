@@ -30,4 +30,11 @@ public:
 
     void Begin();
     void End();
+
+    void BlockEvents(bool block) { m_blockEvents = block; }
+
+private:
+    // todo
+    // float m_time{0.0f};
+    bool  m_blockEvents{true};
 };

@@ -19,7 +19,7 @@ int main(int argc, char **argv);
 class XApplication
 {
 public:
-    XApplication(const std::string& name = "X APP");
+    XApplication(const std::string &name = "X APP");
     virtual ~XApplication();
 
     void OnEvent(Event &e);
@@ -30,6 +30,7 @@ public:
     void Close();
 
     Window              &get_window() const { return *m_window; }
+    ImGuiLayer          *get_ImGuiLayer() const { return m_ImGuiLayer; }
     static XApplication &Get() { return *s_instance; }
 
 private:

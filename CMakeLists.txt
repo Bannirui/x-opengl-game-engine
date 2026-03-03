@@ -38,4 +38,4 @@ set(LIB_NAME "${PROJECT_NAME}-core")
 
 add_subdirectory(engine)
 add_subdirectory(sandbox)
-add_subdirectory(enginelnut)
+add_subdirectory(Xlnut)

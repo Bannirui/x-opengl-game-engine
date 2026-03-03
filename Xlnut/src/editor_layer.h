@@ -34,5 +34,6 @@ private:
     X::Ref<FrameBuffer> m_frameBuffer;
     X::Ref<Texture2D>   m_checkerboardTexture;
     glm::vec2           m_viewportSize = {0.0f, 0.0f};
-    glm::vec4           m_squareColor  = {0.2f, 0.3f, 0.8f, 1.0f};
+    bool                m_viewportFocused{false}, m_viewportHovered{false};
+    glm::vec4           m_squareColor = {0.2f, 0.3f, 0.8f, 1.0f};
 };
