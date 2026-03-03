@@ -63,10 +63,10 @@ class Event
     friend class EventDispatcher;
 
 public:
+    virtual ~Event()                       = default;
+
     virtual EventType GetEventType() const = 0;
-
     virtual const char *GetName() const = 0;
-
     virtual int GetCategory() const = 0;
 
     virtual std::string ToString() const { return GetName(); }
