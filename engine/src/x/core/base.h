@@ -6,87 +6,83 @@
 
 #include <memory>
 
-#define BIT(x) (1 << x)
-
-// ================================
-// Platform detection
-// ================================
-#if defined(_WIN32) || defined(_WIN64)
-    #define X_PLATFORM_WINDOWS
-#elif defined(__APPLE__)
-    #define X_PLATFORM_MAC
-#elif defined(__linux__)
-    #define X_PLATFORM_LINUX
-#else
-    #error "Unknown platform!"
-#endif
-
-// ================================
-// Debug Break (跨平台实现)
-// ================================
-#if defined(X_PLATFORM_WINDOWS)
-    #define X_DEBUGBREAK() __debugbreak()
-#elif defined(X_PLATFORM_MAC) || defined(X_PLATFORM_LINUX)
-    #include <csignal>
-    #define X_DEBUGBREAK() raise(SIGTRAP)
-#else
-    #error "Debugbreak not implemented for this platform"
-#endif
+#include "x/core/platform_detection.h"
 
 // 调试开关
 #ifdef X_DEBUG
-	#define X_ENABLE_ASSERTS
+#    if defined(X_PLATFORM_WINDOWS)
+#        define X_DEBUGBREAK() __debugbreak()
+#    elif defined(X_PLATFORM_MAC) || defined(X_PLATFORM_LINUX)
+#        include <csignal>
+#        define X_DEBUGBREAK() raise(SIGTRAP)
+#    else
+#        error "Debugbreak not implemented for this platform"
+#    endif
+#else
+#    define X_DEBUGBREAK()
 #endif
 
 // 没有开启开关的时候支持无参数
 #ifdef X_ENABLE_ASSERTS
-    #define X_ASSERT(x, ...) \
-        { if(!(x)) { X_ERROR("Assertion Failed: {0}", __VA_ARGS__); X_DEBUGBREAK(); } }
-    #define X_CORE_ASSERT(x, ...) \
-        { if(!(x)) { X_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); X_DEBUGBREAK(); } }
+#    define X_ASSERT(x, ...)                                   \
+        {                                                      \
+            if (!(x))                                          \
+            {                                                  \
+                X_ERROR("Assertion Failed: {0}", __VA_ARGS__); \
+                X_DEBUGBREAK();                                \
+            }                                                  \
+        }
+#    define X_CORE_ASSERT(x, ...)                                   \
+        {                                                           \
+            if (!(x))                                               \
+            {                                                       \
+                X_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); \
+                X_DEBUGBREAK();                                     \
+            }                                                       \
+        }
 #else
-    #define X_ASSERT(x, ...) ((void)(x))
-    #define X_CORE_ASSERT(x, ...) ((void)(x))
+#    define X_ASSERT(x, ...) ((void)(x))
+#    define X_CORE_ASSERT(x, ...) ((void)(x))
 #endif
+
+#define BIT(x) (1 << x)
 
 // ---------- stringify ----------
 #define STR_IMPL(x) #x
 #define STR(x) STR_IMPL(x)
 
 #ifndef X_GL_VERSION_MAJOR
-#define X_GL_VERSION_MAJOR 3
+#    define X_GL_VERSION_MAJOR 3
 #endif
 
 #ifndef X_GL_VERSION_MINOR
-#define X_GL_VERSION_MINOR 3
+#    define X_GL_VERSION_MINOR 3
 #endif
 
 // ---------- GLSL version ----------
 // OpenGL版本拼接成 #version 450 core
-#define X_GL_VERSION_CORE \
-    "#version " STR(X_GL_VERSION_MAJOR) STR(X_GL_VERSION_MINOR) "0 core"
+#define X_GL_VERSION_CORE "#version " STR(X_GL_VERSION_MAJOR) STR(X_GL_VERSION_MINOR) "0 core"
 
 // ---------- Shader helper ----------
-#define X_GLSL(src) \
-    X_GL_VERSION_CORE "\n" \
-    #src
+#define X_GLSL(src) X_GL_VERSION_CORE "\n" #src
 
-namespace X {
-    template<typename T>
+namespace X
+{
+    template <typename T>
     using Scope = std::unique_ptr<T>;
 
-    template<typename T, typename ... Args>
-    Scope<T> CreateScope(Args&& ... args)
+    template <typename T, typename... Args>
+    Scope<T> CreateScope(Args&&... args)
     {
         return std::make_unique<T>(std::forward<Args>(args)...);
     }
 
-    template<typename T>
+    template <typename T>
     using Ref = std::shared_ptr<T>;
 
-    template<typename T, typename ... Args>
-    Ref<T> CreateRef(Args&& ... args)
+    template <typename T, typename... Args>
+    Ref<T> CreateRef(Args&&... args)
     {
         return std::make_shared<T>(std::forward<Args>(args)...);
     }
-}
+}  // namespace X

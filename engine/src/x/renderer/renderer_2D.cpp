@@ -96,7 +96,7 @@ void Renderer2D::Init()
     s_data.textureShader->Bind();
     s_data.textureShader->SetIntArray("u_Textures", samplers, s_data.maxTextureSlots);
 
-    // Set all texture slots to 0
+    // Set first texture slot to 0
     s_data.textureSlots[0] = s_data.whiteTexture;
 
     s_data.quadVertexPositions[0] = {-0.5f, -0.5f, 0.0f, 1.0f};
@@ -185,7 +185,7 @@ void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, cons
     X_PROFILE_FUNCTION();
     glm::mat4 transform =
         glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), {size.x, size.y, 1.0f});
-    DrawQuad(transform, texture, tilingFactor);
+    DrawQuad(transform, texture, tilingFactor, tintColor);
 }
 
 void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color)
@@ -228,7 +228,7 @@ void Renderer2D::DrawQuad(const glm::mat4& transform, const X::Ref<Texture2D>& t
     float textureIndex = 0.0f;
     for (uint32_t i = 1; i < s_data.textureSlotIndex; i++)
     {
-        if (*s_data.textureSlots[i].get() == *texture.get())
+        if (*s_data.textureSlots[i] == *texture)
         {
             textureIndex = (float)i;
             break;

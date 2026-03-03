@@ -26,5 +26,6 @@
 
 #include <algorithm>
 
+#include "x/core/base.h"
 #include "x/core/x_log.h"
 #include "x/debug/instrumentor.h"

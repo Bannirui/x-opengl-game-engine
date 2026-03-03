@@ -9,21 +9,21 @@
 
 bool Input::IsKeyPressed(KeyCode keycode)
 {
-    auto window = static_cast<GLFWwindow *>(XApplication::Get().get_window().get_nativeWindow());
+    auto window = static_cast<GLFWwindow*>(XApplication::Get().get_window().get_nativeWindow());
     int  state  = glfwGetKey(window, keycode);
     return state == GLFW_PRESS || state == GLFW_REPEAT;
 }
 
 bool Input::IsMouseButtonPressed(MouseCode button)
 {
-    auto window = static_cast<GLFWwindow *>(XApplication::Get().get_window().get_nativeWindow());
+    auto window = static_cast<GLFWwindow*>(XApplication::Get().get_window().get_nativeWindow());
     int  state  = glfwGetMouseButton(window, button);
     return state == GLFW_PRESS;
 }
 
-std::pair<float, float> Input::GetMousePos()
+glm::vec2 Input::GetMousePos()
 {
-    auto   window = static_cast<GLFWwindow *>(XApplication::Get().get_window().get_nativeWindow());
+    auto   window = static_cast<GLFWwindow*>(XApplication::Get().get_window().get_nativeWindow());
     double x, y;
     glfwGetCursorPos(window, &x, &y);
     return {static_cast<float>(x), static_cast<float>(y)};
@@ -31,12 +31,10 @@ std::pair<float, float> Input::GetMousePos()
 
 float Input::GetMouseX()
 {
-    auto [x, y] = GetMousePos();
-    return x;
+    return GetMousePos().x;
 }
 
 float Input::GetMouseY()
 {
-    auto [x, y] = GetMousePos();
-    return y;
+    return GetMousePos().y;
 }

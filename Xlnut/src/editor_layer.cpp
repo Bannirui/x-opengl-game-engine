@@ -213,8 +213,9 @@ void EditorLayer::OnImguiRender()
     ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
     m_viewportSize           = {viewportPanelSize.x, viewportPanelSize.y};
 
-    uint32_t textureID = m_frameBuffer->GetColorAttachmentRendererID();
-    ImGui::Image(textureID, ImVec2{m_viewportSize.x, m_viewportSize.y}, ImVec2{0, 1}, ImVec2{1, 0});
+    uint64_t textureID = m_frameBuffer->GetColorAttachmentRendererID();
+    ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{m_viewportSize.x, m_viewportSize.y}, ImVec2{0, 1},
+                 ImVec2{1, 0});
     ImGui::End();
     ImGui::PopStyleVar();
 

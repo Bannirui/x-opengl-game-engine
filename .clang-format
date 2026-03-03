@@ -34,3 +34,17 @@ FixNamespaceComments: true
 CommentPragmas: '^ IWYU pragma:'
 # public/protected/private缩进
 AccessModifierOffset: -4
+
+# 宏定义体缩进
+IndentPPDirectives: AfterHash
+
+# 宏内部是否缩进
+IndentWrappedFunctionNames: false
+# 多行宏的反斜杠对齐
+AlignEscapedNewlines: Left
+# 允许宏内保持结构
+AllowShortBlocksOnASingleLine: Never
+# 避免宏被自动压缩
+AllowShortLambdasOnASingleLine: None
+# 保持宏展开结构
+KeepEmptyLinesAtTheStartOfBlocks: false

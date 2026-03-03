@@ -13,12 +13,12 @@
 
 static uint8_t s_GLFWWindowCount = 0;
 
-static void glfwErrorCallback(int error, const char *description)
+static void glfwErrorCallback(int error, const char* description)
 {
     X_CORE_ERROR("GLFW error ({0}): {1}", error, description);
 }
 
-MacWindow::MacWindow(const WindowProps &props)
+MacWindow::MacWindow(const WindowProps& props)
 {
     X_PROFILE_FUNCTION();
     init(props);
@@ -51,7 +51,7 @@ void MacWindow::SetVSync(bool enabled)
     m_data.vSync = enabled;
 }
 
-void MacWindow::init(const WindowProps &props)
+void MacWindow::init(const WindowProps& props)
 {
     X_PROFILE_FUNCTION();
     m_data.title  = props.title;
@@ -88,85 +88,85 @@ void MacWindow::init(const WindowProps &props)
     SetVSync(true);
     // glfw的回调注册
     glfwSetWindowSizeCallback(m_window,
-                              [](GLFWwindow *window, int width, int height)
+                              [](GLFWwindow* window, int width, int height)
                               {
-                                  auto *self          = static_cast<MacWindow *>(glfwGetWindowUserPointer(window));
+                                  auto* self          = static_cast<MacWindow*>(glfwGetWindowUserPointer(window));
                                   self->m_data.width  = width;
                                   self->m_data.height = height;
                                   WindowResizeEvent event(width, height);
                                   self->m_data.eventCallback(event);
                               });
     glfwSetWindowCloseCallback(m_window,
-                               [](GLFWwindow *window)
+                               [](GLFWwindow* window)
                                {
-                                   auto            *self = static_cast<MacWindow *>(glfwGetWindowUserPointer(window));
+                                   auto*            self = static_cast<MacWindow*>(glfwGetWindowUserPointer(window));
                                    WindowCloseEvent event;
                                    self->m_data.eventCallback(event);
                                });
     glfwSetKeyCallback(m_window,
-                       [](GLFWwindow *window, int key, int scancode, int action, int mods)
+                       [](GLFWwindow* window, int key, int scancode, int action, int mods)
                        {
-                           auto *self = static_cast<MacWindow *>(glfwGetWindowUserPointer(window));
+                           auto* self = static_cast<MacWindow*>(glfwGetWindowUserPointer(window));
                            switch (action)
                            {
                                case GLFW_PRESS:
                                {
-                                   KeyPressEvent event(static_cast<KeyCode>(key), false);
+                                   KeyPressEvent event(key, false);
                                    self->m_data.eventCallback(event);
                                    break;
                                }
                                case GLFW_RELEASE:
                                {
-                                   KeyReleaseEvent event(static_cast<KeyCode>(key));
+                                   KeyReleaseEvent event(key);
                                    self->m_data.eventCallback(event);
                                    break;
                                }
                                case GLFW_REPEAT:
                                {
-                                   KeyPressEvent event(static_cast<KeyCode>(key), true);
+                                   KeyPressEvent event(key, true);
                                    self->m_data.eventCallback(event);
                                    break;
                                }
                            }
                        });
     glfwSetCharCallback(m_window,
-                        [](GLFWwindow *window, uint32_t keycode)
+                        [](GLFWwindow* window, uint32_t keycode)
                         {
-                            auto         *self = static_cast<MacWindow *>(glfwGetWindowUserPointer(window));
+                            auto*         self = static_cast<MacWindow*>(glfwGetWindowUserPointer(window));
                             KeyTypedEvent event(keycode);
                             self->m_data.eventCallback(event);
                         });
     glfwSetMouseButtonCallback(m_window,
-                               [](GLFWwindow *window, int button, int action, int mods)
+                               [](GLFWwindow* window, int button, int action, int mods)
                                {
-                                   auto *self = static_cast<MacWindow *>(glfwGetWindowUserPointer(window));
+                                   auto* self = static_cast<MacWindow*>(glfwGetWindowUserPointer(window));
                                    switch (action)
                                    {
                                        case GLFW_PRESS:
                                        {
-                                           MouseButtonPressedEvent event(static_cast<MouseCode>(button));
+                                           MouseButtonPressedEvent event(button);
                                            self->m_data.eventCallback(event);
                                            break;
                                        }
                                        case GLFW_RELEASE:
                                        {
-                                           MouseButtonReleasedEvent event(static_cast<MouseCode>(button));
+                                           MouseButtonReleasedEvent event(button);
                                            self->m_data.eventCallback(event);
                                            break;
                                        }
                                    }
                                });
     glfwSetScrollCallback(m_window,
-                          [](GLFWwindow *window, double xOffset, double yOffset)
+                          [](GLFWwindow* window, double xOffset, double yOffset)
                           {
-                              auto              *self = static_cast<MacWindow *>(glfwGetWindowUserPointer(window));
+                              auto*              self = static_cast<MacWindow*>(glfwGetWindowUserPointer(window));
                               MouseScrolledEvent event(xOffset, yOffset);
                               self->m_data.eventCallback(event);
                           });
     glfwSetCursorPosCallback(m_window,
-                             [](GLFWwindow *window, double xPos, double yPos)
+                             [](GLFWwindow* window, double xPos, double yPos)
                              {
-                                 auto           *self = static_cast<MacWindow *>(glfwGetWindowUserPointer(window));
+                                 auto*           self = static_cast<MacWindow*>(glfwGetWindowUserPointer(window));
                                  MouseMovedEvent event(xPos, yPos);
                                  self->m_data.eventCallback(event);
                              });

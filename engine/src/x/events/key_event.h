@@ -6,30 +6,29 @@
 #include "x/events/event.h"
 #include "x/core/key_codes.h"
 
-#include <imgui.h>
-
-class KeyEvent : public Event {
+class KeyEvent : public Event
+{
 public:
     KeyCode get_keyCode() const { return m_keyCode; }
 
     EVENT_CLASS_CATEGORY(kEventCategoryKeyboard | kEventCategoryInput);
 
 protected:
-    KeyEvent(const int keycode) : m_keyCode(keycode) {
-    }
+    KeyEvent(const int keycode) : m_keyCode(keycode) {}
 
 protected:
     KeyCode m_keyCode;
 };
 
-class KeyPressEvent : public KeyEvent {
+class KeyPressEvent : public KeyEvent
+{
 public:
-    KeyPressEvent(const KeyCode keycode, bool isRepeat = false) : KeyEvent(keycode), m_isRepeat(isRepeat) {
-    }
+    KeyPressEvent(const KeyCode keycode, const bool isRepeat = false) : KeyEvent(keycode), m_isRepeat(isRepeat) {}
 
     bool is_repeat() const { return m_isRepeat; }
 
-    std::string ToString() const override {
+    std::string ToString() const override
+    {
         std::stringstream ss;
         ss << "KeyPressEvent: " << m_keyCode << " (repeat = " << m_isRepeat << ")";
         return ss.str();
@@ -42,12 +41,13 @@ private:
     bool m_isRepeat;
 };
 
-class KeyReleaseEvent : public KeyEvent {
+class KeyReleaseEvent : public KeyEvent
+{
 public:
-    KeyReleaseEvent(const KeyCode keycode) : KeyEvent(keycode) {
-    }
+    KeyReleaseEvent(const KeyCode keycode) : KeyEvent(keycode) {}
 
-    std::string ToString() const override {
+    std::string ToString() const override
+    {
         std::stringstream ss;
         ss << "KeyReleaseEvent: " << m_keyCode;
         return ss.str();
@@ -56,12 +56,13 @@ public:
     EVENT_CLASS_TYPE(kKeyReleased)
 };
 
-class KeyTypedEvent : public KeyEvent {
+class KeyTypedEvent : public KeyEvent
+{
 public:
-    KeyTypedEvent(const KeyCode keycode) : KeyEvent(keycode) {
-    }
+    KeyTypedEvent(const KeyCode keycode) : KeyEvent(keycode) {}
 
-    std::string ToString() const override {
+    std::string ToString() const override
+    {
         std::stringstream ss;
         ss << "KeyTypedEvent: " << m_keyCode;
         return ss.str();

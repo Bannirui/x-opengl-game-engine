@@ -90,7 +90,7 @@ void OpenGLVertexArray::Unbind() const
     glBindVertexArray(0);
 }
 
-void OpenGLVertexArray::AddVertexBuffer(const X::Ref<VertexBuffer> &vertexBuffer)
+void OpenGLVertexArray::AddVertexBuffer(const X::Ref<VertexBuffer>& vertexBuffer)
 {
     X_PROFILE_FUNCTION();
     X_CORE_ASSERT(vertexBuffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
@@ -98,8 +98,8 @@ void OpenGLVertexArray::AddVertexBuffer(const X::Ref<VertexBuffer> &vertexBuffer
     glBindVertexArray(m_rendererID);
     vertexBuffer->Bind();
 
-    const auto &layout = vertexBuffer->GetLayout();
-    for (const auto &element : layout)
+    const auto& layout = vertexBuffer->GetLayout();
+    for (const auto& element : layout)
     {
         switch (element.type)
         {
@@ -117,7 +117,7 @@ void OpenGLVertexArray::AddVertexBuffer(const X::Ref<VertexBuffer> &vertexBuffer
                 glVertexAttribPointer(m_vertexBufferIndex, element.GetComponentCount(),
                                       ShaderDataTypeToOpenGLBaseType(element.type),
                                       element.normalized ? GL_TRUE : GL_FALSE, layout.GetStride(),
-                                      reinterpret_cast<const void *>(element.offset));
+                                      reinterpret_cast<const void*>(element.offset));
                 m_vertexBufferIndex++;
                 break;
             }
@@ -130,7 +130,7 @@ void OpenGLVertexArray::AddVertexBuffer(const X::Ref<VertexBuffer> &vertexBuffer
                     glEnableVertexAttribArray(m_vertexBufferIndex);
                     glVertexAttribPointer(m_vertexBufferIndex, count, ShaderDataTypeToOpenGLBaseType(element.type),
                                           element.normalized ? GL_TRUE : GL_FALSE, layout.GetStride(),
-                                          reinterpret_cast<const void *>(sizeof(float) * count * i));
+                                          reinterpret_cast<const void*>(element.offset + sizeof(float) * count * i));
                     glVertexAttribDivisor(m_vertexBufferIndex, 1);
                     m_vertexBufferIndex++;
                 }
@@ -143,7 +143,7 @@ void OpenGLVertexArray::AddVertexBuffer(const X::Ref<VertexBuffer> &vertexBuffer
     m_vertexBuffers.push_back(vertexBuffer);
 }
 
-void OpenGLVertexArray::SetIndexBuffer(const X::Ref<IndexBuffer> &indexBuffer)
+void OpenGLVertexArray::SetIndexBuffer(const X::Ref<IndexBuffer>& indexBuffer)
 {
     X_PROFILE_FUNCTION();
     glBindVertexArray(m_rendererID);
