@@ -17,7 +17,7 @@ int main(int argc, char **argv)
     app->run();
     X_PROFILE_END_SESSION();
 
-    X_PROFILE_BEGIN_SESSION("Runtime", "asset/output/XProfile-Shutdown.json");
+    X_PROFILE_BEGIN_SESSION("Shutdown", "asset/output/XProfile-Shutdown.json");
     delete app;
     X_PROFILE_END_SESSION();
     return 0;
