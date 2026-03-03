@@ -39,7 +39,14 @@ void EditorLayer::OnDetach()
 void EditorLayer::OnUpdate(Timestep ts)
 {
     X_PROFILE_FUNCTION();
-
+    // Resize
+    if (FramebufferSpecification spec = m_frameBuffer->GetSpecification();
+        m_viewportSize.x > 0.0f && m_viewportSize.y > 0.0f &&  // zero sized framebuffer is invalid
+        (spec.width != m_viewportSize.x || spec.height != m_viewportSize.y))
+    {
+        m_frameBuffer->Resize(static_cast<uint32_t>(m_viewportSize.x), static_cast<uint32_t>(m_viewportSize.y));
+        m_cameraController.OnResize(m_viewportSize.x, m_viewportSize.y);
+    }
     // update
     if (m_viewportFocused)
     {
@@ -84,9 +91,9 @@ void EditorLayer::OnImguiRender()
     X_PROFILE_FUNCTION();
 
     // Note: Switch this to true to enable dockspace
-    static bool               dockspaceOpen             = true;
-    static bool               opt_fullscreen_persistant = true;
-    bool                      opt_fullscreen            = opt_fullscreen_persistant;
+    static bool dockspaceOpen             = true;
+    static bool opt_fullscreen_persistant = true;
+    bool        opt_fullscreen            = opt_fullscreen_persistant;
 
     // We are using the ImGuiWindowFlags_NoDocking flag to make the parent window not dockable into,
     // because it would be confusing to have two docking targets within each others.
@@ -149,14 +156,8 @@ void EditorLayer::OnImguiRender()
     XApplication::Get().get_ImGuiLayer()->BlockEvents(!m_viewportFocused || !m_viewportHovered);
 
     ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-    if (m_viewportSize != *((glm::vec2 *)&viewportPanelSize))
-    {
-        m_frameBuffer->Resize((uint32_t)viewportPanelSize.x, (uint32_t)viewportPanelSize.y);
-        m_viewportSize = {viewportPanelSize.x, viewportPanelSize.y};
-
-        m_cameraController.OnResize(viewportPanelSize.x, viewportPanelSize.y);
-    }
-    uint32_t textureID = m_frameBuffer->GetColorAttachmentRendererID();
+    m_viewportSize           = {viewportPanelSize.x, viewportPanelSize.y};
+    uint32_t textureID       = m_frameBuffer->GetColorAttachmentRendererID();
     ImGui::Image(textureID, ImVec2{m_viewportSize.x, m_viewportSize.y}, ImVec2{0, 1}, ImVec2{1, 0});
     ImGui::End();
     ImGui::PopStyleVar();
