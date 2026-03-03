@@ -8,6 +8,8 @@
 
 #include <glm/glm.hpp>
 
+#include "x/scene/scene_camera.h"
+
 struct TagComponent
 {
     std::string m_tag;
@@ -36,4 +38,14 @@ struct SpriteRendererComponent
     SpriteRendererComponent()                               = default;
     SpriteRendererComponent(const SpriteRendererComponent&) = default;
     SpriteRendererComponent(const glm::vec4& color) : m_color(color) {}
+};
+
+struct CameraComponent
+{
+    SceneCamera m_camera;
+    bool        m_primary = true;
+    bool        m_fixedAspectRatio{false};
+
+    CameraComponent()                       = default;
+    CameraComponent(const CameraComponent&) = default;
 };

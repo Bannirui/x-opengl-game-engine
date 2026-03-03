@@ -26,6 +26,7 @@ EditorLayer::EditorLayer()
 void EditorLayer::OnAttach()
 {
     X_PROFILE_FUNCTION();
+
     m_checkerboardTexture = Texture2D::Create("asset/texture/Checkerboard.png");
 
     FramebufferSpecification fbSpec;
@@ -35,11 +36,16 @@ void EditorLayer::OnAttach()
 
     m_activeScene = X::CreateRef<Scene>();
 
-    // Entity
     auto square = m_activeScene->CreateEntity("Green Square");
     square.AddComponent<SpriteRendererComponent>(glm::vec4{0.0f, 1.0f, 0.0f, 1.0f});
-
     m_squareEntity = square;
+
+    m_cameraEntity = m_activeScene->CreateEntity("Camera Entity");
+    m_cameraEntity.AddComponent<CameraComponent>();
+
+    m_secondCamera = m_activeScene->CreateEntity("Clip-Space Entity");
+    auto& cc       = m_secondCamera.AddComponent<CameraComponent>();
+    cc.m_primary   = false;
 }
 
 void EditorLayer::OnDetach()
@@ -57,6 +63,8 @@ void EditorLayer::OnUpdate(Timestep ts)
     {
         m_frameBuffer->Resize((uint32_t)m_viewportSize.x, (uint32_t)m_viewportSize.y);
         m_cameraController.OnResize(m_viewportSize.x, m_viewportSize.y);
+        m_activeScene->OnViewportResize(static_cast<uint32_t>(m_viewportSize.x),
+                                        static_cast<uint32_t>(m_viewportSize.y));
     }
     // Update
     if (m_viewportFocused)
@@ -68,10 +76,10 @@ void EditorLayer::OnUpdate(Timestep ts)
     m_frameBuffer->Bind();
     RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1});
     RenderCommand::Clear();
-    Renderer2D::BeginScene(m_cameraController.get_camera());
+
     // Update scene
     m_activeScene->OnUpdate(ts);
-    Renderer2D::EndScene();
+
     m_frameBuffer->Unbind();
 }
 
@@ -148,6 +156,21 @@ void EditorLayer::OnImguiRender()
         ImGui::Separator();
     }
 
+    ImGui::DragFloat3("Camera Transform",
+                      glm::value_ptr(m_cameraEntity.GetComponent<TransformComponent>().m_transform[3]));
+    if (ImGui::Checkbox("CameraA", &m_primaryCamera))
+    {
+        m_cameraEntity.GetComponent<CameraComponent>().m_primary = m_primaryCamera;
+        m_secondCamera.GetComponent<CameraComponent>().m_primary = !m_primaryCamera;
+    }
+    {
+        auto& camera    = m_secondCamera.GetComponent<CameraComponent>().m_camera;
+        float orthoSize = camera.get_orthographicSize();
+        if (ImGui::DragFloat("Second Camera Ortho Size", &orthoSize))
+        {
+            camera.SetOrthographicSize(orthoSize);
+        }
+    }
     ImGui::End();
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{0, 0});
