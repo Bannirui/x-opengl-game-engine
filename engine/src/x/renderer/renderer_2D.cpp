@@ -251,29 +251,10 @@ void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& siz
                                  const glm::vec4& color)
 {
     X_PROFILE_FUNCTION();
-    constexpr size_t    quadVertexCount = 4;
-    const float         textureIndex    = 0.0f;  // White Texture
-    constexpr glm::vec2 textureCoords[] = {{0.0f, 0.0f}, {1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f}};
-    const float         tilingFactor    = 1.0f;
-    if (s_data.quadIndexCount >= Renderer2DData::maxIndices)
-    {
-        FlushAndReset();
-    }
-
     glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) *
                           glm::rotate(glm::mat4(1.0f), glm::radians(rotation), {0.0f, 0.0f, 1.0f}) *
                           glm::scale(glm::mat4(1.0f), {size.x, size.y, 1.0f});
-    for (size_t i = 0; i < quadVertexCount; ++i)
-    {
-        s_data.quadVertexBufferPtr->position     = transform * s_data.quadVertexPositions[i];
-        s_data.quadVertexBufferPtr->color        = color;
-        s_data.quadVertexBufferPtr->texCoord     = textureCoords[i];
-        s_data.quadVertexBufferPtr->texIndex     = textureIndex;
-        s_data.quadVertexBufferPtr->tilingFactor = tilingFactor;
-        s_data.quadVertexBufferPtr++;
-    }
-    s_data.quadIndexCount += 6;
-    s_data.stats.quadCount++;
+    DrawQuad(transform, color);
 }
 
 void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation,
@@ -286,48 +267,10 @@ void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& siz
                                  const X::Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
 {
     X_PROFILE_FUNCTION();
-    constexpr size_t    quadVertexCount = 4;
-    constexpr glm::vec2 textureCoords[] = {{0.0f, 0.0f}, {1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f}};
-    if (s_data.quadIndexCount >= Renderer2DData::maxIndices)
-    {
-        FlushAndReset();
-    }
-
-    float textureIndex = 0.0f;
-    for (uint32_t i = 1; i < s_data.textureSlotIndex; i++)
-    {
-        if (*s_data.textureSlots[i].get() == *texture.get())
-        {
-            textureIndex = (float)i;
-            break;
-        }
-    }
-
-    if (textureIndex == 0.0f)
-    {
-        if (s_data.textureSlotIndex >= Renderer2DData::maxTextureSlots)
-        {
-            FlushAndReset();
-        }
-        textureIndex                                 = (float)s_data.textureSlotIndex;
-        s_data.textureSlots[s_data.textureSlotIndex] = texture;
-        s_data.textureSlotIndex++;
-    }
-
     glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) *
                           glm::rotate(glm::mat4(1.0f), glm::radians(rotation), {0.0f, 0.0f, 1.0f}) *
                           glm::scale(glm::mat4(1.0f), {size.x, size.y, 1.0f});
-    for (size_t i = 0; i < quadVertexCount; ++i)
-    {
-        s_data.quadVertexBufferPtr->position     = transform * s_data.quadVertexPositions[i];
-        s_data.quadVertexBufferPtr->color        = tintColor;
-        s_data.quadVertexBufferPtr->texCoord     = textureCoords[i];
-        s_data.quadVertexBufferPtr->texIndex     = textureIndex;
-        s_data.quadVertexBufferPtr->tilingFactor = tilingFactor;
-        s_data.quadVertexBufferPtr++;
-    }
-    s_data.quadIndexCount += 6;
-    s_data.stats.quadCount++;
+    DrawQuad(transform, texture, tilingFactor, tintColor);
 }
 
 void Renderer2D::ResetStats()
