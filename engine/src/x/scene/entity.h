@@ -47,6 +47,6 @@ public:
     operator bool() const { return m_entityHandle != entt::null; }
 
 private:
-    entt::entity m_entityHandle{0};
+    entt::entity m_entityHandle{entt::null};
     Scene*       m_scene{nullptr};
 };
