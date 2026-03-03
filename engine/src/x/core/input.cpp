@@ -4,24 +4,39 @@
 
 #include "x/core/input.h"
 
-#include "platform/mac/mac_input.h"
-#include "x/core/base.h"
+#include "x/window.h"
+#include "x/core/x_application.h"
 
-#if defined(X_PLATFORM_MAC)
-#include "platform/mac/mac_input.h"
-#elif defined(X_PLATFORM_LINUX)
-#include "platform/linux/linux_input.h"
-#else
-#error "Unsupported platform!"
-#endif
-
-X::Scope<Input> Input::s_instance = Input::Create();
-
-X::Scope<Input> Input::Create()
+bool Input::IsKeyPressed(KeyCode keycode)
 {
-#if defined(X_PLATFORM_MAC)
-    return X::CreateScope<MacInput>();
-#elif defined(X_PLATFORM_LINUX)
-    return X::CreateScope<LinuxInput>();
-#endif
+    auto window = static_cast<GLFWwindow *>(XApplication::Get().get_window().get_nativeWindow());
+    int  state  = glfwGetKey(window, keycode);
+    return state == GLFW_PRESS || state == GLFW_REPEAT;
+}
+
+bool Input::IsMouseButtonPressed(MouseCode button)
+{
+    auto window = static_cast<GLFWwindow *>(XApplication::Get().get_window().get_nativeWindow());
+    int  state  = glfwGetMouseButton(window, button);
+    return state == GLFW_PRESS;
+}
+
+std::pair<float, float> Input::GetMousePos()
+{
+    auto   window = static_cast<GLFWwindow *>(XApplication::Get().get_window().get_nativeWindow());
+    double x, y;
+    glfwGetCursorPos(window, &x, &y);
+    return {static_cast<float>(x), static_cast<float>(y)};
+}
+
+float Input::GetMouseX()
+{
+    auto [x, y] = GetMousePos();
+    return x;
+}
+
+float Input::GetMouseY()
+{
+    auto [x, y] = GetMousePos();
+    return y;
 }
