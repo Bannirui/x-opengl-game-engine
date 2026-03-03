@@ -20,6 +20,9 @@
 
 #include "x/events/event.h"
 
+#include "x/scene/scene.h"
+#include "x/scene/component.h"
+
 // ---Renderer---
 #include "x/renderer/orthographic_camera_controller.h"
 #include "x/renderer/orthographic_camera.h"

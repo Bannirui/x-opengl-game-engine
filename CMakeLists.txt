@@ -33,9 +33,12 @@ include(${LIB_DIRECTORY}/glfw.cmake)
 include(${LIB_DIRECTORY}/imgui.cmake)
 include(${LIB_DIRECTORY}/glm.cmake)
 include(${LIB_DIRECTORY}/stb.cmake)
+include(${LIB_DIRECTORY}/entt.cmake)
 
 set(LIB_NAME "${PROJECT_NAME}-core")
 
+# 引擎
 add_subdirectory(engine)
+# app
 add_subdirectory(sandbox)
 add_subdirectory(Xlnut)

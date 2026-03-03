@@ -6,7 +6,9 @@
 
 #include <glad/glad.h>
 
-OpenGLFramebuffer::OpenGLFramebuffer(const FramebufferSpecification &spec) : m_specification(spec)
+static const uint32_t s_MaxFramebufferSize = 8192;
+
+OpenGLFramebuffer::OpenGLFramebuffer(const FramebufferSpecification& spec) : m_specification(spec)
 {
     Invalidate();
 }
@@ -70,6 +72,12 @@ void OpenGLFramebuffer::Unbind()
 
 void OpenGLFramebuffer::Resize(uint32_t width, uint32_t height)
 {
+    // 校验
+    if (width == 0 || height == 0 || width > s_MaxFramebufferSize || height > s_MaxFramebufferSize)
+    {
+        X_CORE_WARN("Attempted to resize framebuffer to {0}, {1}", width, height);
+        return;
+    }
     m_specification.width  = width;
     m_specification.height = height;
     Invalidate();

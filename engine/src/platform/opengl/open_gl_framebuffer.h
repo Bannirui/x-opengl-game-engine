@@ -9,7 +9,7 @@
 class OpenGLFramebuffer : public FrameBuffer
 {
 public:
-    OpenGLFramebuffer(const FramebufferSpecification &spec);
+    OpenGLFramebuffer(const FramebufferSpecification& spec);
     ~OpenGLFramebuffer() override;
 
     void Invalidate();
@@ -18,7 +18,7 @@ public:
     void                            Unbind() override;
     void                            Resize(uint32_t width, uint32_t height) override;
     uint32_t                        GetColorAttachmentRendererID() const override { return m_colorAttachment; }
-    const FramebufferSpecification &GetSpecification() const override { return m_specification; }
+    const FramebufferSpecification& GetSpecification() const override { return m_specification; }
 
 private:
     uint32_t                 m_rendererID{0};

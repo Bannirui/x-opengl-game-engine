@@ -12,8 +12,10 @@ AllowShortFunctionsOnASingleLine: Inline
 AllowShortIfStatementsOnASingleLine: true
 # 大括号换行风格
 BreakBeforeBraces: Allman
-# left=int* ptr and right=int *ptr
-PointerAlignment: Right
+# 指针和引用符号
+# left=int* ptr
+# right=int *ptr
+PointerAlignment: Left
 SpacesInAngles: false
 SpaceBeforeParens: ControlStatements
 # 命名空间内缩进
