@@ -5,6 +5,7 @@
 #include "x/scene/scene.h"
 
 #include "x/scene/component.h"
+#include "x/scene/entity.h"
 #include "x/core/timestep.h"
 #include "x/renderer/renderer_2D.h"
 
@@ -39,9 +40,13 @@ Scene::Scene()
 
 Scene::~Scene() {}
 
-entt::entity Scene::CreateEntity()
+Entity Scene::CreateEntity(const std::string& name)
 {
-    return m_registry.create();
+    Entity entity = {m_registry.create(), this};
+    entity.AddComponent<TransformComponent>();
+    auto& tag = entity.AddComponent<TagComponent>();
+    tag.m_tag = name.empty() ? "Entity" : name;
+    return entity;
 }
 
 void Scene::OnUpdate(Timestep ts)

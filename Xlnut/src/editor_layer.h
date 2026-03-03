@@ -6,10 +6,11 @@
 
 #include "x/core/layer.h"
 #include "x/renderer/orthographic_camera_controller.h"
+#include "x/scene/entity.h"
 
-#include <entt/entt.hpp>
 #include <glm/glm.hpp>
 
+class Entity;
 class Scene;
 class Texture2D;
 class FrameBuffer;
@@ -36,7 +37,7 @@ private:
     X::Ref<FrameBuffer> m_frameBuffer;
 
     X::Ref<Scene> m_activeScene;
-    entt::entity  m_squareEntity;
+    Entity        m_squareEntity;
 
     X::Ref<Texture2D> m_checkerboardTexture;
     glm::vec2         m_viewportSize = {0.0f, 0.0f};

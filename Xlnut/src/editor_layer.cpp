@@ -16,6 +16,7 @@
 #include "x/renderer/texture.h"
 #include "x/scene/component.h"
 #include "x/scene/scene.h"
+#include "x/scene/entity.h"
 
 EditorLayer::EditorLayer()
     : Layer("EditorLayer"), m_cameraController(1280.0f / 720.0f), m_squareColor({0.2f, 0.3f, 0.4f, 1.0f})
@@ -33,9 +34,10 @@ void EditorLayer::OnAttach()
     m_frameBuffer = FrameBuffer::Create(fbSpec);
 
     m_activeScene = X::CreateRef<Scene>();
-    auto square   = m_activeScene->CreateEntity();
-    m_activeScene->Reg().emplace<TransformComponent>(square);
-    m_activeScene->Reg().emplace<SpriteRendererComponent>(square, glm::vec4{0.0f, 1.0f, 0.0f, 1.0f});
+
+    // Entity
+    auto square = m_activeScene->CreateEntity("Green Square");
+    square.AddComponent<SpriteRendererComponent>(glm::vec4{0.0f, 1.0f, 0.0f, 1.0f});
 
     m_squareEntity = square;
 }
@@ -116,6 +118,7 @@ void EditorLayer::OnImguiRender()
             // Disabling fullscreen would allow the window to be moved to the front of other windows,
             // which we can't undo at the moment without finer window depth/z control.
             // ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen_persistant);
+
             if (ImGui::MenuItem("Exit"))
             {
                 XApplication::Get().Close();
@@ -126,14 +129,25 @@ void EditorLayer::OnImguiRender()
     }
 
     ImGui::Begin("Settings");
+
     auto stats = Renderer2D::GetStats();
     ImGui::Text("Renderer2D Stats:");
     ImGui::Text("Draw Calls: %d", stats.drawCalls);
     ImGui::Text("Quads: %d", stats.quadCount);
     ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
     ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
-    auto& squareColor = m_activeScene->Reg().get<SpriteRendererComponent>(m_squareEntity).m_color;
-    ImGui::ColorEdit4("Square Color", glm::value_ptr(squareColor));
+
+    if (m_squareEntity)
+    {
+        ImGui::Separator();
+        auto& tag = m_squareEntity.GetComponent<TagComponent>().m_tag;
+        ImGui::Text("%s", tag.c_str());
+
+        auto& squareColor = m_squareEntity.GetComponent<SpriteRendererComponent>().m_color;
+        ImGui::ColorEdit4("Square Color", glm::value_ptr(squareColor));
+        ImGui::Separator();
+    }
+
     ImGui::End();
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{0, 0});
@@ -144,9 +158,9 @@ void EditorLayer::OnImguiRender()
     XApplication::Get().get_ImGuiLayer()->BlockEvents(!m_viewportFocused || !m_viewportHovered);
 
     ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-    // 更新让OnUpdate检测进行窗体resize
     m_viewportSize           = {viewportPanelSize.x, viewportPanelSize.y};
-    uint32_t textureID       = m_frameBuffer->GetColorAttachmentRendererID();
+
+    uint32_t textureID = m_frameBuffer->GetColorAttachmentRendererID();
     ImGui::Image(textureID, ImVec2{m_viewportSize.x, m_viewportSize.y}, ImVec2{0, 1}, ImVec2{1, 0});
     ImGui::End();
     ImGui::PopStyleVar();
