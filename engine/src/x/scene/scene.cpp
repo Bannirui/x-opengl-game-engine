@@ -41,8 +41,8 @@ void Scene::OnUpdate(Timestep ts)
             });
     }
     // Render 2D
-    Camera*    mainCamera      = nullptr;
-    glm::mat4* cameraTransform = nullptr;
+    Camera*   mainCamera = nullptr;
+    glm::mat4 cameraTransform;
     {
         auto view = m_registry.view<TransformComponent, CameraComponent>();
         for (auto entity : view)
@@ -51,19 +51,19 @@ void Scene::OnUpdate(Timestep ts)
             if (camera.m_primary)
             {
                 mainCamera      = &camera.m_camera;
-                cameraTransform = &transform.m_transform;
+                cameraTransform = transform.GetTransform();
                 break;
             }
         }
     }
     if (mainCamera)
     {
-        Renderer2D::BeginScene(*mainCamera, *cameraTransform);
+        Renderer2D::BeginScene(*mainCamera, cameraTransform);
         auto group = m_registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
         for (auto entity : group)
         {
             auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-            Renderer2D::DrawQuad(transform, sprite.m_color);
+            Renderer2D::DrawQuad(transform.GetTransform(), sprite.m_color);
         }
         Renderer2D::EndScene();
     }

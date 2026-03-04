@@ -5,9 +5,9 @@
 #pragma once
 
 #include "pch.h"
-#include "x/core/timestep.h"
 
 #include <glm/glm.hpp>
+#include <glm/ext/matrix_transform.hpp>
 
 #include "x/scene/scene_camera.h"
 #include "x/scene/scriptable_entity.h"
@@ -23,14 +23,21 @@ struct TagComponent
 
 struct TransformComponent
 {
-    glm::mat4 m_transform{1.0f};
+    glm::vec3 m_translation{0.0f};
+    glm::vec3 m_rotation{0.0f};
+    glm::vec3 m_scale{1.0f};
 
     TransformComponent()                          = default;
     TransformComponent(const TransformComponent&) = default;
-    TransformComponent(const glm::mat4& transform) : m_transform(transform) {}
+    TransformComponent(const glm::vec3& translation) : m_translation(translation) {}
 
-    operator glm::mat4&() { return m_transform; }
-    operator const glm::mat4&() const { return m_transform; }
+    glm::mat4 GetTransform() const
+    {
+        glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), m_rotation.x, {1, 0, 0}) *
+                             glm::rotate(glm::mat4(1.0f), m_rotation.y, {0, 1, 0}) *
+                             glm::rotate(glm::mat4(1.0f), m_rotation.z, {0, 0, 1});
+        return glm::translate(glm::mat4(1.0f), m_translation) * rotation * glm::scale(glm::mat4(1.0f), m_scale);
+    }
 };
 
 struct SpriteRendererComponent

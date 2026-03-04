@@ -6,7 +6,8 @@
 
 #include <entt/entt.hpp>
 
-class Timestep;
+#include "x/core/timestep.h"
+
 class Entity;
 
 class Scene

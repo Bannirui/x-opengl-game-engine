@@ -40,7 +40,7 @@ void EditorLayer::OnAttach()
     auto square = m_activeScene->CreateEntity("Green Square");
     square.AddComponent<SpriteRendererComponent>(glm::vec4{0.0f, 1.0f, 0.0f, 1.0f});
     auto redSquare = m_activeScene->CreateEntity("Red Square");
-    redSquare.AddComponent<SpriteRendererComponent>(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
+    redSquare.AddComponent<SpriteRendererComponent>(glm::vec4{1.0f, 0.0f, 0.0f, 1.0f});
     m_squareEntity = square;
 
     m_cameraEntity = m_activeScene->CreateEntity("Camera A");
@@ -55,29 +55,29 @@ void EditorLayer::OnAttach()
     public:
         void OnCreate() override
         {
-            auto& transform = GetComponent<TransformComponent>().m_transform;
-            transform[3][0] = rand() % 10 - 5.0f;
+            auto& translation = GetComponent<TransformComponent>().m_translation;
+            translation.x     = rand() % 10 - 5.0f;
         }
         void OnDestroy() override {}
         void OnUpdate(Timestep ts) override
         {
-            auto& transform = GetComponent<TransformComponent>().m_transform;
+            auto& translation = GetComponent<TransformComponent>().m_translation;
             float speed{5.0f};
             if (Input::IsKeyPressed(X_KEY::A))
             {
-                transform[3][0] -= speed * ts;
+                translation.x -= speed * ts;
             }
             if (Input::IsKeyPressed(X_KEY::D))
             {
-                transform[3][0] += speed * ts;
+                translation.x += speed * ts;
             }
             if (Input::IsKeyPressed(X_KEY::W))
             {
-                transform[3][1] += speed * ts;
+                translation.y += speed * ts;
             }
             if (Input::IsKeyPressed(X_KEY::S))
             {
-                transform[3][1] -= speed * ts;
+                translation.y -= speed * ts;
             }
         }
     };
