@@ -43,10 +43,10 @@ void EditorLayer::OnAttach()
     redSquare.AddComponent<SpriteRendererComponent>(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
     m_squareEntity = square;
 
-    m_cameraEntity = m_activeScene->CreateEntity("Camera Entity");
+    m_cameraEntity = m_activeScene->CreateEntity("Camera A");
     m_cameraEntity.AddComponent<CameraComponent>();
 
-    m_secondCamera = m_activeScene->CreateEntity("Clip-Space Entity");
+    m_secondCamera = m_activeScene->CreateEntity("Camera B");
     auto& cc       = m_secondCamera.AddComponent<CameraComponent>();
     cc.m_primary   = false;
 
@@ -176,7 +176,7 @@ void EditorLayer::OnImguiRender()
 
     m_sceneHierarchyPanel.OnImGuiRender();
 
-    ImGui::Begin("Settings");
+    ImGui::Begin("Stats");
 
     auto stats = Renderer2D::GetStats();
     ImGui::Text("Renderer2D Stats:");
@@ -184,33 +184,6 @@ void EditorLayer::OnImguiRender()
     ImGui::Text("Quads: %d", stats.quadCount);
     ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
     ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
-
-    if (m_squareEntity)
-    {
-        ImGui::Separator();
-        auto& tag = m_squareEntity.GetComponent<TagComponent>().m_tag;
-        ImGui::Text("%s", tag.c_str());
-
-        auto& squareColor = m_squareEntity.GetComponent<SpriteRendererComponent>().m_color;
-        ImGui::ColorEdit4("Square Color", glm::value_ptr(squareColor));
-        ImGui::Separator();
-    }
-
-    ImGui::DragFloat3("Camera Transform",
-                      glm::value_ptr(m_cameraEntity.GetComponent<TransformComponent>().m_transform[3]));
-    if (ImGui::Checkbox("CameraA", &m_primaryCamera))
-    {
-        m_cameraEntity.GetComponent<CameraComponent>().m_primary = m_primaryCamera;
-        m_secondCamera.GetComponent<CameraComponent>().m_primary = !m_primaryCamera;
-    }
-    {
-        auto& camera    = m_secondCamera.GetComponent<CameraComponent>().m_camera;
-        float orthoSize = camera.get_orthographicSize();
-        if (ImGui::DragFloat("Second Camera Ortho Size", &orthoSize))
-        {
-            camera.SetOrthographicSize(orthoSize);
-        }
-    }
     ImGui::End();
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{0, 0});
