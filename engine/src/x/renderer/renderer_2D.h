@@ -59,5 +59,6 @@ public:
     static Statistics GetStats();
 
 private:
-    static void FlushAndReset();
+    static void startBatch();
+    static void nextBatch();
 };
