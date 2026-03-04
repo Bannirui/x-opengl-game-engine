@@ -32,6 +32,7 @@ public:
     void End();
 
     void BlockEvents(bool block) { m_blockEvents = block; }
+    void SetDarkTheme();
 
 private:
     // todo

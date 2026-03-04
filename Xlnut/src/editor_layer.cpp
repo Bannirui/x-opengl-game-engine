@@ -157,6 +157,11 @@ void EditorLayer::OnImguiRender()
     if (opt_fullscreen) ImGui::PopStyleVar(2);
 
     // DockSpace
+    ImGuiStyle& style       = ImGui::GetStyle();
+    float       minWinSizeX = style.WindowMinSize.x;
+    style.WindowMinSize.x   = 370.0f;
+
+    style.WindowMinSize.x = minWinSizeX;
     if (ImGui::BeginMenuBar())
     {
         if (ImGui::BeginMenu("File"))
