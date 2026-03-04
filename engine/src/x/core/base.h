@@ -22,34 +22,12 @@
 #    define X_DEBUGBREAK()
 #endif
 
-// 没有开启开关的时候支持无参数
-#ifdef X_ENABLE_ASSERTS
-#    define X_ASSERT(x, ...)                                   \
-        {                                                      \
-            if (!(x))                                          \
-            {                                                  \
-                X_ERROR("Assertion Failed: {0}", __VA_ARGS__); \
-                X_DEBUGBREAK();                                \
-            }                                                  \
-        }
-#    define X_CORE_ASSERT(x, ...)                                   \
-        {                                                           \
-            if (!(x))                                               \
-            {                                                       \
-                X_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); \
-                X_DEBUGBREAK();                                     \
-            }                                                       \
-        }
-#else
-#    define X_ASSERT(x, ...) ((void)(x))
-#    define X_CORE_ASSERT(x, ...) ((void)(x))
-#endif
+// ---------- stringify ----------
+#define X_EXPAND_MACRO(x) x
+#define X_STRINGIFY_MACRO(x) #x
+#define STR(x) X_STRINGIFY_MACRO(x)
 
 #define BIT(x) (1 << x)
-
-// ---------- stringify ----------
-#define STR_IMPL(x) #x
-#define STR(x) STR_IMPL(x)
 
 #ifndef X_GL_VERSION_MAJOR
 #    define X_GL_VERSION_MAJOR 3
@@ -86,3 +64,6 @@ namespace X
         return std::make_shared<T>(std::forward<Args>(args)...);
     }
 }  // namespace X
+
+#include "x/core/x_log.h"
+#include "x/core/x_assert.h"

@@ -173,10 +173,10 @@ std::string OpenGLShader::readFile(const std::string &filepath)
     X_PROFILE_FUNCTION();
     std::string   ret;
     std::ifstream in(filepath, std::ios::in | std::ios::binary); // ifstream closes itself due to RAII
-    X_CORE_ASSERT(in, "Could not open file {}", filepath);
+    X_CORE_ASSERT(in, "Could not open file");
     in.seekg(0, std::ios::end);
     size_t size = in.tellg();
-    X_CORE_ASSERT(size != 1, "Could not read from file {}", filepath);
+    X_CORE_ASSERT(size != 1, "Could not read from file");
     ret.resize(size);
     in.seekg(0, std::ios::beg);
     in.read(&ret[0], ret.size());

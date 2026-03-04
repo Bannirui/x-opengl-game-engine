@@ -58,7 +58,6 @@ void Scene::OnUpdate(Timestep ts)
     }
     if (mainCamera)
     {
-        // todo
         Renderer2D::BeginScene(*mainCamera, *cameraTransform);
         auto group = m_registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
         for (auto entity : group)

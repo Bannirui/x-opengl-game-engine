@@ -10,6 +10,7 @@
 
 #include "x/core/x_application.h"
 #include "x/core/x_log.h"
+#include "x/core/x_assert.h"
 #include "x/core/layer.h"
 #include "x/core/input.h"
 #include "x/core/key_codes.h"
