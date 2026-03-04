@@ -4,13 +4,12 @@
 
 #include "editor_layer.h"
 
-#include "x/core/input.h"
-#include "x/core/x_application.h"
-#include "x/imgui/im_gui_layer.h"
-
 #include <imgui.h>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "x/core/input.h"
+#include "x/core/x_application.h"
+#include "x/imgui/im_gui_layer.h"
 #include "x/renderer/frame_buffer.h"
 #include "x/renderer/render_command.h"
 #include "x/renderer/renderer_2D.h"
@@ -37,6 +36,7 @@ void EditorLayer::OnAttach()
 
     m_activeScene = X::CreateRef<Scene>();
 
+    // Entity
     auto square = m_activeScene->CreateEntity("Green Square");
     square.AddComponent<SpriteRendererComponent>(glm::vec4{0.0f, 1.0f, 0.0f, 1.0f});
     m_squareEntity = square;
@@ -81,6 +81,7 @@ void EditorLayer::OnAttach()
     };
     m_cameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
     m_secondCamera.AddComponent<NativeScriptComponent>().Bind<CameraController>();
+    m_sceneHierarchyPanel.set_context(m_activeScene);
 }
 
 void EditorLayer::OnDetach()
@@ -170,6 +171,8 @@ void EditorLayer::OnImguiRender()
         }
         ImGui::EndMenuBar();
     }
+
+    m_sceneHierarchyPanel.OnImGuiRender();
 
     ImGui::Begin("Settings");
 

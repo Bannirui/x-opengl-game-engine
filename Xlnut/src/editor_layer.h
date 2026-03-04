@@ -4,11 +4,13 @@
 
 #pragma once
 
+#include <glm/glm.hpp>
+
 #include "x/core/layer.h"
 #include "x/renderer/orthographic_camera_controller.h"
 #include "x/scene/entity.h"
 
-#include <glm/glm.hpp>
+#include "panel/scene_hierarchy_panel.h"
 
 class Entity;
 class Scene;
@@ -46,4 +48,7 @@ private:
     glm::vec2         m_viewportSize = {0.0f, 0.0f};
     bool              m_viewportFocused{false}, m_viewportHovered{false};
     glm::vec4         m_squareColor = {0.2f, 0.3f, 0.8f, 1.0f};
+
+    // Panel
+    SceneHierarchyPanel m_sceneHierarchyPanel;
 };

@@ -21,6 +21,9 @@ public:
     void OnUpdate(Timestep ts);
     void OnViewportResize(uint32_t width, uint32_t height);
 
+    entt::registry&       get_registry() { return m_registry; }
+    const entt::registry& get_registry() const { return m_registry; }
+
 private:
     entt::registry m_registry;
     uint32_t       m_viewportWidth{0}, m_viewportHeight{0};
