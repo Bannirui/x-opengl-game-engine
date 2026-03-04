@@ -6,9 +6,9 @@
 
 #include <glm/glm.hpp>
 
-#include "x/core/layer.h"
-#include "x/renderer/orthographic_camera_controller.h"
-#include "x/scene/entity.h"
+#include <x/core/layer.h>
+#include <x/renderer/orthographic_camera_controller.h>
+#include <x/scene/entity.h>
 
 #include "panel/scene_hierarchy_panel.h"
 

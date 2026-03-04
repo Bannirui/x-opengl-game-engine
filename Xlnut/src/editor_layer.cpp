@@ -7,16 +7,17 @@
 #include <imgui.h>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "x/core/input.h"
-#include "x/core/x_application.h"
-#include "x/imgui/im_gui_layer.h"
-#include "x/renderer/frame_buffer.h"
-#include "x/renderer/render_command.h"
-#include "x/renderer/renderer_2D.h"
-#include "x/renderer/texture.h"
-#include "x/scene/component.h"
-#include "x/scene/scene.h"
-#include "x/scene/entity.h"
+#include <x/core/input.h>
+#include <x/core/x_application.h>
+#include <x/imgui/im_gui_layer.h>
+#include <x/renderer/frame_buffer.h>
+#include <x/renderer/render_command.h>
+#include <x/renderer/renderer_2D.h>
+#include <x/renderer/texture.h>
+#include <x/scene/component.h>
+#include <x/scene/scene.h>
+#include <x/scene/entity.h>
+#include <x/scene/scene_serializer.h>
 
 EditorLayer::EditorLayer()
     : Layer("EditorLayer"), m_cameraController(1280.0f / 720.0f), m_squareColor({0.2f, 0.3f, 0.4f, 1.0f})
@@ -36,6 +37,7 @@ void EditorLayer::OnAttach()
 
     m_activeScene = X::CreateRef<Scene>();
 
+#if 0
     // Entity
     auto square = m_activeScene->CreateEntity("Green Square");
     square.AddComponent<SpriteRendererComponent>(glm::vec4{0.0f, 1.0f, 0.0f, 1.0f});
@@ -83,6 +85,7 @@ void EditorLayer::OnAttach()
     };
     m_cameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
     m_secondCamera.AddComponent<NativeScriptComponent>().Bind<CameraController>();
+#endif
     m_sceneHierarchyPanel.set_context(m_activeScene);
 }
 
@@ -166,10 +169,16 @@ void EditorLayer::OnImguiRender()
     {
         if (ImGui::BeginMenu("File"))
         {
-            // Disabling fullscreen would allow the window to be moved to the front of other windows,
-            // which we can't undo at the moment without finer window depth/z control.
-            // ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen_persistant);
-
+            if (ImGui::MenuItem("Serialize"))
+            {
+                SceneSerializer serializer(m_activeScene);
+                serializer.Serialize("asset/scene/Example.x");
+            }
+            if (ImGui::MenuItem("Deserialize"))
+            {
+                SceneSerializer serializer(m_activeScene);
+                serializer.Deserialize("asset/scene/Example.x");
+            }
             if (ImGui::MenuItem("Exit"))
             {
                 XApplication::Get().Close();

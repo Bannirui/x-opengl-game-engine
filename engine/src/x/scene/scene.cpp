@@ -93,7 +93,7 @@ void Scene::OnViewportResize(uint32_t width, uint32_t height)
 template <typename T>
 void Scene::onComponentAdded(Entity entity, T& component)
 {
-    static_assert(false);
+    X_ASSERT(false, "Not supported");
 }
 
 template <>

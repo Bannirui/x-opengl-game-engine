@@ -34,6 +34,7 @@ include(${LIB_DIRECTORY}/imgui.cmake)
 include(${LIB_DIRECTORY}/glm.cmake)
 include(${LIB_DIRECTORY}/stb.cmake)
 include(${LIB_DIRECTORY}/entt.cmake)
+include(${LIB_DIRECTORY}/yaml_cpp.cmake)
 
 set(LIB_NAME "${PROJECT_NAME}-core")
 
