@@ -21,6 +21,7 @@ public:
 
 private:
     void drawEntityNode(Entity entity);
+    void drawComponents(Entity entity);
 
 private:
     X::Ref<Scene> m_context;

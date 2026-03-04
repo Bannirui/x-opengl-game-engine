@@ -51,13 +51,13 @@ void EditorLayer::OnAttach()
     class CameraController : public ScriptableEntity
     {
     public:
-        void OnCreate()
+        void OnCreate() override
         {
             auto& transform = GetComponent<TransformComponent>().m_transform;
             transform[3][0] = rand() % 10 - 5.0f;
         }
-        void OnDestroy() {}
-        void OnUpdate(Timestep ts)
+        void OnDestroy() override {}
+        void OnUpdate(Timestep ts) override
         {
             auto& transform = GetComponent<TransformComponent>().m_transform;
             float speed{5.0f};
