@@ -52,8 +52,8 @@ public:
         uint32_t drawCalls = 0;
         uint32_t quadCount = 0;
 
-        uint32_t GetTotalVertexCount() { return quadCount * 4; }
-        uint32_t GetTotalIndexCount() { return quadCount * 6; }
+        uint32_t GetTotalVertexCount() const { return quadCount * 4; }
+        uint32_t GetTotalIndexCount() const { return quadCount * 6; }
     };
     static void       ResetStats();
     static Statistics GetStats();

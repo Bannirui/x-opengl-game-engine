@@ -93,7 +93,7 @@ struct BufferElement
 
     BufferElement() = default;
 
-    BufferElement(ShaderDataType type, const std::string &name, bool normalized = false)
+    BufferElement(ShaderDataType type, const std::string& name, bool normalized = false)
         : name(name), type(type), size(ShaderDataTypeSize(type)), offset(0), normalized(normalized)
     {
     }
@@ -124,11 +124,11 @@ struct BufferElement
             }
             case ShaderDataType::kMat3:
             {
-                return 3; // 3*float3
+                return 3;  // 3*float3
             }
             case ShaderDataType::kMat4:
             {
-                return 4; // 4*float4
+                return 4;  // 4*float4
             }
             case ShaderDataType::kInt:
             {
@@ -161,13 +161,13 @@ class BufferLayout
 public:
     BufferLayout() {}
 
-    BufferLayout(const std::initializer_list<BufferElement> &elements) : m_elements(elements)
+    BufferLayout(const std::initializer_list<BufferElement>& elements) : m_elements(elements)
     {
         calculateOffsetsAndStride();
     }
 
     uint32_t                          GetStride() const { return m_stride; }
-    const std::vector<BufferElement> &GetElements() const { return m_elements; }
+    const std::vector<BufferElement>& GetElements() const { return m_elements; }
 
     std::vector<BufferElement>::iterator       begin() { return m_elements.begin(); }
     std::vector<BufferElement>::iterator       end() { return m_elements.end(); }
@@ -179,7 +179,7 @@ private:
     {
         size_t offset = 0;
         m_stride      = 0;
-        for (auto &element : m_elements)
+        for (auto& element : m_elements)
         {
             element.offset = offset;
             offset += element.size;
@@ -201,21 +201,21 @@ public:
     virtual void Bind() const   = 0;
     virtual void Unbind() const = 0;
 
-    virtual const BufferLayout &GetLayout() const                     = 0;
-    virtual void                SetLayout(const BufferLayout &layout) = 0;
+    virtual const BufferLayout& GetLayout() const                     = 0;
+    virtual void                SetLayout(const BufferLayout& layout) = 0;
 
     /**
      * 往空的VBO里面灌数据
      * @param data 要灌的数据
      * @param size 数据多少个字节
      */
-    virtual void SetData(const void *data, uint32_t size) = 0;
+    virtual void SetData(const void* data, uint32_t size) = 0;
 
     /**
      * @param vertices float array
      * @param size how many bytes of the array
      */
-    static X::Ref<VertexBuffer> Create(float *vertices, uint32_t size);
+    static X::Ref<VertexBuffer> Create(float* vertices, uint32_t size);
     /**
      * 空的VBO 没有数据
      * @param size VBO要多大空间 后面再放数据
@@ -239,5 +239,5 @@ public:
      * @param indices VAO数据
      * @param count EBO里面多少个顶点
      */
-    static X::Ref<IndexBuffer> Create(uint32_t *indices, uint32_t count);
+    static X::Ref<IndexBuffer> Create(uint32_t* indices, uint32_t count);
 };
