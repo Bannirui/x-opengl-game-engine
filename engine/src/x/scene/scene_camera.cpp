@@ -13,21 +13,21 @@ SceneCamera::SceneCamera()
 
 SceneCamera::~SceneCamera() {}
 
-void SceneCamera::SetOrthographic(float size, float nearClip, float farClip)
-{
-    m_projectionType   = ProjectionType::Orthographic;
-    m_orthographicSize = size;
-    m_orthographicNear = nearClip;
-    m_orthographicFar  = farClip;
-    recalculateProjection();
-}
-
 void SceneCamera::SetPerspective(float verticalFOV, float nearClip, float farClip)
 {
     m_projectionType  = ProjectionType::Perspective;
     m_perspectiveFOV  = verticalFOV;
     m_perspectiveNear = nearClip;
     m_perspectiveFar  = farClip;
+    recalculateProjection();
+}
+
+void SceneCamera::SetOrthographic(float size, float nearClip, float farClip)
+{
+    m_projectionType   = ProjectionType::Orthographic;
+    m_orthographicSize = size;
+    m_orthographicNear = nearClip;
+    m_orthographicFar  = farClip;
     recalculateProjection();
 }
 

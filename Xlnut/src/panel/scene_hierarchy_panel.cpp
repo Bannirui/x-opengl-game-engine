@@ -114,20 +114,20 @@ void SceneHierarchyPanel::drawComponents(Entity entity)
 
             if (camera.get_projectionType() == SceneCamera::ProjectionType::Perspective)
             {
-                float verticalFov = glm::degrees(camera.get_perspectiveFOV());
-                if (ImGui::DragFloat("Vertical FOV", &verticalFov))
+                float perspectiveVerticalFov = glm::degrees(camera.get_perspectiveFOV());
+                if (ImGui::DragFloat("Vertical FOV", &perspectiveVerticalFov))
                 {
-                    camera.SetPerspectiveFOV(glm::radians(verticalFov));
+                    camera.SetPerspectiveFOV(glm::radians(perspectiveVerticalFov));
                 }
-                float orthoNear = camera.get_perspectiveNearClip();
-                if (ImGui::DragFloat("Near", &orthoNear))
+                float perspectiveNear = camera.get_perspectiveNearClip();
+                if (ImGui::DragFloat("Near", &perspectiveNear))
                 {
-                    camera.SetPerspectiveNearClip(orthoNear);
+                    camera.SetPerspectiveNearClip(perspectiveNear);
                 }
-                float orthoFar = camera.get_perspectiveFarClip();
-                if (ImGui::DragFloat("Far", &orthoFar))
+                float perspectiveFar = camera.get_perspectiveFarClip();
+                if (ImGui::DragFloat("Far", &perspectiveFar))
                 {
-                    camera.SetPerspectiveFarClip(orthoFar);
+                    camera.SetPerspectiveFarClip(perspectiveFar);
                 }
             }
             if (camera.get_projectionType() == SceneCamera::ProjectionType::Orthographic)
