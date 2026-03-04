@@ -17,6 +17,7 @@ public:
     ~Scene();
 
     Entity          CreateEntity(const std::string& name = std::string());
+    void            DestroyEntity(Entity entity);
     entt::registry& Reg() { return m_registry; }
 
     void OnUpdate(Timestep ts);
@@ -24,6 +25,10 @@ public:
 
     entt::registry&       get_registry() { return m_registry; }
     const entt::registry& get_registry() const { return m_registry; }
+
+private:
+    template <typename T>
+    void onComponentAdded(Entity entity, T& component);
 
 private:
     entt::registry m_registry;

@@ -24,6 +24,11 @@ Entity Scene::CreateEntity(const std::string& name)
     return entity;
 }
 
+void Scene::DestroyEntity(Entity entity)
+{
+    m_registry.destroy(entity);
+}
+
 void Scene::OnUpdate(Timestep ts)
 {
     // Update scripts
@@ -83,4 +88,36 @@ void Scene::OnViewportResize(uint32_t width, uint32_t height)
             cameraComponent.m_camera.SetViewportSize(width, height);
         }
     }
+}
+
+template <typename T>
+void Scene::onComponentAdded(Entity entity, T& component)
+{
+    static_assert(false);
+}
+
+template <>
+void Scene::onComponentAdded<TransformComponent>(Entity entity, TransformComponent& component)
+{
+}
+
+template <>
+void Scene::onComponentAdded<CameraComponent>(Entity entity, CameraComponent& component)
+{
+    component.m_camera.SetViewportSize(m_viewportWidth, m_viewportHeight);
+}
+
+template <>
+void Scene::onComponentAdded<SpriteRendererComponent>(Entity entity, SpriteRendererComponent& component)
+{
+}
+
+template <>
+void Scene::onComponentAdded<TagComponent>(Entity entity, TagComponent& component)
+{
+}
+
+template <>
+void Scene::onComponentAdded<NativeScriptComponent>(Entity entity, NativeScriptComponent& component)
+{
 }

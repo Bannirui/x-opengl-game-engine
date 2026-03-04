@@ -21,7 +21,9 @@ public:
     T& AddComponent(Args&&... args)
     {
         X_CORE_ASSERT(!HasComponent<T>(), "Entity already has component!");
-        return m_scene->m_registry.emplace<T>(m_entityHandle, std::forward<Args>(args)...);
+        T& component = m_scene->m_registry.emplace<T>(m_entityHandle, std::forward<Args>(args)...);
+        m_scene->onComponentAdded<T>(*this, component);
+        return component;
     }
 
     template <typename T>
@@ -40,12 +42,13 @@ public:
     template <typename T>
     void RemoveComponent()
     {
-        HZ_CORE_ASSERT(HasComponent<T>(), "Entity does not have component!");
+        X_CORE_ASSERT(HasComponent<T>(), "Entity does not have component!");
         m_scene->m_registry.remove<T>(m_entityHandle);
     }
 
     // 转换
     operator bool() const { return m_entityHandle != entt::null; }
+    operator entt::entity() const { return m_entityHandle; }
     operator uint32_t() const { return static_cast<uint32_t>(m_entityHandle); }
     // 比较
     bool operator==(const Entity& other) const
