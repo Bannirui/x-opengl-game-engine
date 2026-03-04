@@ -47,7 +47,7 @@ enum EventCategory
     {                                               \
         return GetStaticType();                     \
     }                                               \
-    virtual const char *GetName() const override    \
+    virtual const char* GetName() const override    \
     {                                               \
         return #type;                               \
     }
@@ -63,11 +63,11 @@ class Event
     friend class EventDispatcher;
 
 public:
-    virtual ~Event()                       = default;
+    virtual ~Event() = default;
 
-    virtual EventType GetEventType() const = 0;
-    virtual const char *GetName() const = 0;
-    virtual int GetCategory() const = 0;
+    virtual EventType   GetEventType() const = 0;
+    virtual const char* GetName() const      = 0;
+    virtual int         GetCategory() const  = 0;
 
     virtual std::string ToString() const { return GetName(); }
 
@@ -83,24 +83,24 @@ public:
 class EventDispatcher
 {
 public:
-    EventDispatcher(Event &event) : m_event(event) {}
+    EventDispatcher(Event& event) : m_event(event) {}
 
     template <typename T, typename F>
-    bool Dispatch(const F &func)
+    bool Dispatch(const F& func)
     {
         if (m_event.GetEventType() == T::GetStaticType())
         {
-            m_event.Handled = func(static_cast<T &>(m_event));
+            m_event.Handled |= func(static_cast<T&>(m_event));
             return true;
         }
         return false;
     }
 
 private:
-    Event &m_event;
+    Event& m_event;
 };
 
-inline std::ostream &operator<<(std::ostream &os, const Event &e)
+inline std::ostream& operator<<(std::ostream& os, const Event& e)
 {
     return os << e.ToString();
 }
@@ -109,7 +109,7 @@ inline std::ostream &operator<<(std::ostream &os, const Event &e)
 template <typename T>
 struct fmt::formatter<T, std::enable_if_t<std::is_base_of<Event, T>::value, char>> : fmt::formatter<std::string>
 {
-    auto format(const Event &e, format_context &ctx) const
+    auto format(const Event& e, format_context& ctx) const
     {
         return fmt::formatter<std::string>::format(e.ToString(), ctx);
     }
