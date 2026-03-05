@@ -4,7 +4,7 @@
 
 #include "scene_hierarchy_panel.h"
 
-#include "x/scene/component.h"
+#include <x/scene/component.h>
 
 #include <imgui.h>
 #include <imgui_internal.h>
@@ -211,20 +211,36 @@ void SceneHierarchyPanel::drawComponents(Entity entity)
     ImGui::SameLine();
     ImGui::PushItemWidth(-1);
 
-    if (ImGui::Button("Add Component")) ImGui::OpenPopup("AddComponent");
+    if (ImGui::Button("Add Component"))
+    {
+        ImGui::OpenPopup("AddComponent");
+    }
 
     if (ImGui::BeginPopup("AddComponent"))
     {
         if (ImGui::MenuItem("Camera"))
-
         {
-            m_selectionContext.AddComponent<CameraComponent>();
+            if (!m_selectionContext.HasComponent<CameraComponent>())
+            {
+                m_selectionContext.AddComponent<CameraComponent>();
+            }
+            else
+            {
+                X_CORE_WARN("This entity already has the Camera Component!");
+            }
             ImGui::CloseCurrentPopup();
         }
 
         if (ImGui::MenuItem("Sprite Renderer"))
         {
-            m_selectionContext.AddComponent<SpriteRendererComponent>();
+            if (!m_selectionContext.HasComponent<SpriteRendererComponent>())
+            {
+                m_selectionContext.AddComponent<SpriteRendererComponent>();
+            }
+            else
+            {
+                X_CORE_WARN("This entity already has the Sprite Renderer Component!");
+            }
             ImGui::CloseCurrentPopup();
         }
 

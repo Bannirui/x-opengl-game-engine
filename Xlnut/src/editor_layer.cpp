@@ -4,12 +4,11 @@
 
 #include "editor_layer.h"
 
-#include "x/events/event.h"
-#include "x/scene/scene_serializer.h"
-
 #include <imgui.h>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <x/events/event.h>
+#include <x/scene/scene_serializer.h>
 #include <x/core/mac_input.h>
 #include <x/core/x_application.h>
 #include <x/imgui/im_gui_layer.h>

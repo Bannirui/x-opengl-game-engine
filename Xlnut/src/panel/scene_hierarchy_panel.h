@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include "x/core/base.h"
+#include <x/core/base.h>
 
-#include "x/scene/entity.h"
+#include <x/scene/entity.h>
 
 class Scene;
 
