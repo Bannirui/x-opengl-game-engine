@@ -19,6 +19,19 @@ add_library(${LIB_NAME} STATIC
         ${SRCS}
 )
 
+# macOS Objective-C++
+if(APPLE)
+    target_sources(${LIB_NAME} PRIVATE
+            src/platform/mac/mac_platform_util.mm
+    )
+    # cpp+pch+object-c不能搭配 不让mm文件使用pch
+    set_source_files_properties(
+            src/platform/mac/mac_platform_util.mm
+            PROPERTIES
+            SKIP_PRECOMPILE_HEADERS ON
+    )
+endif()
+
 target_include_directories(${LIB_NAME}
     PUBLIC
         ${HDR_DIR}

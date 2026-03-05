@@ -82,7 +82,7 @@ YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec4& v)
 static void serializeEntity(YAML::Emitter& out, Entity entity)
 {
     out << YAML::BeginMap;
-    out << YAML::Key << "Entity" << YAML::Value << "123";  // todo
+    out << YAML::Key << "Entity" << YAML::Value << "123456789";  // todo
     if (entity.HasComponent<TagComponent>())
     {
         out << YAML::Key << "TagComponent";

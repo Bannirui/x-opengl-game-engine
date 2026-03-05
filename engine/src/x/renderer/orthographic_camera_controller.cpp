@@ -4,7 +4,7 @@
 
 #include "x/renderer/orthographic_camera_controller.h"
 
-#include "x/core/input.h"
+#include "x/core/mac_input.h"
 #include "x/core/key_codes.h"
 #include "x/events/application_event.h"
 #include "x/events/event.h"

@@ -36,7 +36,10 @@ CommentPragmas: '^ IWYU pragma:'
 AccessModifierOffset: -4
 
 # 宏定义体缩进
-IndentPPDirectives: AfterHash
+# None 永远顶格
+# BeforeHash #include随代码块缩进
+# AfterHash #跟关键字会分开
+IndentPPDirectives: BeforeHash
 
 # 宏内部是否缩进
 IndentWrappedFunctionNames: false

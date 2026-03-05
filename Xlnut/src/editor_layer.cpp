@@ -4,19 +4,22 @@
 
 #include "editor_layer.h"
 
+#include "x/events/event.h"
+#include "x/scene/scene_serializer.h"
+
 #include <imgui.h>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <x/core/input.h>
+#include <x/core/mac_input.h>
 #include <x/core/x_application.h>
 #include <x/imgui/im_gui_layer.h>
 #include <x/renderer/frame_buffer.h>
 #include <x/renderer/render_command.h>
 #include <x/renderer/renderer_2D.h>
 #include <x/renderer/texture.h>
-#include <x/scene/component.h>
 #include <x/scene/scene.h>
-#include <x/scene/entity.h>
+#include <x/util/platform_util.h>
+#include <x/events/key_event.h>
 #include <x/scene/scene_serializer.h>
 
 EditorLayer::EditorLayer()
@@ -169,15 +172,17 @@ void EditorLayer::OnImguiRender()
     {
         if (ImGui::BeginMenu("File"))
         {
-            if (ImGui::MenuItem("Serialize"))
+            if (ImGui::MenuItem("New", "Ctrl+N"))
             {
-                SceneSerializer serializer(m_activeScene);
-                serializer.Serialize("asset/scene/Example.x");
+                newScene();
             }
-            if (ImGui::MenuItem("Deserialize"))
+            if (ImGui::MenuItem("Open...", "Ctrl+O"))
             {
-                SceneSerializer serializer(m_activeScene);
-                serializer.Deserialize("asset/scene/Example.x");
+                openScene();
+            }
+            if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
+            {
+                saveSceneAs();
             }
             if (ImGui::MenuItem("Exit"))
             {
@@ -222,4 +227,82 @@ void EditorLayer::OnImguiRender()
 void EditorLayer::OnEvent(Event& e)
 {
     m_cameraController.OnEvent(e);
+    EventDispatcher dispatcher(e);
+    dispatcher.Dispatch<KeyPressEvent>(
+        [this](KeyPressEvent& e)
+        {
+            return this->onKeyPressed(e);
+        });
+}
+
+bool EditorLayer::onKeyPressed(KeyPressEvent& e)
+{
+    if (e.is_repeat())
+    {
+        return false;
+    }
+    bool control = Input::IsKeyPressed(X_KEY::LeftControl) || Input::IsKeyPressed(X_KEY::RightControl);
+    bool shift   = Input::IsKeyPressed(X_KEY::LeftShift) || Input::IsKeyPressed(X_KEY::RightShift);
+    switch (e.get_keyCode())
+    {
+        case X_KEY::N:
+        {
+            if (control)
+            {
+                // ctrl+N
+                newScene();
+            }
+            break;
+        }
+        case X_KEY::O:
+        {
+            if (control)
+            {
+                // ctrl+N
+                openScene();
+            }
+            break;
+        }
+        case X_KEY::S:
+        {
+            if (control && shift)
+            {
+                // ctrl+shift+S
+                saveSceneAs();
+            }
+            break;
+        }
+    }
+    return true;
+}
+
+void EditorLayer::newScene()
+{
+    m_activeScene = X::CreateRef<Scene>();
+    m_activeScene->OnViewportResize((uint32_t)m_viewportSize.x, (uint32_t)m_viewportSize.y);
+    m_sceneHierarchyPanel.set_context(m_activeScene);
+}
+
+void EditorLayer::openScene()
+{
+    std::string filepath = FileDialog::OpenFile("Hazel Scene (*.hazel)\0*.hazel\0");
+    if (!filepath.empty())
+    {
+        m_activeScene = X::CreateRef<Scene>();
+        m_activeScene->OnViewportResize((uint32_t)m_viewportSize.x, (uint32_t)m_viewportSize.y);
+        m_sceneHierarchyPanel.set_context(m_activeScene);
+
+        SceneSerializer serializer(m_activeScene);
+        serializer.Deserialize(filepath);
+    }
+}
+
+void EditorLayer::saveSceneAs()
+{
+    std::string filepath = FileDialog::SaveFile("Hazel Scene (*.hazel)\0*.hazel\0");
+    if (!filepath.empty())
+    {
+        SceneSerializer serializer(m_activeScene);
+        serializer.Serialize(filepath);
+    }
 }

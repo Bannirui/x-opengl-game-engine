@@ -12,7 +12,7 @@
 #include "x/core/x_log.h"
 #include "x/core/x_assert.h"
 #include "x/core/layer.h"
-#include "x/core/input.h"
+#include "x/core/mac_input.h"
 #include "x/core/key_codes.h"
 #include "x/core/mouse_codes.h"
 #include "x/core/timestep.h"

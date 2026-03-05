@@ -2,7 +2,9 @@
 // Created by rui ding on 2026/2/26.
 //
 
-#include "x/core/input.h"
+#ifdef __linux__
+
+#include "x/core/mac_input.h"
 
 #include "x/window.h"
 #include "x/core/x_application.h"
@@ -38,3 +40,5 @@ float Input::GetMouseY()
 {
     return GetMousePos().y;
 }
+
+#endif

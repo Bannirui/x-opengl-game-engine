@@ -10,16 +10,16 @@
 
 // 调试开关
 #ifdef X_DEBUG
-#    if defined(X_PLATFORM_WINDOWS)
-#        define X_DEBUGBREAK() __debugbreak()
-#    elif defined(X_PLATFORM_MAC) || defined(X_PLATFORM_LINUX)
-#        include <csignal>
-#        define X_DEBUGBREAK() raise(SIGTRAP)
-#    else
-#        error "Debugbreak not implemented for this platform"
-#    endif
+    #if defined(X_PLATFORM_WINDOWS)
+        #define X_DEBUGBREAK() __debugbreak()
+    #elif defined(X_PLATFORM_MAC) || defined(X_PLATFORM_LINUX)
+        #include <csignal>
+        #define X_DEBUGBREAK() raise(SIGTRAP)
+    #else
+        #error "Debugbreak not implemented for this platform"
+    #endif
 #else
-#    define X_DEBUGBREAK()
+    #define X_DEBUGBREAK()
 #endif
 
 // ---------- stringify ----------
@@ -30,11 +30,11 @@
 #define BIT(x) (1 << x)
 
 #ifndef X_GL_VERSION_MAJOR
-#    define X_GL_VERSION_MAJOR 3
+    #define X_GL_VERSION_MAJOR 3
 #endif
 
 #ifndef X_GL_VERSION_MINOR
-#    define X_GL_VERSION_MINOR 3
+    #define X_GL_VERSION_MINOR 3
 #endif
 
 // ---------- GLSL version ----------

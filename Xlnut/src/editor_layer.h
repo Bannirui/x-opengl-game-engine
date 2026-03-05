@@ -12,6 +12,7 @@
 
 #include "panel/scene_hierarchy_panel.h"
 
+class KeyPressEvent;
 class Entity;
 class Scene;
 class Texture2D;
@@ -30,6 +31,13 @@ public:
     void OnUpdate(Timestep ts) override;
     void OnImguiRender() override;
     void OnEvent(Event& e) override;
+
+private:
+    bool onKeyPressed(KeyPressEvent& e);
+
+    void newScene();
+    void openScene();
+    void saveSceneAs();
 
 private:
     OrthographicCameraController m_cameraController;
