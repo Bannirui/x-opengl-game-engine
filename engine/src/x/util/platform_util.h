@@ -4,7 +4,8 @@
 
 #pragma once
 
-#include "pch.h"
+// 跨平台mac上是object-c pch+cpp+object-c的时候object-c不支持pch 要在make编译排除 直接不引用pch就行
+#include <string>
 
 class FileDialog
 {
