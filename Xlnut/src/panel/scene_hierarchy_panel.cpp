@@ -121,7 +121,7 @@ SceneHierarchyPanel::SceneHierarchyPanel(const X::Ref<Scene>& scene)
 
 void SceneHierarchyPanel::set_context(const X::Ref<Scene>& scene)
 {
-    m_context = scene;
+    m_context          = scene;
     m_selectionContext = {};
 }
 
@@ -201,7 +201,7 @@ void SceneHierarchyPanel::drawComponents(Entity entity)
         auto& tag = entity.GetComponent<TagComponent>().m_tag;
         char  buffer[256];
         memset(buffer, 0, sizeof(buffer));
-        std::snprintf(buffer, sizeof(buffer), "%s", tag.c_str());
+        std::strncpy(buffer, tag.c_str(), sizeof(buffer));
         if (ImGui::InputText("##Tag", buffer, sizeof(buffer)))
         {
             tag = std::string(buffer);
