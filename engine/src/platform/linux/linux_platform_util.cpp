@@ -4,44 +4,43 @@
 
 #ifdef __linux__
 
+    #include "hzpch.h"
     #include "x/util/platform_util.h"
-    #include "pch.h"
 
     #include <cstdio>
-    #include <memory>
     #include <array>
+    #include <memory>
 
-static std::string ExecCommand(const char* cmd)
+static std::optional<std::string> ExecCommand(const char* cmd)
 {
-    std::array<char, 256> buffer;
+    std::array<char, 256> buffer{};
     std::string           result;
-
-    FILE* pipe = popen(cmd, "r");
-    if (!pipe) { return ""; }
-    while (fgets(buffer.data(), buffer.size(), pipe) != nullptr)
+    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);
+    if (!pipe) { return std::nullopt; }
+    while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr)
     {
         result += buffer.data();
     }
-    pclose(pipe);
-    // remove newline
-    if (!result.empty() && result.back() == '\n') { result.pop_back(); }
+    if (result.empty()) { return std::nullopt; }
+    // remove trailing newline
+    if (result.back() == '\n') { result.pop_back(); }
     return result;
 }
 
-std::string FileDialogs::OpenFile(const char* filter)
+std::optional<std::string> FileDialogs::OpenFile(const char* filter)
 {
     std::string command = "zenity --file-selection";
-    std::string path = ExecCommand(command.c_str());
-    if (path.empty()) { return {}; }
-    return path;
+    auto result = ExecCommand(command.c_str());
+    if (result) { return result; }
+    return std::nullopt;
 }
 
-std::string FileDialogs::SaveFile(const char* filter)
+std::optional<std::string> FileDialogs::SaveFile(const char* filter)
 {
     std::string command = "zenity --file-selection --save --confirm-overwrite";
-    std::string path = ExecCommand(command.c_str());
-    if (path.empty()) { return {}; }
-    return path;
+    auto result = ExecCommand(command.c_str());
+    if (result) { return result; }
+    return std::nullopt;
 }
 
 #endif

@@ -285,24 +285,24 @@ void EditorLayer::newScene()
 
 void EditorLayer::openScene()
 {
-    std::string filepath = FileDialog::OpenFile("Hazel Scene (*.hazel)\0*.hazel\0");
-    if (!filepath.empty())
+    std::optional<std::string> filepath = FileDialog::OpenFile("Hazel Scene (*.x)\0*.x\0");
+    if (filepath)
     {
         m_activeScene = X::CreateRef<Scene>();
         m_activeScene->OnViewportResize((uint32_t)m_viewportSize.x, (uint32_t)m_viewportSize.y);
         m_sceneHierarchyPanel.set_context(m_activeScene);
 
         SceneSerializer serializer(m_activeScene);
-        serializer.Deserialize(filepath);
+        serializer.Deserialize(*filepath);
     }
 }
 
 void EditorLayer::saveSceneAs()
 {
-    std::string filepath = FileDialog::SaveFile("Hazel Scene (*.hazel)\0*.hazel\0");
-    if (!filepath.empty())
+    std::optional<std::string> filepath = FileDialog::SaveFile("Hazel Scene (*.hazel)\0*.hazel\0");
+    if (filepath)
     {
         SceneSerializer serializer(m_activeScene);
-        serializer.Serialize(filepath);
+        serializer.Serialize(*filepath);
     }
 }

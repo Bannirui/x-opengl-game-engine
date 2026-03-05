@@ -8,7 +8,7 @@
 
     #import <Cocoa/Cocoa.h>
 
-std::string FileDialog::OpenFile(const char* filter)
+std::optional<std::string> FileDialog::OpenFile(const char* filter)
 {
     @autoreleasepool
     {
@@ -23,16 +23,27 @@ std::string FileDialog::OpenFile(const char* filter)
             return std::string([[url path] UTF8String]);
         }
     }
-    return {};
+    return nullptr;
 }
 
-std::string FileDialog::SaveFile(const char* filter)
+std::optional<std::string> FileDialog::SaveFile(const char* filter)
 {
     @autoreleasepool
     {
         NSSavePanel* panel = [NSSavePanel savePanel];
         [panel setCanCreateDirectories:YES];
         [panel setShowsTagField:NO];
+        // 解析扩展名
+        if (filter)
+        {
+            const char* ext = strchr(filter, '*');
+            if (ext)
+            {
+                std::string extension = std::string(ext + 2); // 跳过*.
+                NSString* nsExt = [NSString stringWithUTF8String:extension.c_str()];
+                [panel setAllowedFileTypes:@[nsExt]];
+            }
+        }
         NSInteger result = [panel runModal];
         if (result == NSModalResponseOK)
         {
@@ -40,7 +51,7 @@ std::string FileDialog::SaveFile(const char* filter)
             return std::string([[url path] UTF8String]);
         }
     }
-    return {};
+    return nullptr;
 }
 
 #endif
