@@ -13,19 +13,16 @@ std::string FileDialog::OpenFile(const char* filter)
     @autoreleasepool
     {
         NSOpenPanel* panel = [NSOpenPanel openPanel];
-
         [panel setCanChooseFiles:YES];
         [panel setCanChooseDirectories:NO];
         [panel setAllowsMultipleSelection:NO];
-
-        // 如果你以后想解析 filter 可以在这里做
-        if ([panel runModal] == NSModalResponseOK)
+        NSInteger result = [panel runModal];
+        if (result == NSModalResponseOK)
         {
             NSURL* url = [[panel URLs] objectAtIndex:0];
             return std::string([[url path] UTF8String]);
         }
     }
-
     return {};
 }
 
@@ -34,14 +31,15 @@ std::string FileDialog::SaveFile(const char* filter)
     @autoreleasepool
     {
         NSSavePanel* panel = [NSSavePanel savePanel];
-
-        if ([panel runModal] == NSModalResponseOK)
+        [panel setCanCreateDirectories:YES];
+        [panel setShowsTagField:NO];
+        NSInteger result = [panel runModal];
+        if (result == NSModalResponseOK)
         {
             NSURL* url = [panel URL];
             return std::string([[url path] UTF8String]);
         }
     }
-
     return {};
 }
 
