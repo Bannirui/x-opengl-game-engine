@@ -58,4 +58,5 @@ private:
 
     // Panel
     SceneHierarchyPanel m_sceneHierarchyPanel;
+    int m_gizmoType{-1};
 };

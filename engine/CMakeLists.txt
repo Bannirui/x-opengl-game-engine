@@ -41,6 +41,7 @@ target_link_libraries(${LIB_NAME}
     PUBLIC spdlog glad glfw imgui glm stb
         EnTT
         yaml-cpp
+        ImGuizmo
 )
 
 target_precompile_headers(${LIB_NAME}

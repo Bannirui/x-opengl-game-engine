@@ -26,6 +26,8 @@ public:
     entt::registry&       get_registry() { return m_registry; }
     const entt::registry& get_registry() const { return m_registry; }
 
+    Entity GetPrimaryCameraEntity();
+
 private:
     template <typename T>
     void onComponentAdded(Entity entity, T& component);

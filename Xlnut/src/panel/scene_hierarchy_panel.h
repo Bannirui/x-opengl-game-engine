@@ -16,8 +16,9 @@ public:
     SceneHierarchyPanel() = default;
     SceneHierarchyPanel(const X::Ref<Scene>& scene);
 
-    void set_context(const X::Ref<Scene>& scene);
-    void OnImGuiRender();
+    Entity get_selectedEntity() const { return m_selectionContext; }
+    void   set_context(const X::Ref<Scene>& scene);
+    void   OnImGuiRender();
 
 private:
     void drawEntityNode(Entity entity);

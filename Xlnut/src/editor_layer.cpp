@@ -6,6 +6,7 @@
 
 #include <imgui.h>
 #include <glm/gtc/type_ptr.hpp>
+#include <ImGuizmo.h>
 
 #include <x/events/event.h>
 #include <x/scene/scene_serializer.h>
@@ -20,6 +21,8 @@
 #include <x/util/platform_util.h>
 #include <x/events/key_event.h>
 #include <x/scene/scene_serializer.h>
+#include <x/math/math.h>
+#include <x/scene/component.h>
 
 EditorLayer::EditorLayer()
     : Layer("EditorLayer"), m_cameraController(1280.0f / 720.0f), m_squareColor({0.2f, 0.3f, 0.4f, 1.0f})
@@ -209,7 +212,7 @@ void EditorLayer::OnImguiRender()
 
     m_viewportFocused = ImGui::IsWindowFocused();
     m_viewportHovered = ImGui::IsWindowHovered();
-    XApplication::Get().get_ImGuiLayer()->BlockEvents(!m_viewportFocused || !m_viewportHovered);
+    XApplication::Get().get_ImGuiLayer()->BlockEvents(!m_viewportFocused && !m_viewportHovered);
 
     ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
     m_viewportSize           = {viewportPanelSize.x, viewportPanelSize.y};
@@ -217,6 +220,52 @@ void EditorLayer::OnImguiRender()
     uint64_t textureID = m_frameBuffer->GetColorAttachmentRendererID();
     ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{m_viewportSize.x, m_viewportSize.y}, ImVec2{0, 1},
                  ImVec2{1, 0});
+
+    // Gizmos
+    Entity selectedEntity = m_sceneHierarchyPanel.get_selectedEntity();
+    if (selectedEntity && m_gizmoType != -1)
+    {
+        ImGuizmo::SetOrthographic(false);
+        ImGuizmo::SetDrawlist();
+
+        float windowWidth  = (float)ImGui::GetWindowWidth();
+        float windowHeight = (float)ImGui::GetWindowHeight();
+        ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
+
+        // Camera
+        auto             cameraEntity     = m_activeScene->GetPrimaryCameraEntity();
+        const auto&      camera           = cameraEntity.GetComponent<CameraComponent>().m_camera;
+        const glm::mat4& cameraProjection = camera.get_projection();
+        glm::mat4        cameraView = glm::inverse(cameraEntity.GetComponent<TransformComponent>().GetTransform());
+
+        // Entity transform
+        auto&     tc        = selectedEntity.GetComponent<TransformComponent>();
+        glm::mat4 transform = tc.GetTransform();
+
+        // Snapping
+        bool  snap      = Input::IsKeyPressed(X_KEY::LeftControl);
+        float snapValue = 0.5f;  // Snap to 0.5m for translation/scale
+        // Snap to 45 degrees for rotation
+        if (m_gizmoType == ImGuizmo::OPERATION::ROTATE) snapValue = 45.0f;
+
+        float snapValues[3] = {snapValue, snapValue, snapValue};
+
+        ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
+                             (ImGuizmo::OPERATION)m_gizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform), nullptr,
+                             snap ? snapValues : nullptr);
+
+        if (ImGuizmo::IsUsing())
+        {
+            glm::vec3 translation, rotation, scale;
+            MATH::DecomposeTransform(transform, translation, rotation, scale);
+
+            glm::vec3 deltaRotation = rotation - tc.m_rotation;
+            tc.m_translation        = translation;
+            tc.m_rotation += deltaRotation;
+            tc.m_scale = scale;
+        }
+    }
+
     ImGui::End();
     ImGui::PopStyleVar();
 
@@ -269,6 +318,27 @@ bool EditorLayer::onKeyPressed(KeyPressEvent& e)
                 // ctrl+shift+S
                 saveSceneAs();
             }
+            break;
+        }
+        // Gizmos
+        case X_KEY::Q:
+        {
+            m_gizmoType = -1;
+            break;
+        }
+        case X_KEY::W:
+        {
+            m_gizmoType = ImGuizmo::OPERATION::TRANSLATE;
+            break;
+        }
+        case X_KEY::E:
+        {
+            m_gizmoType = ImGuizmo::OPERATION::ROTATE;
+            break;
+        }
+        case X_KEY::R:
+        {
+            m_gizmoType = ImGuizmo::OPERATION::SCALE;
             break;
         }
     }
