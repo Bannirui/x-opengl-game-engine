@@ -4,8 +4,8 @@
 
 #include "x/scene/scene_serializer.h"
 
-#include <x/scene/component.h>
-#include <x/scene/entity.h>
+#include "x/scene/component.h"
+#include "x/scene/entity.h"
 
 #include <glm/glm.hpp>
 #include <yaml-cpp/yaml.h>
@@ -21,6 +21,7 @@ namespace YAML
             node.push_back(rhs.x);
             node.push_back(rhs.y);
             node.push_back(rhs.z);
+            node.SetStyle(EmitterStyle::Flow);
             return node;
         }
 
@@ -47,6 +48,7 @@ namespace YAML
             node.push_back(rhs.y);
             node.push_back(rhs.z);
             node.push_back(rhs.w);
+            node.SetStyle(EmitterStyle::Flow);
             return node;
         }
 
@@ -160,11 +162,7 @@ void SceneSerializer::SerializeRuntime(const std::string& filepath)
 
 bool SceneSerializer::Deserialize(const std::string& filepath)
 {
-    std::ifstream     in(filepath);
-    std::stringstream buffer;
-    buffer << in.rdbuf();
-
-    YAML::Node data = YAML::Load(buffer.str());
+    YAML::Node data = YAML::LoadFile(filepath);
     if (!data["Scene"])
     {
         return false;
