@@ -36,9 +36,10 @@ void EditorLayer::OnAttach()
     m_checkerboardTexture = Texture2D::Create("asset/texture/Checkerboard.png");
 
     FramebufferSpecification fbSpec;
-    fbSpec.m_width  = 1280;
-    fbSpec.m_height = 720;
-    m_frameBuffer   = FrameBuffer::Create(fbSpec);
+    fbSpec.m_width       = 1280;
+    fbSpec.m_height      = 720;
+    fbSpec.m_attachments = {FramebufferTextureFormat::kRGBA8, FramebufferTextureFormat::kDepth};
+    m_frameBuffer        = FrameBuffer::Create(fbSpec);
 
     m_activeScene  = X::CreateRef<Scene>();
     m_editorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
