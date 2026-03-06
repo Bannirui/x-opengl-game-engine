@@ -51,3 +51,9 @@ AllowShortBlocksOnASingleLine: Never
 AllowShortLambdasOnASingleLine: None
 # 保持宏展开结构
 KeepEmptyLinesAtTheStartOfBlocks: false
+
+# 函数/类/struct 定义之间自动空一行
+# Leave-保持原样
+# Always-自动加空行
+# Never-自动删除空行
+SeparateDefinitionBlocks: Always

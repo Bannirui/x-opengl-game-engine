@@ -4,8 +4,6 @@
 
 #include "x/renderer/renderer_2D.h"
 
-#include "camera.h"
-
 #include <glm/gtx/quaternion.hpp>
 #include <glm/ext/matrix_transform.hpp>
 
@@ -15,6 +13,8 @@
 #include "x/renderer/shader.h"
 #include "x/renderer/vertex_array.h"
 #include "x/core/base.h"
+#include "x/renderer/camera.h"
+#include "x/renderer/editor_camera.h"
 
 // VBO 正方形顶点
 struct QuadVertex
@@ -124,6 +124,16 @@ void Renderer2D::BeginScene(const Camera& camera, const glm::mat4& transform)
     X_PROFILE_FUNCTION();
 
     glm::mat4 viewProj = camera.get_projection() * glm::inverse(transform);
+    s_data.textureShader->Bind();
+    s_data.textureShader->SetMat4("u_ViewProjection", viewProj);
+    startBatch();
+}
+
+void Renderer2D::BeginScene(const EditorCamera& camera)
+{
+    X_PROFILE_FUNCTION();
+
+    glm::mat4 viewProj = camera.get_projection();
     s_data.textureShader->Bind();
     s_data.textureShader->SetMat4("u_ViewProjection", viewProj);
     startBatch();

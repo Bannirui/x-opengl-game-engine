@@ -7,6 +7,7 @@
 #include "x/core/base.h"
 #include "x/renderer/orthographic_camera.h"
 
+class EditorCamera;
 class Camera;
 class Texture2D;
 
@@ -18,6 +19,7 @@ public:
 
     static void BeginScene(const OrthographicCamera& camera);
     static void BeginScene(const Camera& camera, const glm::mat4& transform);
+    static void BeginScene(const EditorCamera& camera);
     static void EndScene();
 
     static void Flush();
@@ -53,8 +55,10 @@ public:
         uint32_t quadCount = 0;
 
         uint32_t GetTotalVertexCount() const { return quadCount * 4; }
+
         uint32_t GetTotalIndexCount() const { return quadCount * 6; }
     };
+
     static void       ResetStats();
     static Statistics GetStats();
 

@@ -4,7 +4,7 @@
 
 #ifdef __APPLE__
 
-#include "x/core/mac_input.h"
+#include "x/core/input.h"
 
 #include "x/window.h"
 #include "x/core/x_application.h"
