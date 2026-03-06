@@ -7,7 +7,6 @@
 #include "pch.h"
 
 #include "x/core/base.h"
-#include "x/core/x_log.h"
 
 enum class ShaderDataType : uint16_t
 {
@@ -166,12 +165,16 @@ public:
         calculateOffsetsAndStride();
     }
 
-    uint32_t                          GetStride() const { return m_stride; }
+    uint32_t GetStride() const { return m_stride; }
+
     const std::vector<BufferElement>& GetElements() const { return m_elements; }
 
-    std::vector<BufferElement>::iterator       begin() { return m_elements.begin(); }
-    std::vector<BufferElement>::iterator       end() { return m_elements.end(); }
+    std::vector<BufferElement>::iterator begin() { return m_elements.begin(); }
+
+    std::vector<BufferElement>::iterator end() { return m_elements.end(); }
+
     std::vector<BufferElement>::const_iterator begin() const { return m_elements.begin(); }
+
     std::vector<BufferElement>::const_iterator end() const { return m_elements.end(); }
 
 private:

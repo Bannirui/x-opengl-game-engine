@@ -36,9 +36,9 @@ void EditorLayer::OnAttach()
     m_checkerboardTexture = Texture2D::Create("asset/texture/Checkerboard.png");
 
     FramebufferSpecification fbSpec;
-    fbSpec.width  = 1280;
-    fbSpec.height = 720;
-    m_frameBuffer = FrameBuffer::Create(fbSpec);
+    fbSpec.m_width  = 1280;
+    fbSpec.m_height = 720;
+    m_frameBuffer   = FrameBuffer::Create(fbSpec);
 
     m_activeScene  = X::CreateRef<Scene>();
     m_editorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
@@ -106,7 +106,7 @@ void EditorLayer::OnUpdate(Timestep ts)
     // Resize
     if (FramebufferSpecification spec = m_frameBuffer->GetSpecification();
         m_viewportSize.x > 0.0f && m_viewportSize.y > 0.0f &&  // zero sized framebuffer is invalid
-        (spec.width != m_viewportSize.x || spec.height != m_viewportSize.y))
+        (spec.m_width != m_viewportSize.x || spec.m_height != m_viewportSize.y))
     {
         m_frameBuffer->Resize((uint32_t)m_viewportSize.x, (uint32_t)m_viewportSize.y);
         m_cameraController.OnResize(m_viewportSize.x, m_viewportSize.y);

@@ -65,9 +65,8 @@ endif()
 
 # 系统构建类型在pre set中指定 debug就启用X_DEBUG 在cpp中可以使用调试日志 release就不启用
 target_compile_definitions(${LIB_NAME}
-    PUBLIC
-        $<$<CONFIG:Debug>:X_DEBUG>
-        $<$<CONFIG:Release>:X_RELEASE>
+    PRIVATE
+        $<$<CONFIG:Debug>:X_ENABLE_ASSERTS> # Enable the debug option
 )
 
 # 构建时触发资源文件复制
