@@ -7,6 +7,7 @@
 #include <entt/entt.hpp>
 
 #include "x/core/timestep.h"
+#include "x/renderer/editor_camera.h"
 
 class Entity;
 
@@ -20,7 +21,8 @@ public:
     void            DestroyEntity(Entity entity);
     entt::registry& Reg() { return m_registry; }
 
-    void OnUpdate(Timestep ts);
+    void OnUpdateRuntime(Timestep ts);
+    void OnUpdateEditor(Timestep ts, EditorCamera& camera);
     void OnViewportResize(uint32_t width, uint32_t height);
 
     entt::registry&       get_registry() { return m_registry; }

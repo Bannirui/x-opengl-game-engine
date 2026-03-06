@@ -9,6 +9,7 @@
 #include <x/core/layer.h>
 #include <x/renderer/orthographic_camera_controller.h>
 #include <x/scene/entity.h>
+#include <x/renderer/editor_camera.h>
 
 #include "panel/scene_hierarchy_panel.h"
 
@@ -59,4 +60,6 @@ private:
     // Panel
     SceneHierarchyPanel m_sceneHierarchyPanel;
     int m_gizmoType{-1};
+
+    EditorCamera m_editorCamera;
 };

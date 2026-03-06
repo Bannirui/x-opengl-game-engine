@@ -4,7 +4,7 @@
 
 #include "x/renderer/orthographic_camera_controller.h"
 
-#include "x/core/mac_input.h"
+#include "x/core/input.h"
 #include "x/core/key_codes.h"
 #include "x/events/application_event.h"
 #include "x/events/event.h"
@@ -22,22 +22,22 @@ OrthographicCameraController::OrthographicCameraController(float aspectRatio, bo
 void OrthographicCameraController::OnUpdate(Timestep ts)
 {
     X_PROFILE_FUNCTION();
-    if (Input::IsKeyPressed(X_KEY::A))
+    if (Input::IsKeyPressed(X::KEY::A))
     {
         m_cameraPosition.x -= cos(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
         m_cameraPosition.y -= sin(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
     }
-    else if (Input::IsKeyPressed(X_KEY::D))
+    else if (Input::IsKeyPressed(X::KEY::D))
     {
         m_cameraPosition.x += cos(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
         m_cameraPosition.y += sin(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
     }
-    if (Input::IsKeyPressed(X_KEY::W))
+    if (Input::IsKeyPressed(X::KEY::W))
     {
         m_cameraPosition.x += -sin(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
         m_cameraPosition.y += cos(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
     }
-    else if (Input::IsKeyPressed(X_KEY::S))
+    else if (Input::IsKeyPressed(X::KEY::S))
     {
         m_cameraPosition.x -= -sin(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
         m_cameraPosition.y -= cos(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
@@ -45,11 +45,11 @@ void OrthographicCameraController::OnUpdate(Timestep ts)
 
     if (m_rotation)
     {
-        if (Input::IsKeyPressed(X_KEY::Q))
+        if (Input::IsKeyPressed(X::KEY::Q))
         {
             m_cameraRotation += m_cameraRotationSpeed * ts;
         }
-        if (Input::IsKeyPressed(X_KEY::E))
+        if (Input::IsKeyPressed(X::KEY::E))
         {
             m_cameraRotation -= m_cameraRotationSpeed * ts;
         }

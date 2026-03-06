@@ -10,7 +10,7 @@
 
 #include <x/events/event.h>
 #include <x/scene/scene_serializer.h>
-#include <x/core/mac_input.h>
+#include <x/core/input.h>
 #include <x/core/x_application.h>
 #include <x/imgui/im_gui_layer.h>
 #include <x/renderer/frame_buffer.h>
@@ -40,7 +40,8 @@ void EditorLayer::OnAttach()
     fbSpec.height = 720;
     m_frameBuffer = FrameBuffer::Create(fbSpec);
 
-    m_activeScene = X::CreateRef<Scene>();
+    m_activeScene  = X::CreateRef<Scene>();
+    m_editorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
 
 #if 0
     // Entity
@@ -109,6 +110,7 @@ void EditorLayer::OnUpdate(Timestep ts)
     {
         m_frameBuffer->Resize((uint32_t)m_viewportSize.x, (uint32_t)m_viewportSize.y);
         m_cameraController.OnResize(m_viewportSize.x, m_viewportSize.y);
+        m_editorCamera.SetViewportSize(m_viewportSize.x, m_viewportSize.y);
         m_activeScene->OnViewportResize(static_cast<uint32_t>(m_viewportSize.x),
                                         static_cast<uint32_t>(m_viewportSize.y));
     }
@@ -117,6 +119,7 @@ void EditorLayer::OnUpdate(Timestep ts)
     {
         m_cameraController.OnUpdate(ts);
     }
+    m_editorCamera.OnUpdate(ts);
     // Render
     Renderer2D::ResetStats();
     m_frameBuffer->Bind();
@@ -124,7 +127,7 @@ void EditorLayer::OnUpdate(Timestep ts)
     RenderCommand::Clear();
 
     // Update scene
-    m_activeScene->OnUpdate(ts);
+    m_activeScene->OnUpdateEditor(ts, m_editorCamera);
 
     m_frameBuffer->Unbind();
 }
@@ -233,17 +236,20 @@ void EditorLayer::OnImguiRender()
         ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
 
         // Camera
-        auto             cameraEntity     = m_activeScene->GetPrimaryCameraEntity();
-        const auto&      camera           = cameraEntity.GetComponent<CameraComponent>().m_camera;
-        const glm::mat4& cameraProjection = camera.get_projection();
-        glm::mat4        cameraView = glm::inverse(cameraEntity.GetComponent<TransformComponent>().GetTransform());
+        // auto             cameraEntity     = m_activeScene->GetPrimaryCameraEntity();
+        // const auto&      camera           = cameraEntity.GetComponent<CameraComponent>().m_camera;
+        // const glm::mat4& cameraProjection = camera.get_projection();
+        // glm::mat4        cameraView = glm::inverse(cameraEntity.GetComponent<TransformComponent>().GetTransform());
+        // Editor camera
+        const glm::mat4 cameraProjection = m_editorCamera.get_projection();
+        glm::mat4       cameraView       = m_editorCamera.get_viewMatrix();
 
         // Entity transform
         auto&     tc        = selectedEntity.GetComponent<TransformComponent>();
         glm::mat4 transform = tc.GetTransform();
 
         // Snapping
-        bool  snap      = Input::IsKeyPressed(X_KEY::LeftControl);
+        bool  snap      = Input::IsKeyPressed(X::KEY::LeftControl);
         float snapValue = 0.5f;  // Snap to 0.5m for translation/scale
         // Snap to 45 degrees for rotation
         if (m_gizmoType == ImGuizmo::OPERATION::ROTATE) snapValue = 45.0f;
@@ -275,6 +281,7 @@ void EditorLayer::OnImguiRender()
 void EditorLayer::OnEvent(Event& e)
 {
     m_cameraController.OnEvent(e);
+    m_editorCamera.OnEvent(e);
     EventDispatcher dispatcher(e);
     dispatcher.Dispatch<KeyPressEvent>(
         [this](KeyPressEvent& e)
@@ -289,11 +296,11 @@ bool EditorLayer::onKeyPressed(KeyPressEvent& e)
     {
         return false;
     }
-    bool control = Input::IsKeyPressed(X_KEY::LeftControl) || Input::IsKeyPressed(X_KEY::RightControl);
-    bool shift   = Input::IsKeyPressed(X_KEY::LeftShift) || Input::IsKeyPressed(X_KEY::RightShift);
+    bool control = Input::IsKeyPressed(X::KEY::LeftControl) || Input::IsKeyPressed(X::KEY::RightControl);
+    bool shift   = Input::IsKeyPressed(X::KEY::LeftShift) || Input::IsKeyPressed(X::KEY::RightShift);
     switch (e.get_keyCode())
     {
-        case X_KEY::N:
+        case X::KEY::N:
         {
             if (control)
             {
@@ -302,7 +309,7 @@ bool EditorLayer::onKeyPressed(KeyPressEvent& e)
             }
             break;
         }
-        case X_KEY::O:
+        case X::KEY::O:
         {
             if (control)
             {
@@ -311,7 +318,7 @@ bool EditorLayer::onKeyPressed(KeyPressEvent& e)
             }
             break;
         }
-        case X_KEY::S:
+        case X::KEY::S:
         {
             if (control && shift)
             {
@@ -321,22 +328,22 @@ bool EditorLayer::onKeyPressed(KeyPressEvent& e)
             break;
         }
         // Gizmos
-        case X_KEY::Q:
+        case X::KEY::Q:
         {
             m_gizmoType = -1;
             break;
         }
-        case X_KEY::W:
+        case X::KEY::W:
         {
             m_gizmoType = ImGuizmo::OPERATION::TRANSLATE;
             break;
         }
-        case X_KEY::E:
+        case X::KEY::E:
         {
             m_gizmoType = ImGuizmo::OPERATION::ROTATE;
             break;
         }
-        case X_KEY::R:
+        case X::KEY::R:
         {
             m_gizmoType = ImGuizmo::OPERATION::SCALE;
             break;

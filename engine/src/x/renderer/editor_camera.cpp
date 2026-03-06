@@ -5,8 +5,6 @@
 #include "x/renderer/editor_camera.h"
 
 #include <glm/gtx/quaternion.hpp>
-#include <glm/detail/type_quat.hpp>
-#include <glm/ext/matrix_clip_space.hpp>
 
 #include "x/core/timestep.h"
 #include "x/core/input.h"
@@ -14,11 +12,11 @@
 #include "x/events/mouse_event.h"
 
 EditorCamera::EditorCamera(float fov, float aspectRatio, float nearClip, float farClip)
-    : m_fov(fov),
+    : Camera(glm::perspective(glm::radians(fov), aspectRatio, nearClip, farClip)),
+      m_fov(fov),
       m_aspectRatio(aspectRatio),
       m_nearClip(nearClip),
-      m_farClip(farClip),
-      Camera(glm::perspective(glm::radians(fov), aspectRatio, nearClip, farClip))
+      m_farClip(farClip)
 {
     updateView();
 }

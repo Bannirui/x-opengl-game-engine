@@ -10,7 +10,9 @@ class Camera
 {
 public:
     Camera() = default;
-    Camera(glm::mat4& projection) : m_projection(projection) {}
+
+    Camera(const glm::mat4& projection) : m_projection(projection) {}
+
     virtual ~Camera() = default;
 
     const glm::mat4& get_projection() const { return m_projection; }

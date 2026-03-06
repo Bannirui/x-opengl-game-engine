@@ -4,7 +4,7 @@
 
 #ifdef __linux__
 
-    #include "hzpch.h"
+    #include "pch.h"
     #include "x/util/platform_util.h"
 
     #include <cstdio>
@@ -27,7 +27,7 @@ static std::optional<std::string> ExecCommand(const char* cmd)
     return result;
 }
 
-std::optional<std::string> FileDialogs::OpenFile(const char* filter)
+std::optional<std::string> FileDialog::OpenFile(const char* filter)
 {
     std::string command = "zenity --file-selection";
     auto result = ExecCommand(command.c_str());
@@ -35,7 +35,7 @@ std::optional<std::string> FileDialogs::OpenFile(const char* filter)
     return std::nullopt;
 }
 
-std::optional<std::string> FileDialogs::SaveFile(const char* filter)
+std::optional<std::string> FileDialog::SaveFile(const char* filter)
 {
     std::string command = "zenity --file-selection --save --confirm-overwrite";
     auto result = ExecCommand(command.c_str());
