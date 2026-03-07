@@ -4,17 +4,18 @@
 
 #include "x/renderer/renderer_2D.h"
 
-#include <glm/gtx/quaternion.hpp>
 #include <glm/ext/matrix_transform.hpp>
+#include <glm/gtx/quaternion.hpp>
 
-#include "x/renderer/buffer.h"
-#include "x/renderer/render_command.h"
-#include "x/renderer/texture.h"
-#include "x/renderer/shader.h"
-#include "x/renderer/vertex_array.h"
 #include "x/core/base.h"
+#include "x/renderer/buffer.h"
 #include "x/renderer/camera.h"
 #include "x/renderer/editor_camera.h"
+#include "x/renderer/render_command.h"
+#include "x/renderer/shader.h"
+#include "x/renderer/texture.h"
+#include "x/renderer/uniform_buffer.h"
+#include "x/renderer/vertex_array.h"
 #include "x/scene/component.h"
 
 // VBO 正方形顶点
@@ -47,6 +48,14 @@ struct Renderer2DData
     uint32_t                                       textureSlotIndex = 1;  // 0 = white texture
     glm::vec4                                      quadVertexPositions[4];
     Renderer2D::Statistics                         stats;
+
+    struct CameraData
+    {
+        glm::mat4 m_viewProjection;
+    };
+
+    CameraData            m_cameraBuffer;
+    X::Ref<UniformBuffer> m_cameraUniformBuffer;
 };
 
 static Renderer2DData s_data;
@@ -62,6 +71,7 @@ void Renderer2D::Init()
         {ShaderDataType::kFloat2, "a_TexCoord"},
         {ShaderDataType::kFloat, "a_TexIndex"},
         {ShaderDataType::kFloat, "a_TilingFactor"},
+        {ShaderDataType::kInt, "a_EntityID"},
     });
     s_data.quadVertexArray->AddVertexBuffer(s_data.quadVertexBuffer);
 
@@ -88,15 +98,13 @@ void Renderer2D::Init()
     uint32_t whiteTextureData = 0xffffffff;
     s_data.whiteTexture->SetData(&whiteTextureData, sizeof(uint32_t));
 
-    int32_t samplers[s_data.maxTextureSlots];
-    for (uint32_t i = 0; i < s_data.maxTextureSlots; i++)
-    {
-        samplers[i] = i;
-    }
+    // int32_t samplers[s_data.maxTextureSlots];
+    // for (uint32_t i = 0; i < s_data.maxTextureSlots; i++)
+    // {
+    //     samplers[i] = i;
+    // }
 
     s_data.textureShader = Shader::Create("asset/shader/Texture.glsl");
-    s_data.textureShader->Bind();
-    s_data.textureShader->SetIntArray("u_Textures", samplers, s_data.maxTextureSlots);
 
     // Set first texture slot to 0
     s_data.textureSlots[0] = s_data.whiteTexture;
@@ -105,6 +113,8 @@ void Renderer2D::Init()
     s_data.quadVertexPositions[1] = {0.5f, -0.5f, 0.0f, 1.0f};
     s_data.quadVertexPositions[2] = {0.5f, 0.5f, 0.0f, 1.0f};
     s_data.quadVertexPositions[3] = {-0.5f, 0.5f, 0.0f, 1.0f};
+
+    s_data.m_cameraUniformBuffer = UniformBuffer::Create(sizeof(Renderer2DData::CameraData), 0);
 }
 
 void Renderer2D::Shutdown()
@@ -125,9 +135,8 @@ void Renderer2D::BeginScene(const Camera& camera, const glm::mat4& transform)
 {
     X_PROFILE_FUNCTION();
 
-    glm::mat4 viewProj = camera.get_projection() * glm::inverse(transform);
-    s_data.textureShader->Bind();
-    s_data.textureShader->SetMat4("u_ViewProjection", viewProj);
+    s_data.m_cameraBuffer.m_viewProjection = camera.get_projection() * glm::inverse(transform);
+    s_data.m_cameraUniformBuffer->SetData(&s_data.m_cameraBuffer, sizeof(Renderer2DData::CameraData));
     startBatch();
 }
 
@@ -135,9 +144,8 @@ void Renderer2D::BeginScene(const EditorCamera& camera)
 {
     X_PROFILE_FUNCTION();
 
-    glm::mat4 viewProj = camera.get_projection();
-    s_data.textureShader->Bind();
-    s_data.textureShader->SetMat4("u_ViewProjection", viewProj);
+    s_data.m_cameraBuffer.m_viewProjection = camera.GetViewProjection();
+    s_data.m_cameraUniformBuffer->SetData(&s_data.m_cameraBuffer, sizeof(Renderer2DData::CameraData));
     startBatch();
 }
 
@@ -160,6 +168,7 @@ void Renderer2D::Flush()
     {
         s_data.textureSlots[i]->Bind(i);
     }
+    s_data.textureShader->Bind();
     RenderCommand::DrawIndexed(s_data.quadVertexArray, s_data.quadIndexCount);
     s_data.stats.drawCalls++;
 }

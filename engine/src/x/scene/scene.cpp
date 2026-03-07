@@ -4,12 +4,12 @@
 
 #include "x/scene/scene.h"
 
-#include "x/scene/component.h"
-#include "x/scene/entity.h"
+#include <glm/glm.hpp>
+
 #include "x/core/timestep.h"
 #include "x/renderer/renderer_2D.h"
-
-#include <glm/glm.hpp>
+#include "x/scene/component.h"
+#include "x/scene/entity.h"
 
 Scene::Scene() {}
 
@@ -130,7 +130,10 @@ void Scene::onComponentAdded<TransformComponent>(Entity entity, TransformCompone
 template <>
 void Scene::onComponentAdded<CameraComponent>(Entity entity, CameraComponent& component)
 {
-    component.m_camera.SetViewportSize(m_viewportWidth, m_viewportHeight);
+    if (m_viewportWidth > 0 && m_viewportHeight > 0)
+    {
+        component.m_camera.SetViewportSize(m_viewportWidth, m_viewportHeight);
+    }
 }
 
 template <>

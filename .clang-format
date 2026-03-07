@@ -21,9 +21,26 @@ SpaceBeforeParens: ControlStatements
 # 命名空间内缩进
 NamespaceIndentation: All
 # 自动排序include语句 有些依赖必须严格顺序否则会出错比如glad和glfw
-SortIncludes: false
-# regroup 并合并相同模块的 include
+SortIncludes: true
+# regroup 并合并相同模块的include
 IncludeBlocks: Regroup
+IncludeCategories:
+  # glad must always be first
+  - Regex: '^<glad/'
+    Priority: 1
+  # glfw must come after glad
+  - Regex: '^<GLFW/'
+    Priority: 2
+  # third party headers
+  - Regex: '^<(vulkan|OpenGL/glm|imgui|spdlog)/'
+    Priority: 3
+  # system headers
+  - Regex: '^<.*>'
+    Priority: 4
+  # other
+  - Regex: '^".*"'
+    Priority: 5
+
 # 自动换行注释
 ReflowComments: true
 AlignConsecutiveAssignments: true

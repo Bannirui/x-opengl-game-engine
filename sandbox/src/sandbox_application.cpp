@@ -2,15 +2,15 @@
 // Created by dingrui on 2/23/26.
 //
 
-#include <x_engine.h>
 #include <x/core/entry_point.h>
+#include <x_engine.h>
 
 #include "sandbox_2D.h"
 
 class Sandbox : public XApplication
 {
 public:
-    Sandbox()
+    Sandbox(ApplicationCommandLineArgs args)
     {
         // PushLayer(new ExampleLayer());
         PushLayer(new Sandbox2D());
@@ -19,7 +19,7 @@ public:
     ~Sandbox() override {}
 };
 
-XApplication *CreateApplication()
+XApplication* CreateApplication(ApplicationCommandLineArgs args)
 {
-    return new Sandbox();
+    return new Sandbox(args);
 }

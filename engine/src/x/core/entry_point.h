@@ -3,14 +3,16 @@
 //
 #pragma once
 
-extern XApplication *CreateApplication();
+#include "x/core/x_application.h"
 
-int main(int argc, char **argv)
+extern XApplication* CreateApplication(ApplicationCommandLineArgs args);
+
+int main(int argc, char** argv)
 {
     XLog::Init();
 
     X_PROFILE_BEGIN_SESSION("Startup", "asset/output/XProfile-Startup.json");
-    auto app = CreateApplication();
+    auto app = CreateApplication({argc, argv});
     X_PROFILE_END_SESSION();
 
     X_PROFILE_BEGIN_SESSION("Runtime", "asset/output/XProfile-Runtime.json");

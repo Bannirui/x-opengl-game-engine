@@ -4,7 +4,7 @@
 
 #include "x/scene/scene_camera.h"
 
-#include "glm/ext/matrix_clip_space.hpp"
+#include <glm/ext/matrix_clip_space.hpp>
 
 SceneCamera::SceneCamera()
 {
@@ -33,6 +33,7 @@ void SceneCamera::SetOrthographic(float size, float nearClip, float farClip)
 
 void SceneCamera::SetViewportSize(uint32_t width, uint32_t height)
 {
+    X_CORE_ASSERT(width > 0 && height > 0, "Invalid viewport size");
     m_aspectRatio = static_cast<float>(width) / static_cast<float>(height);
     recalculateProjection();
 }

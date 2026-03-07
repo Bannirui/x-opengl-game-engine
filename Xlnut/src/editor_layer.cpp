@@ -4,25 +4,24 @@
 
 #include "editor_layer.h"
 
-#include <imgui.h>
-#include <glm/gtc/type_ptr.hpp>
 #include <ImGuizmo.h>
-
-#include <x/events/event.h>
-#include <x/scene/scene_serializer.h>
+#include <glm/gtc/type_ptr.hpp>
+#include <imgui.h>
 #include <x/core/input.h>
 #include <x/core/x_application.h>
+#include <x/events/event.h>
+#include <x/events/key_event.h>
+#include <x/events/mouse_event.h>
 #include <x/imgui/im_gui_layer.h>
+#include <x/math/math.h>
 #include <x/renderer/frame_buffer.h>
 #include <x/renderer/render_command.h>
 #include <x/renderer/renderer_2D.h>
 #include <x/renderer/texture.h>
-#include <x/scene/scene.h>
-#include <x/util/platform_util.h>
-#include <x/events/key_event.h>
-#include <x/events/mouse_event.h>
-#include <x/math/math.h>
 #include <x/scene/component.h>
+#include <x/scene/scene.h>
+#include <x/scene/scene_serializer.h>
+#include <x/util/platform_util.h>
 
 EditorLayer::EditorLayer()
     : Layer("EditorLayer"), m_cameraController(1280.0f / 720.0f), m_squareColor({0.2f, 0.3f, 0.4f, 1.0f})
@@ -42,7 +41,14 @@ void EditorLayer::OnAttach()
                             FramebufferTextureFormat::kDepth};
     m_framebuffer        = FrameBuffer::Create(fbSpec);
 
-    m_activeScene  = X::CreateRef<Scene>();
+    m_activeScene        = X::CreateRef<Scene>();
+    auto commandLineArgs = XApplication::Get().get_commandLineArgs();
+    if (commandLineArgs.Count > 1)
+    {
+        auto            sceneFilePath = commandLineArgs[1];
+        SceneSerializer serializer(m_activeScene);
+        serializer.Deserialize(sceneFilePath);
+    }
     m_editorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
 
 #if 0
@@ -417,7 +423,7 @@ void EditorLayer::newScene()
 
 void EditorLayer::openScene()
 {
-    std::optional<std::string> filepath = FileDialog::OpenFile("Hazel Scene (*.x)\0*.x\0");
+    std::optional<std::string> filepath = FileDialog::OpenFile("X Scene (*.x)\0*.x\0");
     if (filepath)
     {
         m_activeScene = X::CreateRef<Scene>();
@@ -431,7 +437,7 @@ void EditorLayer::openScene()
 
 void EditorLayer::saveSceneAs()
 {
-    std::optional<std::string> filepath = FileDialog::SaveFile("Hazel Scene (*.hazel)\0*.hazel\0");
+    std::optional<std::string> filepath = FileDialog::SaveFile("X Scene (*.x)\0*.x\0");
     if (filepath)
     {
         SceneSerializer serializer(m_activeScene);

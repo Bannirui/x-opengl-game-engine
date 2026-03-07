@@ -13,15 +13,19 @@
 #include "x/imgui/im_gui_layer.h"
 #include "x/core/timestep.h"
 
-XApplication *XApplication::s_instance = nullptr;
+XApplication* XApplication::s_instance = nullptr;
 
-XApplication::XApplication(const std::string &name)
+XApplication::XApplication(const std::string& name, ApplicationCommandLineArgs args) : m_commandLineArgs(args)
 {
     X_PROFILE_FUNCTION();
     X_CORE_ASSERT(!s_instance, "Application already exists");
     s_instance = this;
     m_window   = Window::Create(WindowProps(name));
-    m_window->SetEventCallback([this](Event &e) { this->OnEvent(e); });
+    m_window->SetEventCallback(
+        [this](Event& e)
+        {
+            this->OnEvent(e);
+        });
 
     Renderer::Init();
 
@@ -35,12 +39,20 @@ XApplication::~XApplication()
     Renderer::Shutdown();
 }
 
-void XApplication::OnEvent(Event &e)
+void XApplication::OnEvent(Event& e)
 {
     X_PROFILE_FUNCTION();
     EventDispatcher dispatcher(e);
-    dispatcher.Dispatch<WindowCloseEvent>([this](WindowCloseEvent &e) { return this->onWindowClose(e); });
-    dispatcher.Dispatch<WindowResizeEvent>([this](WindowResizeEvent &e) { return this->onWindowResize(e); });
+    dispatcher.Dispatch<WindowCloseEvent>(
+        [this](WindowCloseEvent& e)
+        {
+            return this->onWindowClose(e);
+        });
+    dispatcher.Dispatch<WindowResizeEvent>(
+        [this](WindowResizeEvent& e)
+        {
+            return this->onWindowResize(e);
+        });
     for (auto it = m_layerStack.rbegin(); it != m_layerStack.rend(); ++it)
     {
         if (e.Handled)
@@ -51,14 +63,14 @@ void XApplication::OnEvent(Event &e)
     }
 }
 
-void XApplication::PushLayer(Layer *layer)
+void XApplication::PushLayer(Layer* layer)
 {
     X_PROFILE_FUNCTION();
     m_layerStack.PushLayer(layer);
     layer->OnAttach();
 }
 
-void XApplication::PushOverlay(Layer *layer)
+void XApplication::PushOverlay(Layer* layer)
 {
     X_PROFILE_FUNCTION();
     m_layerStack.PushOverlay(layer);
@@ -84,7 +96,7 @@ void XApplication::run()
         {
             {
                 X_PROFILE_SCOPE("LayerStack OnUpdate");
-                for (Layer *layer : m_layerStack)
+                for (Layer* layer : m_layerStack)
                 {
                     layer->OnUpdate(timestep);
                 }
@@ -92,7 +104,7 @@ void XApplication::run()
             m_ImGuiLayer->Begin();
             {
                 X_PROFILE_SCOPE("LayerStack OnImguiRender");
-                for (Layer *layer : m_layerStack)
+                for (Layer* layer : m_layerStack)
                 {
                     layer->OnImguiRender();
                 }
@@ -103,13 +115,13 @@ void XApplication::run()
     }
 }
 
-bool XApplication::onWindowClose(WindowCloseEvent &e)
+bool XApplication::onWindowClose(WindowCloseEvent& e)
 {
     m_running = false;
     return true;
 }
 
-bool XApplication::onWindowResize(WindowResizeEvent &e)
+bool XApplication::onWindowResize(WindowResizeEvent& e)
 {
     X_PROFILE_FUNCTION();
     if (e.get_width() == 0 || e.get_height() == 0)
