@@ -36,6 +36,8 @@ include(${LIB_DIRECTORY}/stb.cmake)
 include(${LIB_DIRECTORY}/entt.cmake)
 include(${LIB_DIRECTORY}/yaml_cpp.cmake)
 include(${LIB_DIRECTORY}/ImGuizmo.cmake)
+include(${LIB_DIRECTORY}/Vulkan.cmake)
+include(${LIB_DIRECTORY}/shaderc.cmake)
 
 set(LIB_NAME "${PROJECT_NAME}-core")
 

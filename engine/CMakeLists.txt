@@ -38,10 +38,17 @@ target_include_directories(${LIB_NAME}
 )
 
 target_link_libraries(${LIB_NAME}
-    PUBLIC spdlog glad glfw imgui glm stb
+    PUBLIC spdlog
+        glad
+        glfw
+        imgui
+        glm
+        stb
         EnTT
         yaml-cpp
         ImGuizmo
+        Vulkan::Vulkan
+        shaderc glslang MachineIndependent OSDependent GenericCodeGen HLSL OGLCompiler SPIRV SPIRV-Tools SPIRV-Tools-opt spirv-cross-core spirv-cross-glsl
 )
 
 target_precompile_headers(${LIB_NAME}
@@ -59,7 +66,7 @@ endif()
 if(UNIX AND NOT APPLE)
     target_compile_definitions(${LIB_NAME}
         PRIVATE X_GL_VERSION_MAJOR=4
-                X_GL_VERSION_MINOR=5
+                X_GL_VERSION_MINOR=6
     )
 endif()
 

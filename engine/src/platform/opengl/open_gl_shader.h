@@ -57,7 +57,7 @@ private:
     // 从文件读源码
     std::string readFile(const std::string& filepath);
     // 源码区分vertex和frag
-    std::unordered_map<int, std::string> preProcess(const std::string& glslSrc);
+    std::unordered_map<GLenum, std::string> preProcess(const std::string& glslSrc);
     void compileOrGetVulkanBinaries(const std::unordered_map<GLenum, std::string>& shaderSources);
     void compileOrGetOpenGLBinaries();
     void creatProgram();
