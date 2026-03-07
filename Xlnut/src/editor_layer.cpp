@@ -20,6 +20,7 @@
 #include <x/scene/scene.h>
 #include <x/util/platform_util.h>
 #include <x/events/key_event.h>
+#include <x/events/mouse_event.h>
 #include <x/math/math.h>
 #include <x/scene/component.h>
 
@@ -314,6 +315,11 @@ void EditorLayer::OnEvent(Event& e)
         {
             return this->onKeyPressed(e);
         });
+    dispatcher.Dispatch<MouseButtonPressedEvent>(
+        [this](MouseButtonPressedEvent& e)
+        {
+            return this->onMouseButtonPressed(e);
+        });
 }
 
 bool EditorLayer::onKeyPressed(KeyPressEvent& e)
@@ -388,6 +394,18 @@ bool EditorLayer::onKeyPressed(KeyPressEvent& e)
         }
     }
     return true;
+}
+
+bool EditorLayer::onMouseButtonPressed(MouseButtonPressedEvent& e)
+{
+    if (e.get_mouseButton() == X::MOUSE::ButtonLeft)
+    {
+        if (m_viewportHovered && !ImGuizmo::IsOver() && !Input::IsKeyPressed(X::KEY::LeftAlt))
+        {
+            m_sceneHierarchyPanel.set_selectedEntity(m_hoveredEntity);
+        }
+    }
+    return false;
 }
 
 void EditorLayer::newScene()

@@ -13,6 +13,7 @@
 
 #include "panel/scene_hierarchy_panel.h"
 
+class MouseButtonPressedEvent;
 class KeyPressEvent;
 class Entity;
 class Scene;
@@ -35,6 +36,7 @@ public:
 
 private:
     bool onKeyPressed(KeyPressEvent& e);
+    bool onMouseButtonPressed(MouseButtonPressedEvent& e);
 
     void newScene();
     void openScene();
