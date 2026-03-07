@@ -29,18 +29,19 @@ namespace Util
         glBindTexture(TextureTarget(multisampled), id);
     }
 
-    static void AttachColorTexture(uint32_t id, int samples, GLenum format, uint32_t width, uint32_t height, int index)
+    static void AttachColorTexture(uint32_t id, int samples, GLenum internalFormat, GLenum format, uint32_t width,
+                                   uint32_t height, int index)
     {
         bool   multisampled = samples > 1;
         GLenum target       = TextureTarget(multisampled);
         glBindTexture(target, id);
         if (multisampled)
         {
-            glTexImage2DMultisample(target, samples, format, width, height, GL_FALSE);
+            glTexImage2DMultisample(target, samples, internalFormat, width, height, GL_FALSE);
         }
         else
         {
-            glTexImage2D(target, 0, format, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+            glTexImage2D(target, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, nullptr);
             glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -148,9 +149,12 @@ void OpenGLFramebuffer::Invalidate()
             switch (m_colorAttachmentSpecifications[i].m_textureFormat)
             {
                 case FramebufferTextureFormat::kRGBA8:
-                    Util::AttachColorTexture(m_colorAttachments[i], m_specification.m_samples, GL_RGBA8,
-                                             m_specification.m_width, m_specification.m_height, static_cast<int>(i));
+                    Util::AttachColorTexture(m_colorAttachments[i], m_specification.m_samples, GL_RGBA8, GL_RGBA,
+                                             m_specification.m_width, m_specification.m_height, i);
                     break;
+                case FramebufferTextureFormat::kRED_INTEGER:
+                    Util::AttachColorTexture(m_colorAttachments[i], m_specification.m_samples, GL_R32I, GL_RED_INTEGER,
+                                             m_specification.m_width, m_specification.m_height, i);
                 default:
                     X_CORE_ASSERT(false, "Unknown framebuffer format")
             }
@@ -208,6 +212,16 @@ void OpenGLFramebuffer::Resize(uint32_t width, uint32_t height)
     m_specification.m_width  = width;
     m_specification.m_height = height;
     Invalidate();
+}
+
+int OpenGLFramebuffer::ReadPixel(uint32_t attachmentIndex, int x, int y)
+{
+    X_CORE_ASSERT(attachmentIndex < m_colorAttachments.size(), "Invalid attachmentIndex");
+
+    glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
+    int pixelData;
+    glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);
+    return pixelData;
 }
 
 uint32_t OpenGLFramebuffer::GetColorAttachmentRendererID(uint32_t index) const

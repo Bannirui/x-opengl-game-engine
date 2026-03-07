@@ -45,7 +45,7 @@ private:
 
     X::Ref<VertexArray> m_squareVA;
     X::Ref<Shader>      m_flatColorShader;
-    X::Ref<FrameBuffer> m_frameBuffer;
+    X::Ref<FrameBuffer> m_framebuffer;
 
     X::Ref<Scene> m_activeScene;
     Entity        m_squareEntity;
@@ -54,12 +54,13 @@ private:
 
     X::Ref<Texture2D> m_checkerboardTexture;
     glm::vec2         m_viewportSize = {0.0f, 0.0f};
+    glm::vec2         m_viewportBounds[2];
     bool              m_viewportFocused{false}, m_viewportHovered{false};
     glm::vec4         m_squareColor = {0.2f, 0.3f, 0.8f, 1.0f};
 
     // Panel
     SceneHierarchyPanel m_sceneHierarchyPanel;
-    int m_gizmoType{-1};
+    int                 m_gizmoType{-1};
 
     EditorCamera m_editorCamera;
 };

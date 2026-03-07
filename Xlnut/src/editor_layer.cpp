@@ -20,7 +20,6 @@
 #include <x/scene/scene.h>
 #include <x/util/platform_util.h>
 #include <x/events/key_event.h>
-#include <x/scene/scene_serializer.h>
 #include <x/math/math.h>
 #include <x/scene/component.h>
 
@@ -38,8 +37,9 @@ void EditorLayer::OnAttach()
     FramebufferSpecification fbSpec;
     fbSpec.m_width       = 1280;
     fbSpec.m_height      = 720;
-    fbSpec.m_attachments = {FramebufferTextureFormat::kRGBA8, FramebufferTextureFormat::kDepth};
-    m_frameBuffer        = FrameBuffer::Create(fbSpec);
+    fbSpec.m_attachments = {FramebufferTextureFormat::kRGBA8, FramebufferTextureFormat::kRED_INTEGER,
+                            FramebufferTextureFormat::kDepth};
+    m_framebuffer        = FrameBuffer::Create(fbSpec);
 
     m_activeScene  = X::CreateRef<Scene>();
     m_editorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
@@ -105,11 +105,11 @@ void EditorLayer::OnUpdate(Timestep ts)
 {
     X_PROFILE_FUNCTION();
     // Resize
-    if (FramebufferSpecification spec = m_frameBuffer->GetSpecification();
+    if (FramebufferSpecification spec = m_framebuffer->GetSpecification();
         m_viewportSize.x > 0.0f && m_viewportSize.y > 0.0f &&  // zero sized framebuffer is invalid
         (spec.m_width != m_viewportSize.x || spec.m_height != m_viewportSize.y))
     {
-        m_frameBuffer->Resize((uint32_t)m_viewportSize.x, (uint32_t)m_viewportSize.y);
+        m_framebuffer->Resize((uint32_t)m_viewportSize.x, (uint32_t)m_viewportSize.y);
         m_cameraController.OnResize(m_viewportSize.x, m_viewportSize.y);
         m_editorCamera.SetViewportSize(m_viewportSize.x, m_viewportSize.y);
         m_activeScene->OnViewportResize(static_cast<uint32_t>(m_viewportSize.x),
@@ -123,14 +123,28 @@ void EditorLayer::OnUpdate(Timestep ts)
     m_editorCamera.OnUpdate(ts);
     // Render
     Renderer2D::ResetStats();
-    m_frameBuffer->Bind();
+    m_framebuffer->Bind();
     RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1});
     RenderCommand::Clear();
 
     // Update scene
     m_activeScene->OnUpdateEditor(ts, m_editorCamera);
 
-    m_frameBuffer->Unbind();
+    auto [mx, my] = ImGui::GetMousePos();
+    mx -= m_viewportBounds[0].x;
+    my -= m_viewportBounds[0].y;
+    glm::vec2 viewportSize = m_viewportBounds[1] - m_viewportBounds[0];
+    my                     = viewportSize.y - my;
+    int mouseX             = static_cast<int>(mx);
+    int mouseY             = static_cast<int>(my);
+    if (mouseX >= 0 && my >= 0 && mouseX < static_cast<int>(viewportSize.x) &&
+        mouseY < static_cast<int>(viewportSize.y))
+    {
+        int pixelData = m_framebuffer->ReadPixel(1, mouseX, mouseY);
+        X_CORE_INFO("Pixel data = {}", pixelData);
+    }
+
+    m_framebuffer->Unbind();
 }
 
 void EditorLayer::OnImguiRender()
@@ -221,7 +235,7 @@ void EditorLayer::OnImguiRender()
     ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
     m_viewportSize           = {viewportPanelSize.x, viewportPanelSize.y};
 
-    uint64_t textureID = m_frameBuffer->GetColorAttachmentRendererID();
+    uint64_t textureID = m_framebuffer->GetColorAttachmentRendererID();
     ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{m_viewportSize.x, m_viewportSize.y}, ImVec2{0, 1},
                  ImVec2{1, 0});
 

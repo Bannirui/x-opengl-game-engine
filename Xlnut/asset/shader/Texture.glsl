@@ -32,6 +32,7 @@ in flat float v_TexIndex;
 in float v_TilingFactor;
 
 layout(location = 0) out vec4 color;
+layout(location = 1) out vec4 color2;
 
 uniform sampler2D u_Textures[16];
 
@@ -122,4 +123,5 @@ void main()
         }
     }
     color = texColor;
+    color = 50;
 }
