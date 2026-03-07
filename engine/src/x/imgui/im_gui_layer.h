@@ -26,16 +26,15 @@ public:
 
     void OnUpdate(Timestep ts) override;
     void OnImguiRender() override;
-    void OnEvent(Event &e) override;
+    void OnEvent(Event& e) override;
 
     void Begin();
     void End();
 
     void BlockEvents(bool block) { m_blockEvents = block; }
+
     void SetDarkTheme();
 
 private:
-    // todo
-    // float m_time{0.0f};
-    bool  m_blockEvents{true};
+    bool m_blockEvents{true};
 };
