@@ -17,15 +17,17 @@ public:
     Scene();
     ~Scene();
 
-    Entity          CreateEntity(const std::string& name = std::string());
-    void            DestroyEntity(Entity entity);
+    Entity CreateEntity(const std::string& name = std::string());
+    void   DestroyEntity(Entity entity);
+
     entt::registry& Reg() { return m_registry; }
 
     void OnUpdateRuntime(Timestep ts);
     void OnUpdateEditor(Timestep ts, EditorCamera& camera);
     void OnViewportResize(uint32_t width, uint32_t height);
 
-    entt::registry&       get_registry() { return m_registry; }
+    entt::registry& get_registry() { return m_registry; }
+
     const entt::registry& get_registry() const { return m_registry; }
 
     Entity GetPrimaryCameraEntity();

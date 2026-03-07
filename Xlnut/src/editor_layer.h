@@ -51,6 +51,7 @@ private:
     Entity        m_squareEntity;
     Entity        m_cameraEntity;
     Entity        m_secondCamera;
+    Entity        m_hoveredEntity;
 
     X::Ref<Texture2D> m_checkerboardTexture;
     glm::vec2         m_viewportSize = {0.0f, 0.0f};

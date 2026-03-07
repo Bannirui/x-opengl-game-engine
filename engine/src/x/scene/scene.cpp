@@ -68,7 +68,7 @@ void Scene::OnUpdateRuntime(Timestep ts)
         for (auto entity : group)
         {
             auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-            Renderer2D::DrawQuad(transform.GetTransform(), sprite.m_color);
+            Renderer2D::DrawSprite(transform.GetTransform(), sprite, static_cast<int>(entity));
         }
         Renderer2D::EndScene();
     }
@@ -81,7 +81,7 @@ void Scene::OnUpdateEditor(Timestep ts, EditorCamera& camera)
     for (auto entity : group)
     {
         auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-        Renderer2D::DrawQuad(transform.GetTransform(), sprite.m_color);
+        Renderer2D::DrawSprite(transform.GetTransform(), sprite, static_cast<int>(entity));
     }
     Renderer2D::EndScene();
 }

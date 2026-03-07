@@ -142,8 +142,8 @@ void EditorLayer::OnUpdate(Timestep ts)
     if (mouseX >= 0 && my >= 0 && mouseX < static_cast<int>(viewportSize.x) &&
         mouseY < static_cast<int>(viewportSize.y))
     {
-        int pixelData = m_framebuffer->ReadPixel(1, mouseX, mouseY);
-        X_CORE_INFO("Pixel data = {}", pixelData);
+        int pixelData   = m_framebuffer->ReadPixel(1, mouseX, mouseY);
+        m_hoveredEntity = pixelData == -1 ? Entity() : Entity((entt::entity)pixelData, m_activeScene.get());
     }
 
     m_framebuffer->Unbind();
@@ -218,6 +218,12 @@ void EditorLayer::OnImguiRender()
     m_sceneHierarchyPanel.OnImGuiRender();
 
     ImGui::Begin("Stats");
+    std::string name = "None";
+    if (m_hoveredEntity)
+    {
+        name = m_hoveredEntity.GetComponent<TagComponent>().m_tag;
+    }
+    ImGui::Text("Hovered Entity: %s", name.c_str());
 
     auto stats = Renderer2D::GetStats();
     ImGui::Text("Renderer2D Stats:");

@@ -15,6 +15,7 @@
 #include "x/core/base.h"
 #include "x/renderer/camera.h"
 #include "x/renderer/editor_camera.h"
+#include "x/scene/component.h"
 
 // VBO 正方形顶点
 struct QuadVertex
@@ -24,6 +25,7 @@ struct QuadVertex
     glm::vec2 texCoord;  // 纹理uv
     float     texIndex;  // 用哪个texture纹理采样
     float     tilingFactor;
+    int       entityID;
 };
 
 struct Renderer2DData
@@ -190,7 +192,7 @@ void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, cons
     DrawQuad(transform, texture, tilingFactor, tintColor);
 }
 
-void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color)
+void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color, int entityID)
 {
     X_PROFILE_FUNCTION();
 
@@ -209,6 +211,7 @@ void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color)
         s_data.quadVertexBufferPtr->texCoord     = textureCoords[i];
         s_data.quadVertexBufferPtr->texIndex     = textureIndex;
         s_data.quadVertexBufferPtr->tilingFactor = tilingFactor;
+        s_data.quadVertexBufferPtr->entityID     = entityID;
         s_data.quadVertexBufferPtr++;
     }
     s_data.quadIndexCount += 6;
@@ -216,7 +219,7 @@ void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color)
 }
 
 void Renderer2D::DrawQuad(const glm::mat4& transform, const X::Ref<Texture2D>& texture, float tilingFactor,
-                          const glm::vec4& tintColor)
+                          const glm::vec4& tintColor, int entityID)
 {
     X_PROFILE_FUNCTION();
 
@@ -253,6 +256,7 @@ void Renderer2D::DrawQuad(const glm::mat4& transform, const X::Ref<Texture2D>& t
         s_data.quadVertexBufferPtr->texCoord     = textureCoords[i];
         s_data.quadVertexBufferPtr->texIndex     = textureIndex;
         s_data.quadVertexBufferPtr->tilingFactor = tilingFactor;
+        s_data.quadVertexBufferPtr->entityID     = entityID;
         s_data.quadVertexBufferPtr++;
     }
     s_data.quadIndexCount += 6;
@@ -289,6 +293,11 @@ void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& siz
                           glm::rotate(glm::mat4(1.0f), glm::radians(rotation), {0.0f, 0.0f, 1.0f}) *
                           glm::scale(glm::mat4(1.0f), {size.x, size.y, 1.0f});
     DrawQuad(transform, texture, tilingFactor, tintColor);
+}
+
+void Renderer2D::DrawSprite(const glm::mat4& transform, SpriteRendererComponent& src, int entityID)
+{
+    DrawQuad(transform, src.m_color, entityID);
 }
 
 void Renderer2D::ResetStats()
