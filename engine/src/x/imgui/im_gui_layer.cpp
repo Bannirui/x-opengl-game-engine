@@ -29,8 +29,9 @@ void ImGuiLayer::OnAttach()
     io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;  // 支持更改鼠标形状
     io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;   // 可以主动设置鼠标位置
     // 字体
-    io.Fonts->AddFontFromFileTTF("asset/fonts/opensans/OpenSans-Bold.ttf", 18.0f);
-    io.FontDefault = io.Fonts->AddFontFromFileTTF("asset/fonts/opensans/OpenSans-Regular.ttf", 18.0f);
+    float fontSize = 18.0f;
+    io.Fonts->AddFontFromFileTTF("asset/fonts/opensans/OpenSans-Bold.ttf", fontSize);
+    io.FontDefault = io.Fonts->AddFontFromFileTTF("asset/fonts/opensans/OpenSans-Regular.ttf", fontSize);
     // 主题
     ImGui::StyleColorsDark();
     // When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular

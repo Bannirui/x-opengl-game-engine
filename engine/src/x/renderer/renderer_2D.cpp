@@ -126,8 +126,8 @@ void Renderer2D::Shutdown()
 void Renderer2D::BeginScene(const OrthographicCamera& camera)
 {
     X_PROFILE_FUNCTION();
-    s_data.textureShader->Bind();
-    s_data.textureShader->SetMat4("u_ViewProjection", camera.get_viewProjectionMatrix());
+    s_data.m_cameraBuffer.m_viewProjection = camera.get_viewProjectionMatrix();
+    s_data.m_cameraUniformBuffer->SetData(&s_data.m_cameraBuffer, sizeof(Renderer2DData::CameraData));
     startBatch();
 }
 

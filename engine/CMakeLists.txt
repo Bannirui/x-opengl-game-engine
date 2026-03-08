@@ -48,7 +48,7 @@ target_link_libraries(${LIB_NAME}
         yaml-cpp
         ImGuizmo
         Vulkan::Vulkan
-        shaderc glslang MachineIndependent OSDependent GenericCodeGen HLSL OGLCompiler SPIRV SPIRV-Tools SPIRV-Tools-opt spirv-cross-core spirv-cross-glsl
+        shaderc spirv-cross-core spirv-cross-glsl
 )
 
 target_precompile_headers(${LIB_NAME}

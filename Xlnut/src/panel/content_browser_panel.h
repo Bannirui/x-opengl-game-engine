@@ -5,6 +5,9 @@
 #pragma once
 
 #include <filesystem>
+#include <x/core/base.h>
+
+class Texture2D;
 
 class ContentBrowserPanel
 {
@@ -14,4 +17,6 @@ public:
 
 private:
     std::filesystem::path m_currentDirectory;
+    X::Ref<Texture2D>     m_directoryIcon;
+    X::Ref<Texture2D>     m_fileIcon;
 };

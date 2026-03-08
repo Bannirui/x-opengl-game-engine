@@ -5,6 +5,7 @@
 #include "sandbox_2D.h"
 
 #include <imgui.h>
+
 #include <glm/gtc/type_ptr.inl>
 
 Sandbox2D::Sandbox2D()
@@ -77,7 +78,7 @@ void Sandbox2D::OnImguiRender()
     ImGui::End();
 }
 
-void Sandbox2D::OnEvent(Event &e)
+void Sandbox2D::OnEvent(Event& e)
 {
     m_cameraController.OnEvent(e);
 }
