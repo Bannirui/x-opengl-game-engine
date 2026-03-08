@@ -5,12 +5,12 @@
 #pragma once
 
 #include <glm/glm.hpp>
-
 #include <x/core/layer.h>
+#include <x/renderer/editor_camera.h>
 #include <x/renderer/orthographic_camera_controller.h>
 #include <x/scene/entity.h>
-#include <x/renderer/editor_camera.h>
 
+#include "panel/content_browser_panel.h"
 #include "panel/scene_hierarchy_panel.h"
 
 class MouseButtonPressedEvent;
@@ -55,15 +55,16 @@ private:
     Entity        m_secondCamera;
     Entity        m_hoveredEntity;
 
+    EditorCamera m_editorCamera;
+
     X::Ref<Texture2D> m_checkerboardTexture;
     glm::vec2         m_viewportSize = {0.0f, 0.0f};
     glm::vec2         m_viewportBounds[2];
     bool              m_viewportFocused{false}, m_viewportHovered{false};
     glm::vec4         m_squareColor = {0.2f, 0.3f, 0.8f, 1.0f};
 
+    int m_gizmoType{-1};
     // Panel
     SceneHierarchyPanel m_sceneHierarchyPanel;
-    int                 m_gizmoType{-1};
-
-    EditorCamera m_editorCamera;
+    ContentBrowserPanel m_contentBrowserPanel;
 };

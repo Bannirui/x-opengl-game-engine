@@ -21,7 +21,7 @@ SpaceBeforeParens: ControlStatements
 # 命名空间内缩进
 NamespaceIndentation: All
 # 自动排序include语句 有些依赖必须严格顺序否则会出错比如glad和glfw
-SortIncludes: true
+SortIncludes: CaseInsensitive
 # regroup 并合并相同模块的include
 IncludeBlocks: Regroup
 IncludeCategories:
@@ -31,15 +31,18 @@ IncludeCategories:
   # glfw must come after glad
   - Regex: '^<GLFW/'
     Priority: 2
-  # third party headers
-  - Regex: '^<(vulkan|OpenGL/glm|imgui|spdlog)/'
+  # ImGuizmo must be after imgui, imgui+imguizmo together
+  - Regex: '^<(imgui|ImGuizmo).*>'
     Priority: 3
+  # third party headers
+  - Regex: '^<(vulkan|glm|spdlog)/'
+    Priority: 4
   # system headers
   - Regex: '^<.*>'
-    Priority: 4
+    Priority: 5
   # other
   - Regex: '^".*"'
-    Priority: 5
+    Priority: 6
 
 # 自动换行注释
 ReflowComments: true

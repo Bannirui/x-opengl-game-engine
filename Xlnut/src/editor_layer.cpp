@@ -4,9 +4,11 @@
 
 #include "editor_layer.h"
 
-#include <ImGuizmo.h>
-#include <glm/gtc/type_ptr.hpp>
 #include <imgui.h>
+#include <ImGuizmo.h>
+
+#include <glm/gtc/type_ptr.hpp>
+
 #include <x/core/input.h>
 #include <x/core/x_application.h>
 #include <x/events/event.h>
@@ -223,6 +225,7 @@ void EditorLayer::OnImguiRender()
     }
 
     m_sceneHierarchyPanel.OnImGuiRender();
+    m_contentBrowserPanel.OnImGuiRender();
 
     ImGui::Begin("Stats");
     std::string name = "None";
