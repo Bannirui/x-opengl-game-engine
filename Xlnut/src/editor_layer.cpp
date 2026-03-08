@@ -25,6 +25,8 @@
 #include <x/scene/scene_serializer.h>
 #include <x/util/platform_util.h>
 
+extern const std::filesystem::path g_assetPath;
+
 EditorLayer::EditorLayer()
     : Layer("EditorLayer"), m_cameraController(1280.0f / 720.0f), m_squareColor({0.2f, 0.3f, 0.4f, 1.0f})
 {
@@ -262,6 +264,15 @@ void EditorLayer::OnImguiRender()
     ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{m_viewportSize.x, m_viewportSize.y}, ImVec2{0, 1},
                  ImVec2{1, 0});
 
+    if (ImGui::BeginDragDropTarget())
+    {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_TIME"))
+        {
+            const wchar_t* path = (const wchar_t*)payload->Data;
+            openScene(std::filesystem::path(g_assetPath) / path);
+        }
+        ImGui::EndDragDropTarget();
+    }
     // Gizmos
     Entity selectedEntity = m_sceneHierarchyPanel.get_selectedEntity();
     if (selectedEntity && m_gizmoType != -1)
@@ -429,13 +440,17 @@ void EditorLayer::openScene()
     std::optional<std::string> filepath = FileDialog::OpenFile("X Scene (*.x)\0*.x\0");
     if (filepath)
     {
-        m_activeScene = X::CreateRef<Scene>();
-        m_activeScene->OnViewportResize((uint32_t)m_viewportSize.x, (uint32_t)m_viewportSize.y);
-        m_sceneHierarchyPanel.set_context(m_activeScene);
-
-        SceneSerializer serializer(m_activeScene);
-        serializer.Deserialize(*filepath);
+        openScene(*filepath);
     }
+}
+
+void EditorLayer::openScene(const std::filesystem::path& path)
+{
+    m_activeScene = X::CreateRef<Scene>();
+    m_activeScene->OnViewportResize((uint32_t)m_viewportSize.x, (uint32_t)m_viewportSize.y);
+    m_sceneHierarchyPanel.set_context(m_activeScene);
+    SceneSerializer serializer(m_activeScene);
+    serializer.Deserialize(path.string());
 }
 
 void EditorLayer::saveSceneAs()

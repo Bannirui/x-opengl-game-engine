@@ -8,9 +8,11 @@
 
 #include <x/renderer/texture.h>
 
-static const std::filesystem::path s_assetPath = "asset";
+#include "ImGuizmo.h"
 
-ContentBrowserPanel::ContentBrowserPanel() : m_currentDirectory(s_assetPath)
+extern const std::filesystem::path g_assetPath = "asset";
+
+ContentBrowserPanel::ContentBrowserPanel() : m_currentDirectory(g_assetPath)
 {
     m_directoryIcon = Texture2D::Create("asset/icon/DirectoryIcon.png");
     m_fileIcon      = Texture2D::Create("asset/icon/FileIcon.png");
@@ -19,7 +21,7 @@ ContentBrowserPanel::ContentBrowserPanel() : m_currentDirectory(s_assetPath)
 void ContentBrowserPanel::OnImGuiRender()
 {
     ImGui::Begin("Content Browser");
-    if (m_currentDirectory != std::filesystem::path(s_assetPath))
+    if (m_currentDirectory != std::filesystem::path(g_assetPath))
     {
         if (ImGui::Button("<-"))
         {
@@ -40,11 +42,21 @@ void ContentBrowserPanel::OnImGuiRender()
     for (auto& directoryEntry : std::filesystem::directory_iterator(m_currentDirectory))
     {
         const auto& path           = directoryEntry.path();
-        auto        relativePath   = std::filesystem::relative(path, s_assetPath);
+        auto        relativePath   = std::filesystem::relative(path, g_assetPath);
         std::string filenameString = relativePath.filename().string();
 
+        ImGui::PushID(filenameString.c_str());
         X::Ref<Texture2D> icon = directoryEntry.is_directory() ? m_directoryIcon : m_fileIcon;
-        ImGui::ImageButton((ImTextureID)icon->GetRendererID(), {thumbnailSize, thumbnailSize}, {0, 1}, {1, 0});
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+        ImGui::ImageButton(directoryEntry.path().string().c_str(), (ImTextureID)(uint64_t)icon->GetRendererID(),
+                           {thumbnailSize, thumbnailSize}, {0, 1}, {1, 0});
+        if (ImGui::BeginDragDropSource())
+        {
+            std::string pathStr = relativePath.string();
+            ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM", pathStr.c_str(), (pathStr.size() + 1) * sizeof(char));
+            ImGui::EndDragDropSource();
+        }
+        ImGui::PopStyleColor();
         if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
         {
             if (directoryEntry.is_directory())
@@ -52,8 +64,9 @@ void ContentBrowserPanel::OnImGuiRender()
                 m_currentDirectory /= path.filename();
             }
         }
-        ImGui::TextWrapped(filenameString.c_str());
+        ImGui::TextWrapped("%s", filenameString.c_str());
         ImGui::NextColumn();
+        ImGui::PopID();
     }
     ImGui::Columns(1);
     ImGui::SliderFloat("Thumbnail Size", &thumbnailSize, 16, 512);
