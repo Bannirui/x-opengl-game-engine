@@ -15,10 +15,10 @@ struct VertexOutput
     float TexIndex;
     float TilingFactor;
 };
-layout (location = 0) out VertexOutput Output;
-layout (location = 1) out flat int v_EntityID;
+layout(location = 0) out VertexOutput Output;
+layout(location = 4) out flat int v_EntityID;
 
-layout (std140, binding = 0) uniform Camera
+layout(std140, binding = 0) uniform Camera
 {
     mat4 u_ViewProjection;
 };
@@ -29,7 +29,7 @@ void main()
     Output.TexCoord = a_TexCoord;
     Output.TexIndex = a_TexIndex;
     Output.TilingFactor = a_TilingFactor;
-    v_EntityID = a_TilingFactor;
+    v_EntityID = a_EntityID;
     gl_Position = u_ViewProjection * vec4(a_Position, 1.0);
 }
 
@@ -44,7 +44,7 @@ struct VertexOutput
     float TilingFactor;
 };
 layout(location = 0) in VertexOutput Input;
-layout(location = 1) in flat int v_EntityID;
+layout(location = 4) in flat int v_EntityID;
 
 layout(location = 0) out vec4 color;
 layout(location = 1) out int color2;
