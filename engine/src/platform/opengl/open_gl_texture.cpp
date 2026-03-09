@@ -4,18 +4,19 @@
 
 #include "platform/opengl/open_gl_texture.h"
 
-#include <stb_image.h>
 #include <glad/glad.h>
+
+#include <stb_image.h>
 
 #include "x/core/base.h"
 #include "x/core/x_log.h"
 
-OpenGLTexture2D::OpenGLTexture2D(const std::string &path) : m_path(path)
+OpenGLTexture2D::OpenGLTexture2D(const std::string& path) : m_path(path)
 {
     X_PROFILE_FUNCTION();
     int width, height, channels;
     stbi_set_flip_vertically_on_load(1);
-    stbi_uc *data{nullptr};
+    stbi_uc* data{nullptr};
     {
         X_PROFILE_SCOPE("stbi_load - OpenGLTexture2D::OpenGLTexture2D(const std::string&)");
         data = stbi_load(path.c_str(), &width, &height, &channels, 0);
@@ -52,7 +53,7 @@ OpenGLTexture2D::OpenGLTexture2D(const std::string &path) : m_path(path)
 
     // 设置纹理对象参数
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -72,7 +73,7 @@ OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height) : m_width(widt
     glBindTexture(GL_TEXTURE_2D, m_rendererId);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -89,7 +90,7 @@ OpenGLTexture2D::~OpenGLTexture2D()
     }
 }
 
-void OpenGLTexture2D::SetData(void *data, uint32_t size)
+void OpenGLTexture2D::SetData(void* data, uint32_t size)
 {
     X_PROFILE_FUNCTION();
     uint32_t bpp = m_dataFormat == GL_RGBA ? 4 : 3;
