@@ -472,3 +472,17 @@ void EditorLayer::saveSceneAs()
         serializer.Serialize(*filepath);
     }
 }
+
+void EditorLayer::onScenePlay()
+{
+    m_sceneState = SceneState::Play;
+    m_activeScene->OnRuntimeStart();
+}
+
+void EditorLayer::onSceneStop()
+{
+    m_sceneState = SceneState::Edit;
+    m_activeScene->OnRuntimeStop();
+}
+
+void EditorLayer::UI_Toolbar() {}

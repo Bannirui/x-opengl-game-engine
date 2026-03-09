@@ -76,10 +76,10 @@ private:
 
     enum class SceneState
     {
-        edit = 0,
-        play = 1
+        Edit = 0,
+        Play = 1
     };
-    SceneState m_sceneState{SceneState::edit};
+    SceneState m_sceneState{SceneState::Edit};
 
     // Editor resources
     X::Ref<Texture2D> m_iconPlay, m_iconStop;

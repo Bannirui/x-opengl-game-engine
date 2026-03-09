@@ -40,6 +40,7 @@ include(${LIB_DIRECTORY}/entt.cmake)
 include(${LIB_DIRECTORY}/yaml_cpp.cmake)
 include(${LIB_DIRECTORY}/ImGuizmo.cmake)
 include(${LIB_DIRECTORY}/shaderc.cmake)
+include(${LIB_DIRECTORY}/box2d.cmake)
 
 set(LIB_NAME "${PROJECT_NAME}-core")
 

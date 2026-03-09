@@ -10,6 +10,7 @@
 #include "x/renderer/editor_camera.h"
 
 class Entity;
+class b2World;
 
 class Scene
 {
@@ -22,6 +23,8 @@ public:
 
     entt::registry& Reg() { return m_registry; }
 
+    void OnRuntimeStart();
+    void OnRuntimeStop();
     void OnUpdateRuntime(Timestep ts);
     void OnUpdateEditor(Timestep ts, EditorCamera& camera);
     void OnViewportResize(uint32_t width, uint32_t height);
@@ -37,9 +40,10 @@ private:
     void onComponentAdded(Entity entity, T& component);
 
 private:
-    entt::registry m_registry;
-    uint32_t       m_viewportWidth{0}, m_viewportHeight{0};
-
     friend class Entity;
     friend class SceneSerializer;
+
+    entt::registry m_registry;
+    uint32_t       m_viewportWidth{0}, m_viewportHeight{0};
+    b2World*       m_physicsWorld{nullptr};
 };

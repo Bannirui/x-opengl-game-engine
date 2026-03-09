@@ -48,6 +48,7 @@ target_link_libraries(${LIB_NAME}
         yaml-cpp
         ImGuizmo
         shaderc spirv-cross-core spirv-cross-glsl
+        box2d
 )
 
 target_precompile_headers(${LIB_NAME}
