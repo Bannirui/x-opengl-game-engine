@@ -126,7 +126,7 @@ static void serializeEntity(YAML::Emitter& out, Entity entity)
         out << YAML::Key << "SpriteRendererComponent";
         out << YAML::BeginMap;
         auto& sc = entity.GetComponent<SpriteRendererComponent>();
-        out << YAML::Key << "Color" << YAML::Value << sc.m_color;
+        out << YAML::Key << "Color" << YAML::Value << sc.Color;
         out << YAML::EndMap;
     }
     out << YAML::EndMap;
@@ -211,7 +211,7 @@ bool SceneSerializer::Deserialize(const std::string& filepath)
             if (spriteRendererComponent)
             {
                 auto& src   = deserializeEntity.AddComponent<SpriteRendererComponent>();
-                src.m_color = spriteRendererComponent["Color"].as<glm::vec4>();
+                src.Color = spriteRendererComponent["Color"].as<glm::vec4>();
             }
         }
     }

@@ -4,14 +4,15 @@
 
 #pragma once
 
-#include "pch.h"
-#include "glm/gtx/quaternion.hpp"
-
-#include <glm/glm.hpp>
 #include <glm/ext/matrix_transform.hpp>
+#include <glm/glm.hpp>
+#include <glm/gtx/quaternion.hpp>
 
+#include "pch.h"
 #include "x/scene/scene_camera.h"
 #include "x/scene/scriptable_entity.h"
+
+class Texture2D;
 
 struct TagComponent
 {
@@ -19,6 +20,7 @@ struct TagComponent
 
     TagComponent()                    = default;
     TagComponent(const TagComponent&) = default;
+
     TagComponent(const std::string& tag) : m_tag(tag) {}
 };
 
@@ -30,6 +32,7 @@ struct TransformComponent
 
     TransformComponent()                          = default;
     TransformComponent(const TransformComponent&) = default;
+
     TransformComponent(const glm::vec3& translation) : m_translation(translation) {}
 
     glm::mat4 GetTransform() const
@@ -41,11 +44,14 @@ struct TransformComponent
 
 struct SpriteRendererComponent
 {
-    glm::vec4 m_color{1.0f};
+    glm::vec4         Color{1.0f};
+    X::Ref<Texture2D> Texture;
+    float             TilingFactor{1.0f};
 
     SpriteRendererComponent()                               = default;
     SpriteRendererComponent(const SpriteRendererComponent&) = default;
-    SpriteRendererComponent(const glm::vec4& color) : m_color(color) {}
+
+    SpriteRendererComponent(const glm::vec4& color) : Color(color) {}
 };
 
 struct CameraComponent
