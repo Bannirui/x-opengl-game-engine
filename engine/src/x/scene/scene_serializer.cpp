@@ -4,11 +4,12 @@
 
 #include "x/scene/scene_serializer.h"
 
+#include <glm/glm.hpp>
+
+#include <yaml-cpp/yaml.h>
+
 #include "x/scene/component.h"
 #include "x/scene/entity.h"
-
-#include <glm/glm.hpp>
-#include <yaml-cpp/yaml.h>
 
 namespace YAML
 {
@@ -162,7 +163,15 @@ void SceneSerializer::SerializeRuntime(const std::string& filepath)
 
 bool SceneSerializer::Deserialize(const std::string& filepath)
 {
-    YAML::Node data = YAML::LoadFile(filepath);
+    YAML::Node data;
+    try
+    {
+        data = YAML::LoadFile(filepath);
+    }
+    catch (YAML::ParserException e)
+    {
+        return false;
+    }
     if (!data["Scene"])
     {
         return false;
@@ -210,7 +219,7 @@ bool SceneSerializer::Deserialize(const std::string& filepath)
             auto spriteRendererComponent = entity["SpriteRendererComponent"];
             if (spriteRendererComponent)
             {
-                auto& src   = deserializeEntity.AddComponent<SpriteRendererComponent>();
+                auto& src = deserializeEntity.AddComponent<SpriteRendererComponent>();
                 src.Color = spriteRendererComponent["Color"].as<glm::vec4>();
             }
         }

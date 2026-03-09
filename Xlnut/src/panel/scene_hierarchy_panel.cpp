@@ -330,7 +330,15 @@ void SceneHierarchyPanel::drawComponents(Entity entity)
                 {
                     const wchar_t*        path        = (const wchar_t*)payload->Data;
                     std::filesystem::path texturePath = std::filesystem::path(g_assetPath) / path;
-                    component.Texture                 = Texture2D::Create(texturePath.string());
+                    X::Ref<Texture2D>     texture     = Texture2D::Create(texturePath.string());
+                    if (texture->IsLoaded())
+                    {
+                        component.Texture = texture;
+                    }
+                    else
+                    {
+                        X_WARN("Could not load texture {0}", texturePath.filename().string());
+                    }
                 }
                 ImGui::EndDragDropTarget();
             }

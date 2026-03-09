@@ -22,16 +22,10 @@ OpenGLTexture2D::OpenGLTexture2D(const std::string& path) : m_path(path)
         data = stbi_load(path.c_str(), &width, &height, &channels, 0);
     }
     X_CORE_ASSERT(data, "Failed to load image");
-    m_width  = width;
-    m_height = height;
+    m_isLoaded = true;
+    m_width    = width;
+    m_height   = height;
 
-    // 生成纹理对象
-    glGenTextures(1, &m_rendererId);
-    // 激活纹理对象
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, m_rendererId);
-
-    // 分配cpu内存
     GLenum internalFormat = 0, dataFormat = 0;
     if (channels == 4)
     {
@@ -43,6 +37,13 @@ OpenGLTexture2D::OpenGLTexture2D(const std::string& path) : m_path(path)
         internalFormat = GL_RGB8;
         dataFormat     = GL_RGB;
     }
+    // 生成纹理对象
+    glGenTextures(1, &m_rendererId);
+    // 激活纹理对象
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, m_rendererId);
+
+    // 分配cpu内存
     m_internalFormat = internalFormat;
     m_dataFormat     = dataFormat;
     X_CORE_ASSERT(internalFormat & dataFormat, "Format not supported!");

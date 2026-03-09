@@ -448,11 +448,19 @@ void EditorLayer::openScene()
 
 void EditorLayer::openScene(const std::filesystem::path& path)
 {
-    m_activeScene = X::CreateRef<Scene>();
-    m_activeScene->OnViewportResize((uint32_t)m_viewportSize.x, (uint32_t)m_viewportSize.y);
-    m_sceneHierarchyPanel.set_context(m_activeScene);
-    SceneSerializer serializer(m_activeScene);
-    serializer.Deserialize(path.string());
+    if (path.extension().string() != ".x")
+    {
+        X_WARN("Could not load {0} - not a scene file", path.filename().string());
+        return;
+    }
+    X::Ref<Scene>   newScene = X::CreateRef<Scene>();
+    SceneSerializer serializer(newScene);
+    if (serializer.Deserialize(path.string()))
+    {
+        m_activeScene = newScene;
+        m_activeScene->OnViewportResize((uint32_t)m_viewportSize.x, (uint32_t)m_viewportSize.y);
+        m_sceneHierarchyPanel.set_context(m_activeScene);
+    }
 }
 
 void EditorLayer::saveSceneAs()

@@ -10,21 +10,25 @@
 class OpenGLTexture2D : public Texture2D
 {
 public:
-    OpenGLTexture2D(const std::string &path);
+    OpenGLTexture2D(const std::string& path);
     OpenGLTexture2D(uint32_t width, uint32_t height);
     ~OpenGLTexture2D() override;
 
     uint32_t GetWidth() const override { return m_width; }
+
     uint32_t GetHeight() const override { return m_height; }
+
     uint32_t GetRendererID() const override { return m_rendererId; }
 
-    void SetData(void *data, uint32_t size) override;
+    void SetData(void* data, uint32_t size) override;
 
     void Bind(uint32_t slot = 0) const override;
 
-    bool operator==(const Texture &other) const override
+    bool IsLoaded() override { return m_isLoaded; }
+
+    bool operator==(const Texture& other) const override
     {
-        return m_rendererId == ((OpenGLTexture2D &)other).m_rendererId;
+        return m_rendererId == ((OpenGLTexture2D&)other).m_rendererId;
     }
 
 private:
@@ -33,4 +37,5 @@ private:
     uint32_t    m_height;
     uint32_t    m_rendererId;
     uint32_t    m_internalFormat, m_dataFormat;
+    bool        m_isLoaded{false};
 };
