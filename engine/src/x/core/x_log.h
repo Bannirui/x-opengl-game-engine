@@ -1,5 +1,6 @@
 #pragma once
 
+#include <glm/gtx/string_cast.hpp>
 #include <spdlog/spdlog.h>
 
 #include "x/core/base.h"
@@ -9,13 +10,32 @@ class XLog
 public:
     static void Init();
 
-    static X::Ref<spdlog::logger> get_coreLogger() { return s_coreLogger; }
-    static X::Ref<spdlog::logger> get_clientLogger() { return s_clientLogger; }
+    static X::Ref<spdlog::logger>& get_coreLogger() { return s_coreLogger; }
+
+    static X::Ref<spdlog::logger>& get_clientLogger() { return s_clientLogger; }
 
 private:
     static X::Ref<spdlog::logger> s_coreLogger;
     static X::Ref<spdlog::logger> s_clientLogger;
 };
+
+template <typename OStream, glm::length_t L, typename T, glm::qualifier Q>
+inline OStream& operator<<(OStream& os, const glm::vec<L, T, Q>& vector)
+{
+    return os << glm::to_string(vector);
+}
+
+template <typename OStream, glm::length_t C, glm::length_t R, typename T, glm::qualifier Q>
+inline OStream& operator<<(OStream& os, const glm::mat<C, R, T, Q> matrix)
+{
+    return os << glm::to_string(matrix);
+}
+
+template <typename OStream, typename T, glm::qualifier Q>
+inline OStream& operator<<(OStream& os, const glm::quat<T, Q> quaternio)
+{
+    return os << glm::to_string(quaternio);
+}
 
 // Core log macros
 #define X_CORE_TRACE(...) ::XLog::get_coreLogger()->trace(__VA_ARGS__)
