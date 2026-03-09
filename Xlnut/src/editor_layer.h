@@ -5,6 +5,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
+
 #include <x/core/layer.h>
 #include <x/renderer/editor_camera.h>
 #include <x/renderer/orthographic_camera_controller.h>
@@ -43,6 +44,10 @@ private:
     void openScene(const std::filesystem::path& path);
     void saveSceneAs();
 
+    void onScenePlay();
+    void onSceneStop();
+    void UI_Toolbar();
+
 private:
     OrthographicCameraController m_cameraController;
 
@@ -68,4 +73,14 @@ private:
     // Panel
     SceneHierarchyPanel m_sceneHierarchyPanel;
     ContentBrowserPanel m_contentBrowserPanel;
+
+    enum class SceneState
+    {
+        edit = 0,
+        play = 1
+    };
+    SceneState m_sceneState{SceneState::edit};
+
+    // Editor resources
+    X::Ref<Texture2D> m_iconPlay, m_iconStop;
 };

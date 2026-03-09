@@ -37,6 +37,8 @@ void EditorLayer::OnAttach()
     X_PROFILE_FUNCTION();
 
     m_checkerboardTexture = Texture2D::Create("asset/texture/Checkerboard.png");
+    m_iconPlay            = Texture2D::Create("asset/icon/PlayButton.png");
+    m_iconStop            = Texture2D::Create("asset/icon/StopButton.png");
 
     FramebufferSpecification fbSpec;
     fbSpec.m_width       = 1280;
