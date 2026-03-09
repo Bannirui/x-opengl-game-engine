@@ -47,7 +47,6 @@ target_link_libraries(${LIB_NAME}
         EnTT
         yaml-cpp
         ImGuizmo
-        Vulkan::Vulkan
         shaderc spirv-cross-core spirv-cross-glsl
 )
 

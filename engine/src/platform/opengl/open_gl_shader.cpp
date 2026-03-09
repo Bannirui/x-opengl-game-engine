@@ -6,11 +6,11 @@
 
 #include <glad/glad.h>
 
-#include <GL/glext.h>
 #include <glm/gtc/type_ptr.inl>
+
 #include <shaderc/shaderc.hpp>
-#include <spirv_cross/spirv_cross.hpp>
-#include <spirv_cross/spirv_glsl.hpp>
+#include <spirv_cross.hpp>
+#include <spirv_glsl.hpp>
 
 #include "x/core/base.h"
 #include "x/core/timer.h"
