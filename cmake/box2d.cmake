@@ -1,5 +1,9 @@
 include(FetchContent)
 
+set(BOX2D_BUILD_TESTBED OFF)
+set(BOX2D_BUILD_UNIT_TESTS OFF)
+set(BOX2D_SAMPLES OFF)
+
 FetchContent_Declare(
         box2d
         GIT_REPOSITORY https://github.com/erincatto/box2d.git

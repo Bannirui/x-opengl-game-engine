@@ -170,6 +170,7 @@ void OpenGLFramebuffer::Invalidate()
                 case FramebufferTextureFormat::kRED_INTEGER:
                     Util::AttachColorTexture(m_colorAttachments[i], m_specification.m_samples, GL_R32I, GL_RED_INTEGER,
                                              m_specification.m_width, m_specification.m_height, i);
+                    break;
                 default:
                     X_CORE_ASSERT(false, "Unknown framebuffer format")
             }

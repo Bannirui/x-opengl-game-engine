@@ -19,6 +19,15 @@ add_library(${LIB_NAME} STATIC
         ${SRCS}
 )
 
+# 编译告警
+target_compile_options(${LIB_NAME}
+    PRIVATE
+    -Wall
+    -Wextra
+    -Werror
+    -Wno-error=unused-parameter
+)
+
 # macOS Objective-C++
 if(APPLE)
     target_sources(${LIB_NAME} PRIVATE

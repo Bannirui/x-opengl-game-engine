@@ -260,8 +260,9 @@ bool SceneSerializer::Deserialize(const std::string& filepath)
     {
         data = YAML::LoadFile(filepath);
     }
-    catch (YAML::ParserException e)
+    catch (YAML::ParserException& e)
     {
+        X_CORE_ERROR("Failed to load scene file '{}': {}", filepath, e.what());
         return false;
     }
     if (!data["Scene"])
