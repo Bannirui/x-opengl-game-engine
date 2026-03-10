@@ -9,10 +9,19 @@
 #include <glm/gtx/quaternion.hpp>
 
 #include "pch.h"
+#include "x/core/uuid.h"
 #include "x/scene/scene_camera.h"
-#include "x/scene/scriptable_entity.h"
 
 class Texture2D;
+class ScriptableEntity;
+
+struct IDComponent
+{
+    UUID id;
+
+    IDComponent()                   = default;
+    IDComponent(const IDComponent&) = default;
+};
 
 struct TagComponent
 {

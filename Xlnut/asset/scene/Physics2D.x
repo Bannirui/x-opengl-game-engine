@@ -1,6 +1,6 @@
 Scene: Untitled
 Entities:
-  - Entity: 123456789
+  - Entity: 5134011587522944740
     TagComponent:
       Tag: Floor
     TransformComponent:
@@ -19,7 +19,7 @@ Entities:
       Friction: 0.5
       Restitution: 0
       RestitutionThreshold: 0.5
-  - Entity: 123456789
+  - Entity: 15045535320033348975
     TagComponent:
       Tag: Sprite
     TransformComponent:
@@ -38,7 +38,7 @@ Entities:
       Friction: 0.100000001
       Restitution: 0.819999993
       RestitutionThreshold: 0.5
-  - Entity: 123456789
+  - Entity: 4793924497264767156
     TagComponent:
       Tag: Camera
     TransformComponent:
@@ -55,4 +55,3 @@ Entities:
         OrthographicNear: -1
         OrthographicFar: 1
       Primary: true
-      FixedAspectRatio: false

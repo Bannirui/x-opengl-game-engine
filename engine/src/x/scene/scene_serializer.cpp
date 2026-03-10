@@ -154,8 +154,9 @@ static Rigidbody2DComponent::BodyType RigidBody2DBodyTypeFromString(const std::s
 
 static void serializeEntity(YAML::Emitter& out, Entity entity)
 {
+    X_CORE_ASSERT(entity.HasComponent<IDComponent>());
     out << YAML::BeginMap;
-    out << YAML::Key << "Entity" << YAML::Value << "123456789";  // todo
+    out << YAML::Key << "Entity" << YAML::Value << entity.GetUUID();
     if (entity.HasComponent<TagComponent>())
     {
         out << YAML::Key << "TagComponent";
@@ -285,7 +286,7 @@ bool SceneSerializer::Deserialize(const std::string& filepath)
         {
             name = tagComponent["Tag"].as<std::string>();
             X_CORE_TRACE("Deserializing entity with ID = {0}, name = {1}", uuid, name);
-            Entity deserializeEntity  = m_scene->CreateEntity(name);
+            Entity deserializeEntity  = m_scene->CreateEntityWithUUID(uuid, name);
             auto   transformComponent = entity["TransformComponent"];
             if (transformComponent)
             {

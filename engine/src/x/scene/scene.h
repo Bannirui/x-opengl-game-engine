@@ -9,6 +9,7 @@
 #include "x/core/timestep.h"
 #include "x/renderer/editor_camera.h"
 
+class UUID;
 class Entity;
 class b2World;
 
@@ -19,6 +20,7 @@ public:
     ~Scene();
 
     Entity CreateEntity(const std::string& name = std::string());
+    Entity CreateEntityWithUUID(UUID uuid, const std::string& name = std::string());
     void   DestroyEntity(Entity entity);
 
     entt::registry& Reg() { return m_registry; }

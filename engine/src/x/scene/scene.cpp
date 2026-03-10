@@ -42,7 +42,13 @@ Scene::~Scene() {}
 
 Entity Scene::CreateEntity(const std::string& name)
 {
+    return CreateEntityWithUUID(UUID(), name);
+}
+
+Entity Scene::CreateEntityWithUUID(UUID uuid, const std::string& name)
+{
     Entity entity = {m_registry.create(), this};
+    entity.AddComponent<IDComponent>();
     entity.AddComponent<TransformComponent>();
     auto& tag = entity.AddComponent<TagComponent>();
     tag.m_tag = name.empty() ? "Entity" : name;
@@ -208,6 +214,11 @@ template <typename T>
 void Scene::onComponentAdded(Entity entity, T& component)
 {
     X_ASSERT(false, "Not supported");
+}
+
+template <>
+void Scene::onComponentAdded<IDComponent>(Entity entity, IDComponent& component)
+{
 }
 
 template <>
