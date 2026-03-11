@@ -132,23 +132,26 @@ void SceneHierarchyPanel::set_context(const X::Ref<Scene>& scene)
 void SceneHierarchyPanel::OnImGuiRender()
 {
     ImGui::Begin("Scene Hierarchy");
-    for (auto entityID : m_context->get_registry().view<entt::entity>())
+    if (m_context)
     {
-        Entity entity{entityID, m_context.get()};
-        drawEntityNode(entity);
-    }
-    if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
-    {
-        m_selectionContext = {};
-    }
-    // Right-click on blank space
-    if (ImGui::BeginPopupContextWindow(nullptr, ImGuiPopupFlags_MouseButtonRight | ImGuiPopupFlags_NoOpenOverItems))
-    {
-        if (ImGui::MenuItem("Create Empty Entity"))
+        for (auto entityID : m_context->get_registry().view<entt::entity>())
         {
-            m_context->CreateEntity("Empty Entity");
+            Entity entity{entityID, m_context.get()};
+            drawEntityNode(entity);
         }
-        ImGui::EndPopup();
+        if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
+        {
+            m_selectionContext = {};
+        }
+        // Right-click on blank space
+        if (ImGui::BeginPopupContextWindow(nullptr, ImGuiPopupFlags_MouseButtonRight | ImGuiPopupFlags_NoOpenOverItems))
+        {
+            if (ImGui::MenuItem("Create Empty Entity"))
+            {
+                m_context->CreateEntity("Empty Entity");
+            }
+            ImGui::EndPopup();
+        }
     }
     ImGui::End();
 
@@ -379,7 +382,7 @@ void SceneHierarchyPanel::drawComponents(Entity entity)
         [](auto& component)
         {
             ImGui::DragFloat2("Offset", glm::value_ptr(component.Offset));
-            ImGui::DragFloat2("Size", glm::value_ptr(component.Offset));
+            ImGui::DragFloat2("Size", glm::value_ptr(component.Size));
             ImGui::DragFloat("Density", &component.Density, 0.01f, 0.0f, 1.0f);
             ImGui::DragFloat("Friction", &component.Friction, 0.01f, 0.0f, 1.0f);
             ImGui::DragFloat("Restitution", &component.Restitution, 0.01f, 0.0f, 1.0f);

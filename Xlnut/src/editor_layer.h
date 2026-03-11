@@ -42,10 +42,12 @@ private:
     void newScene();
     void openScene();
     void openScene(const std::filesystem::path& path);
+    void saveScene();
     void saveSceneAs();
-
+    void serializeScene(X::Ref<Scene> scene, const std::filesystem::path& path);
     void onScenePlay();
     void onSceneStop();
+    void onDuplicateEntity();
     void UI_Toolbar();
 
 private:
@@ -55,11 +57,13 @@ private:
     X::Ref<Shader>      m_flatColorShader;
     X::Ref<FrameBuffer> m_framebuffer;
 
-    X::Ref<Scene> m_activeScene;
-    Entity        m_squareEntity;
-    Entity        m_cameraEntity;
-    Entity        m_secondCamera;
-    Entity        m_hoveredEntity;
+    X::Ref<Scene>         m_activeScene;
+    X::Ref<Scene>         m_editorScene;
+    std::filesystem::path m_editorScenePath;
+    Entity                m_squareEntity;
+    Entity                m_cameraEntity;
+    Entity                m_secondCamera;
+    Entity                m_hoveredEntity;
 
     EditorCamera m_editorCamera;
 

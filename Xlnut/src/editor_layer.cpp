@@ -106,7 +106,6 @@ void EditorLayer::OnAttach()
     m_cameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
     m_secondCamera.AddComponent<NativeScriptComponent>().Bind<CameraController>();
 #endif
-    m_sceneHierarchyPanel.set_context(m_activeScene);
 }
 
 void EditorLayer::OnDetach()
@@ -374,12 +373,27 @@ bool EditorLayer::onKeyPressed(KeyPressEvent& e)
         }
         case X::KEY::S:
         {
-            if (control && shift)
+            if (control)
             {
-                // ctrl+shift+S
-                saveSceneAs();
+                if (shift)
+                {
+                    // ctrl+shift+S
+                    saveSceneAs();
+                }
+                else
+                {
+                    saveScene();
+                }
             }
             break;
+        }
+        case X::KEY::D:
+        {
+            if (control)
+            {
+                onDuplicateEntity();
+                break;
+            }
         }
         // Gizmos
         case X::KEY::Q:
@@ -435,6 +449,7 @@ void EditorLayer::newScene()
     m_activeScene = X::CreateRef<Scene>();
     m_activeScene->OnViewportResize((uint32_t)m_viewportSize.x, (uint32_t)m_viewportSize.y);
     m_sceneHierarchyPanel.set_context(m_activeScene);
+    m_editorScenePath = std::filesystem::path();
 }
 
 void EditorLayer::openScene()
@@ -448,6 +463,10 @@ void EditorLayer::openScene()
 
 void EditorLayer::openScene(const std::filesystem::path& path)
 {
+    if (m_sceneState != SceneState::Edit)
+    {
+        onSceneStop();
+    }
     if (path.extension().string() != ".x")
     {
         X_WARN("Could not load {0} - not a scene file", path.filename().string());
@@ -460,6 +479,20 @@ void EditorLayer::openScene(const std::filesystem::path& path)
         m_activeScene = newScene;
         m_activeScene->OnViewportResize((uint32_t)m_viewportSize.x, (uint32_t)m_viewportSize.y);
         m_sceneHierarchyPanel.set_context(m_activeScene);
+        m_activeScene     = m_editorScene;
+        m_editorScenePath = path;
+    }
+}
+
+void EditorLayer::saveScene()
+{
+    if (!m_editorScenePath.empty())
+    {
+        serializeScene(m_activeScene, m_editorScenePath);
+    }
+    else
+    {
+        saveSceneAs();
     }
 }
 
@@ -468,21 +501,44 @@ void EditorLayer::saveSceneAs()
     std::optional<std::string> filepath = FileDialog::SaveFile("X Scene (*.x)\0*.x\0");
     if (filepath)
     {
-        SceneSerializer serializer(m_activeScene);
-        serializer.Serialize(*filepath);
+        serializeScene(m_activeScene, *filepath);
+        m_editorScenePath = *filepath;
     }
+}
+
+void EditorLayer::serializeScene(X::Ref<Scene> scene, const std::filesystem::path& path)
+{
+    SceneSerializer serializer(scene);
+    serializer.Serialize(path.string());
 }
 
 void EditorLayer::onScenePlay()
 {
-    m_sceneState = SceneState::Play;
+    m_sceneState  = SceneState::Play;
+    m_activeScene = Scene::Copy(m_editorScene);
     m_activeScene->OnRuntimeStart();
+    m_sceneHierarchyPanel.set_context(m_activeScene);
 }
 
 void EditorLayer::onSceneStop()
 {
     m_sceneState = SceneState::Edit;
     m_activeScene->OnRuntimeStop();
+    m_activeScene = m_editorScene;
+    m_sceneHierarchyPanel.set_context(m_activeScene);
+}
+
+void EditorLayer::onDuplicateEntity()
+{
+    if (m_sceneState != SceneState::Edit)
+    {
+        return;
+    }
+    Entity selectedEntity = m_sceneHierarchyPanel.get_selectedEntity();
+    if (selectedEntity)
+    {
+        m_editorScene->DuplicateEntity(selectedEntity);
+    }
 }
 
 void EditorLayer::UI_Toolbar() {}

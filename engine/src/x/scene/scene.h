@@ -19,6 +19,8 @@ public:
     Scene();
     ~Scene();
 
+    static X::Ref<Scene> Copy(X::Ref<Scene> other);
+
     Entity CreateEntity(const std::string& name = std::string());
     Entity CreateEntityWithUUID(UUID uuid, const std::string& name = std::string());
     void   DestroyEntity(Entity entity);
@@ -35,6 +37,7 @@ public:
 
     const entt::registry& get_registry() const { return m_registry; }
 
+    void   DuplicateEntity(Entity entity);
     Entity GetPrimaryCameraEntity();
 
 private:

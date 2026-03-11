@@ -28,6 +28,14 @@ public:
         return component;
     }
 
+    template <typename T, typename... Args>
+    T& AddOrReplaceComponent(Args&&... args)
+    {
+        T& component = m_scene->m_registry.emplace_or_replace<T>(m_entityHandle, std::forward<Args>(args)...);
+        m_scene->onComponentAdded<T>(*this, component);
+        return component;
+    }
+
     template <typename T>
     T& GetComponent()
     {
@@ -56,6 +64,8 @@ public:
     operator uint32_t() const { return static_cast<uint32_t>(m_entityHandle); }
 
     UUID GetUUID() { return GetComponent<IDComponent>().id; }
+
+    const std::string& GetName() { return GetComponent<TagComponent>().m_tag; }
 
     // 比较
     bool operator==(const Entity& other) const
