@@ -6,8 +6,8 @@
 
 #include <glad/glad.h>
 
-#include "x/renderer/vertex_array.h"
 #include "x/renderer/buffer.h"
+#include "x/renderer/vertex_array.h"
 
 OpenGLRendererAPI::~OpenGLRendererAPI() {}
 
@@ -24,7 +24,7 @@ void OpenGLRendererAPI::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint
     glViewport(x, y, width, height);
 }
 
-void OpenGLRendererAPI::SetClearColor(const glm::vec4 &color)
+void OpenGLRendererAPI::SetClearColor(const glm::vec4& color)
 {
     glClearColor(color.r, color.g, color.b, color.a);
 }
@@ -34,9 +34,9 @@ void OpenGLRendererAPI::Clear()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void OpenGLRendererAPI::DrawIndexed(const X::Ref<VertexArray> &vertexArray, uint32_t indexCount)
+void OpenGLRendererAPI::DrawIndexed(const X::Ref<VertexArray>& vertexArray, uint32_t indexCount)
 {
+    vertexArray->Bind();
     uint32_t count = indexCount ? indexCount : vertexArray->GetIndexBuffer()->GetCount();
     glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
-    glBindTexture(GL_TEXTURE_2D, 0);
 }

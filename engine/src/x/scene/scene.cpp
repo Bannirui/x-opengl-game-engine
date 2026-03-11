@@ -83,6 +83,7 @@ X::Ref<Scene> Scene::Copy(X::Ref<Scene> other)
     // Copy components (except IDComponent and TagComponent)
     CopyComponent<TransformComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
     CopyComponent<SpriteRendererComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
+    CopyComponent<CircleRendererComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
     CopyComponent<CameraComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
     CopyComponent<NativeScriptComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
     CopyComponent<Rigidbody2DComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
@@ -208,11 +209,24 @@ void Scene::OnUpdateRuntime(Timestep ts)
     if (mainCamera)
     {
         Renderer2D::BeginScene(*mainCamera, cameraTransform);
-        auto group = m_registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
-        for (auto entity : group)
+        // Draw sprite
         {
-            auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-            Renderer2D::DrawSprite(transform.GetTransform(), sprite, static_cast<int>(entity));
+            auto group = m_registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
+            for (auto entity : group)
+            {
+                auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+                Renderer2D::DrawSprite(transform.GetTransform(), sprite, static_cast<int>(entity));
+            }
+        }
+        // Draw circle
+        {
+            auto view = m_registry.view<TransformComponent, CircleRendererComponent>();
+            for (auto entity : view)
+            {
+                auto [transform, circle] = view.get<TransformComponent, CircleRendererComponent>(entity);
+                Renderer2D::DrawCircle(transform.GetTransform(), circle.Color, circle.Thickness, circle.Fade,
+                                       static_cast<int>(entity));
+            }
         }
         Renderer2D::EndScene();
     }
@@ -221,11 +235,20 @@ void Scene::OnUpdateRuntime(Timestep ts)
 void Scene::OnUpdateEditor(Timestep ts, EditorCamera& camera)
 {
     Renderer2D::BeginScene(camera);
+    // Draw sprite
     auto group = m_registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
     for (auto entity : group)
     {
         auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
         Renderer2D::DrawSprite(transform.GetTransform(), sprite, static_cast<int>(entity));
+    }
+    // Draw circle
+    auto view = m_registry.view<TransformComponent, CircleRendererComponent>();
+    for (auto entity : view)
+    {
+        auto [transform, circle] = group.get<TransformComponent, CircleRendererComponent>(entity);
+        Renderer2D::DrawCircle(transform.GetTransform(), circle.Color, circle.Thickness, circle.Fade,
+                               static_cast<int>(entity));
     }
     Renderer2D::EndScene();
 }
@@ -252,6 +275,7 @@ void Scene::DuplicateEntity(Entity entity)
     Entity      newEntity = CreateEntity(name);
     CopyComponentIfExists<TransformComponent>(newEntity, entity);
     CopyComponentIfExists<SpriteRendererComponent>(newEntity, entity);
+    CopyComponentIfExists<CircleRendererComponent>(newEntity, entity);
     CopyComponentIfExists<CameraComponent>(newEntity, entity);
     CopyComponentIfExists<NativeScriptComponent>(newEntity, entity);
     CopyComponentIfExists<Rigidbody2DComponent>(newEntity, entity);
@@ -278,13 +302,29 @@ void Scene::onComponentAdded(Entity entity, T& component)
     X_ASSERT(false, "Not supported");
 }
 
+// 模板特化
 template <>
 void Scene::onComponentAdded<IDComponent>(Entity entity, IDComponent& component)
 {
 }
 
 template <>
+void Scene::onComponentAdded<TagComponent>(Entity entity, TagComponent& component)
+{
+}
+
+template <>
 void Scene::onComponentAdded<TransformComponent>(Entity entity, TransformComponent& component)
+{
+}
+
+template <>
+void Scene::onComponentAdded<SpriteRendererComponent>(Entity entity, SpriteRendererComponent& component)
+{
+}
+
+template <>
+void Scene::onComponentAdded<CircleRendererComponent>(Entity entity, CircleRendererComponent& component)
 {
 }
 
@@ -295,16 +335,6 @@ void Scene::onComponentAdded<CameraComponent>(Entity entity, CameraComponent& co
     {
         component.m_camera.SetViewportSize(m_viewportWidth, m_viewportHeight);
     }
-}
-
-template <>
-void Scene::onComponentAdded<SpriteRendererComponent>(Entity entity, SpriteRendererComponent& component)
-{
-}
-
-template <>
-void Scene::onComponentAdded<TagComponent>(Entity entity, TagComponent& component)
-{
 }
 
 template <>

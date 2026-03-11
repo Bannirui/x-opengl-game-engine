@@ -25,6 +25,9 @@ public:
 
     static void Flush();
 
+    /**
+     * 绘制矩形
+     */
     static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color);
     static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color);
 
@@ -49,17 +52,25 @@ public:
                                 const X::Ref<Texture2D>& texture, float tilingFactor = 1.0f,
                                 const glm::vec4& tintColor = glm::vec4(1.0f));
 
+    /**
+     * 绘制圆形
+     */
+    static void DrawCircle(const glm::mat4& transform, const glm::vec4& color, float thickness = 1.0f,
+                           float fade = 0.005f, int entityID = 0);
+    /**
+     * 绘制单色图形
+     */
     static void DrawSprite(const glm::mat4& transform, SpriteRendererComponent& src, int entityID);
 
     // Stats
     struct Statistics
     {
-        uint32_t drawCalls = 0;
-        uint32_t quadCount = 0;
+        uint32_t DrawCalls = 0;
+        uint32_t QuadCount = 0;
 
-        uint32_t GetTotalVertexCount() const { return quadCount * 4; }
+        uint32_t GetTotalVertexCount() const { return QuadCount * 4; }
 
-        uint32_t GetTotalIndexCount() const { return quadCount * 6; }
+        uint32_t GetTotalIndexCount() const { return QuadCount * 6; }
     };
 
     static void       ResetStats();
