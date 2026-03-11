@@ -16,4 +16,6 @@ public:
     void SetClearColor(const glm::vec4& color) override;
     void Clear() override;
     void DrawIndexed(const X::Ref<VertexArray>& vertexArray, uint32_t indexCount) override;
+    void DrawLines(const X::Ref<VertexArray>& vertexArray, uint32_t vertexCount) override;
+    void SetLineWidth(float width) override;
 };
