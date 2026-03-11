@@ -12,6 +12,7 @@
 #include "x/renderer/renderer_2D.h"
 #include "x/scene/component.h"
 #include "x/scene/entity.h"
+#include "x/scene/scriptable_entity.h"
 
 static b2BodyType Rigidbody2DTypeToBox2DBody(Rigidbody2DComponent::BodyType bodyType)
 {
@@ -246,7 +247,7 @@ void Scene::OnUpdateEditor(Timestep ts, EditorCamera& camera)
     auto view = m_registry.view<TransformComponent, CircleRendererComponent>();
     for (auto entity : view)
     {
-        auto [transform, circle] = group.get<TransformComponent, CircleRendererComponent>(entity);
+        auto [transform, circle] = view.get<TransformComponent, CircleRendererComponent>(entity);
         Renderer2D::DrawCircle(transform.GetTransform(), circle.Color, circle.Thickness, circle.Fade,
                                static_cast<int>(entity));
     }

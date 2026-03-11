@@ -135,11 +135,11 @@ void Renderer2D::Init()
     uint32_t whiteTextureData = 0xffffffff;
     s_data.WhiteTexture->SetData(&whiteTextureData, sizeof(uint32_t));
 
-    int32_t samplers[s_data.MaxTextureSlots];
-    for (uint32_t i = 0; i < s_data.MaxTextureSlots; i++)
-    {
-        samplers[i] = i;
-    }
+    // int32_t samplers[s_data.MaxTextureSlots];
+    // for (uint32_t i = 0; i < s_data.MaxTextureSlots; i++)
+    // {
+    //     samplers[i] = i;
+    // }
 
     s_data.QuadShader   = Shader::Create("asset/shader/Renderer2D_Quad.glsl");
     s_data.CircleShader = Shader::Create("asset/shader/Renderer2D_Circle.glsl");

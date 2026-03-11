@@ -12,8 +12,8 @@
 #include "x/core/uuid.h"
 #include "x/scene/scene_camera.h"
 
-class Texture2D;
 class ScriptableEntity;
+class Texture2D;
 
 struct IDComponent
 {
