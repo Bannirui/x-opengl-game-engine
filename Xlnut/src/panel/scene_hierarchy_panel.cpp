@@ -281,11 +281,11 @@ void SceneHierarchyPanel::drawComponents(Entity entity)
     DrawComponent<TransformComponent>("Transform", entity,
                                       [](auto& component)
                                       {
-                                          DrawVec3Control("Translation", component.m_translation);
-                                          glm::vec3 rotation = glm::degrees(component.m_rotation);
+                                          DrawVec3Control("Translation", component.Translation);
+                                          glm::vec3 rotation = glm::degrees(component.Rotation);
                                           DrawVec3Control("Rotation", rotation);
-                                          component.m_rotation = glm::radians(rotation);
-                                          DrawVec3Control("Scale", component.m_scale, 1.0f);
+                                          component.Rotation = glm::radians(rotation);
+                                          DrawVec3Control("Scale", component.Scale, 1.0f);
                                       });
 
     DrawComponent<CameraComponent>(

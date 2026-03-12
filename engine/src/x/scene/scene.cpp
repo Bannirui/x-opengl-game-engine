@@ -126,8 +126,8 @@ void Scene::OnRuntimeStart()
         // Body
         b2BodyDef bodyDef;
         bodyDef.type = Rigidbody2DTypeToBox2DBody(rb2d.Type);
-        bodyDef.position.Set(transform.m_translation.x, transform.m_translation.y);
-        bodyDef.angle = transform.m_rotation.z;
+        bodyDef.position.Set(transform.Translation.x, transform.Translation.y);
+        bodyDef.angle = transform.Rotation.z;
 
         b2Body* body = m_physicsWorld->CreateBody(&bodyDef);
         body->SetFixedRotation(rb2d.FixedRotation);
@@ -137,7 +137,7 @@ void Scene::OnRuntimeStart()
         {
             auto&          bc2d = entity.GetComponent<BoxCollider2DComponent>();
             b2PolygonShape boxShape;
-            boxShape.SetAsBox(bc2d.Size.x * transform.m_scale.x, bc2d.Size.y * transform.m_scale.y);
+            boxShape.SetAsBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y);
 
             b2FixtureDef fixtureDef;
             fixtureDef.shape                = &boxShape;
@@ -153,7 +153,7 @@ void Scene::OnRuntimeStart()
 
             b2CircleShape circleShape;
             circleShape.m_p.Set(cc2d.Offset.x, cc2d.Offset.y);
-            circleShape.m_radius = cc2d.Radius;
+            circleShape.m_radius = transform.Scale.x*cc2d.Radius;
 
             b2FixtureDef fixtureDef;
             fixtureDef.shape                = &circleShape;
@@ -203,9 +203,9 @@ void Scene::OnUpdateRuntime(Timestep ts)
 
             b2Body*     body          = (b2Body*)rb2d.RuntimeBody;
             const auto& position      = body->GetPosition();
-            transform.m_translation.x = position.x;
-            transform.m_translation.y = position.y;
-            transform.m_rotation.z    = body->GetAngle();
+            transform.Translation.x = position.x;
+            transform.Translation.y = position.y;
+            transform.Rotation.z    = body->GetAngle();
         }
     }
     // Render 2D

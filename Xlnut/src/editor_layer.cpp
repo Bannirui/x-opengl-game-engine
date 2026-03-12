@@ -77,13 +77,13 @@ void EditorLayer::OnAttach()
     public:
         void OnCreate() override
         {
-            auto& translation = GetComponent<TransformComponent>().m_translation;
+            auto& translation = GetComponent<TransformComponent>().Translation;
             translation.x     = rand() % 10 - 5.0f;
         }
         void OnDestroy() override {}
         void OnUpdate(Timestep ts) override
         {
-            auto& translation = GetComponent<TransformComponent>().m_translation;
+            auto& translation = GetComponent<TransformComponent>().Translation;
             float speed{5.0f};
             if (Input::IsKeyPressed(X_KEY::A))
             {
@@ -127,22 +127,34 @@ void EditorLayer::OnUpdate(Timestep ts)
         m_activeScene->OnViewportResize(static_cast<uint32_t>(m_viewportSize.x),
                                         static_cast<uint32_t>(m_viewportSize.y));
     }
-    // Update
-    if (m_viewportFocused)
-    {
-        m_cameraController.OnUpdate(ts);
-    }
-    m_editorCamera.OnUpdate(ts);
     // Render
     Renderer2D::ResetStats();
     m_framebuffer->Bind();
-    RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1});
+    RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.0f});
     RenderCommand::Clear();
+
     // Clear entity ID attachment to -1
     m_framebuffer->ClearAttachment(1, -1);
 
     // Update scene
-    m_activeScene->OnUpdateEditor(ts, m_editorCamera);
+    switch (m_sceneState)
+    {
+        case SceneState::Edit:
+        {
+            if (m_viewportFocused)
+            {
+                m_cameraController.OnUpdate(ts);
+            }
+            m_editorCamera.OnUpdate(ts);
+            m_activeScene->OnUpdateEditor(ts, m_editorCamera);
+            break;
+        }
+        case SceneState::Play:
+        {
+            m_activeScene->OnUpdateRuntime(ts);
+            break;
+        }
+    }
 
     auto [mx, my] = ImGui::GetMousePos();
     mx -= m_viewportBounds[0].x;
@@ -157,7 +169,7 @@ void EditorLayer::OnUpdate(Timestep ts)
         int pixelData   = m_framebuffer->ReadPixel(1, mouseX, mouseY);
         m_hoveredEntity = pixelData == -1 ? Entity() : Entity((entt::entity)pixelData, m_activeScene.get());
     }
-
+    onOverlayRender();
     m_framebuffer->Unbind();
 }
 
@@ -246,6 +258,10 @@ void EditorLayer::OnImguiRender()
     ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
     ImGui::End();
 
+    ImGui::Begin("Settings");
+    ImGui::Checkbox("Show physics colliders", &m_showPhysicsColliers);
+    ImGui::End();
+
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{0, 0});
     ImGui::Begin("Viewport");
     auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
@@ -313,10 +329,10 @@ void EditorLayer::OnImguiRender()
             glm::vec3 translation, rotation, scale;
             MATH::DecomposeTransform(transform, translation, rotation, scale);
 
-            glm::vec3 deltaRotation = rotation - tc.m_rotation;
-            tc.m_translation        = translation;
-            tc.m_rotation += deltaRotation;
-            tc.m_scale = scale;
+            glm::vec3 deltaRotation = rotation - tc.Rotation;
+            tc.Translation          = translation;
+            tc.Rotation += deltaRotation;
+            tc.Scale = scale;
         }
     }
 
@@ -442,6 +458,50 @@ bool EditorLayer::onMouseButtonPressed(MouseButtonPressedEvent& e)
         }
     }
     return false;
+}
+
+void EditorLayer::onOverlayRender()
+{
+    if (m_sceneState == SceneState::Play)
+    {
+        Entity camera = m_activeScene->GetPrimaryCameraEntity();
+        Renderer2D::BeginScene(camera.GetComponent<CameraComponent>().Camera,
+                               camera.GetComponent<TransformComponent>().GetTransform());
+    }
+    else
+    {
+        Renderer2D::BeginScene(m_editorCamera);
+    }
+    if (m_showPhysicsColliers)
+    {
+        // Box colliders
+        {
+            auto view = m_activeScene->GetAllEntitiesWith<TransformComponent, BoxCollider2DComponent>();
+            for (auto entity : view)
+            {
+                auto [tc, bc2d]       = view.get<TransformComponent, BoxCollider2DComponent>(entity);
+                glm::vec3 translation = tc.Translation + glm::vec3(bc2d.Offset, 0.001f);
+                glm::vec3 scale       = tc.Scale * glm::vec3(bc2d.Size * 2.0f, 1.0f);
+                glm::mat4 transform   = glm::translate(glm::mat4(1.0f), translation) *
+                                      glm::rotate(glm::mat4(1.0f), tc.Rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)) *
+                                      glm::scale(glm::mat4(1.0f), scale);
+                Renderer2D::DrawRect(transform, glm::vec4(0, 1, 0, 1));
+            }
+        }
+        // Circle colliders
+        {
+            auto view = m_activeScene->GetAllEntitiesWith<TransformComponent, CircleCollider2DComponent>();
+            for (auto entity : view)
+            {
+                auto [tc, cc2d]       = view.get<TransformComponent, CircleCollider2DComponent>(entity);
+                glm::vec3 translation = tc.Translation + glm::vec3(cc2d.Offset, 0.001f);
+                glm::vec3 scale       = tc.Scale * glm::vec3(cc2d.Radius * 2.0f);
+                glm::mat4 transform = glm::translate(glm::mat4(1.0f), translation) * glm::scale(glm::mat4(1.0f), scale);
+                Renderer2D::DrawCircle(transform, glm::vec4(0, 1, 0, 1), 0.01f);
+            }
+        }
+    }
+    Renderer2D::EndScene();
 }
 
 void EditorLayer::newScene()

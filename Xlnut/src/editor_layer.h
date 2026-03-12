@@ -38,7 +38,7 @@ public:
 private:
     bool onKeyPressed(KeyPressEvent& e);
     bool onMouseButtonPressed(MouseButtonPressedEvent& e);
-
+    void onOverlayRender();
     void newScene();
     void openScene();
     void openScene(const std::filesystem::path& path);
@@ -73,7 +73,8 @@ private:
     bool              m_viewportFocused{false}, m_viewportHovered{false};
     glm::vec4         m_squareColor = {0.2f, 0.3f, 0.8f, 1.0f};
 
-    int m_gizmoType{-1};
+    int  m_gizmoType{-1};
+    bool m_showPhysicsColliers{false};
     // Panel
     SceneHierarchyPanel m_sceneHierarchyPanel;
     ContentBrowserPanel m_contentBrowserPanel;

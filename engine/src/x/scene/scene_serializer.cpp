@@ -170,9 +170,9 @@ static void serializeEntity(YAML::Emitter& out, Entity entity)
         out << YAML::Key << "TransformComponent";
         out << YAML::BeginMap;
         auto& tc = entity.GetComponent<TransformComponent>();
-        out << YAML::Key << "Translation" << YAML::Value << tc.m_translation;
-        out << YAML::Key << "Rotation" << YAML::Value << tc.m_rotation;
-        out << YAML::Key << "Scale" << YAML::Value << tc.m_scale;
+        out << YAML::Key << "Translation" << YAML::Value << tc.Translation;
+        out << YAML::Key << "Rotation" << YAML::Value << tc.Rotation;
+        out << YAML::Key << "Scale" << YAML::Value << tc.Scale;
         out << YAML::EndMap;
     }
     if (entity.HasComponent<CameraComponent>())
@@ -314,9 +314,9 @@ bool SceneSerializer::Deserialize(const std::string& filepath)
             if (transformComponent)
             {
                 auto& tc         = deserializeEntity.GetComponent<TransformComponent>();
-                tc.m_translation = transformComponent["Translation"].as<glm::vec3>();
-                tc.m_rotation    = transformComponent["Rotation"].as<glm::vec3>();
-                tc.m_scale       = transformComponent["Scale"].as<glm::vec3>();
+                tc.Translation = transformComponent["Translation"].as<glm::vec3>();
+                tc.Rotation    = transformComponent["Rotation"].as<glm::vec3>();
+                tc.Scale       = transformComponent["Scale"].as<glm::vec3>();
             }
             auto cameraComponent = entity["CameraComponent"];
             if (cameraComponent)

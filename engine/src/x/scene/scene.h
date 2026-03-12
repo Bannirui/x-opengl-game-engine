@@ -40,6 +40,12 @@ public:
     void   DuplicateEntity(Entity entity);
     Entity GetPrimaryCameraEntity();
 
+    template <typename... Components>
+    auto GetAllEntitiesWith()
+    {
+        return m_registry.view<Components...>();
+    }
+
 private:
     template <typename T>
     void onComponentAdded(Entity entity, T& component);
