@@ -47,7 +47,7 @@ layout(location = 3) in flat float v_TexIndex;
 layout(location = 4) in flat int v_EntityID;
 
 layout(location = 0) out vec4 o_Color;
-layout(location = 1) out int o_Color2;
+layout(location = 1) out int o_EntityID;
 
 layout(binding = 0) uniform sampler2D u_Textures[16];
 
@@ -137,6 +137,9 @@ void main()
             break;
         }
     }
+    if(texColor.a == 0.0) {
+        discard;
+    }
     o_Color = texColor;
-    o_Color2 = v_EntityID;
+    o_EntityID = v_EntityID;
 }
