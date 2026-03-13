@@ -180,7 +180,7 @@ static void serializeEntity(YAML::Emitter& out, Entity entity)
         out << YAML::Key << "CameraComponent";
         out << YAML::BeginMap;
         auto& cc     = entity.GetComponent<CameraComponent>();
-        auto& camera = cc.m_camera;
+        auto& camera = cc.Camera;
         out << YAML::Key << "ProjectionType" << YAML::Value << (int)camera.get_projectionType();
         out << YAML::Key << "PerspectiveFOV" << YAML::Value << camera.get_perspectiveFOV();
         out << YAML::Key << "PerspectiveNear" << YAML::Value << camera.get_perspectiveNearClip();
@@ -189,8 +189,8 @@ static void serializeEntity(YAML::Emitter& out, Entity entity)
         out << YAML::Key << "OrthographicNear" << YAML::Value << camera.get_orthographicNearClip();
         out << YAML::Key << "OrthographicFar" << YAML::Value << camera.get_orthographicFarClip();
         out << YAML::EndMap;
-        out << YAML::Key << "Primary" << YAML::Value << cc.m_primary;
-        out << YAML::Key << "FixedAspectiveRatio" << YAML::Value << cc.m_fixedAspectRatio;
+        out << YAML::Key << "Primary" << YAML::Value << cc.Primary;
+        out << YAML::Key << "FixedAspectiveRatio" << YAML::Value << cc.FixedAspectRatio;
         out << YAML::EndMap;
     }
     if (entity.HasComponent<SpriteRendererComponent>())
@@ -323,15 +323,15 @@ bool SceneSerializer::Deserialize(const std::string& filepath)
             {
                 auto&       cc          = deserializeEntity.AddComponent<CameraComponent>();
                 const auto& cameraProps = cameraComponent["Camera"];
-                cc.m_camera.set_projectionType((SceneCamera::ProjectionType)cameraProps["ProjectionType"].as<int>());
-                cc.m_camera.SetPerspectiveFOV(cameraProps["PerspectiveFOV"].as<float>());
-                cc.m_camera.SetPerspectiveNearClip(cameraProps["PerspectiveNear"].as<float>());
-                cc.m_camera.SetPerspectiveFarClip(cameraProps["PerspectiveFar"].as<float>());
-                cc.m_camera.SetOrthographicSize(cameraProps["OrthographicSize"].as<float>());
-                cc.m_camera.SetOrthographicNearClip(cameraProps["OrthographicNear"].as<float>());
-                cc.m_camera.SetOrthographicFarClip(cameraProps["OrthographicFar"].as<float>());
-                cc.m_primary          = cameraComponent["Primary"].as<bool>();
-                cc.m_fixedAspectRatio = cameraComponent["FixedAspectRatio"].as<bool>();
+                cc.Camera.set_projectionType((SceneCamera::ProjectionType)cameraProps["ProjectionType"].as<int>());
+                cc.Camera.SetPerspectiveFOV(cameraProps["PerspectiveFOV"].as<float>());
+                cc.Camera.SetPerspectiveNearClip(cameraProps["PerspectiveNear"].as<float>());
+                cc.Camera.SetPerspectiveFarClip(cameraProps["PerspectiveFar"].as<float>());
+                cc.Camera.SetOrthographicSize(cameraProps["OrthographicSize"].as<float>());
+                cc.Camera.SetOrthographicNearClip(cameraProps["OrthographicNear"].as<float>());
+                cc.Camera.SetOrthographicFarClip(cameraProps["OrthographicFar"].as<float>());
+                cc.Primary          = cameraComponent["Primary"].as<bool>();
+                cc.FixedAspectRatio = cameraComponent["FixedAspectRatio"].as<bool>();
             }
             auto spriteRendererComponent = entity["SpriteRendererComponent"];
             if (spriteRendererComponent)

@@ -75,9 +75,9 @@ struct CircleRendererComponent
 
 struct CameraComponent
 {
-    SceneCamera m_camera;
-    bool        m_primary = true;
-    bool        m_fixedAspectRatio{false};
+    SceneCamera Camera;
+    bool        Primary = true;
+    bool        FixedAspectRatio{false};
 
     CameraComponent()                       = default;
     CameraComponent(const CameraComponent&) = default;
@@ -85,21 +85,21 @@ struct CameraComponent
 
 struct NativeScriptComponent
 {
-    ScriptableEntity* m_instance = nullptr;
-    ScriptableEntity* (*m_instantiateScript)();
-    void (*m_destroyScript)(NativeScriptComponent*);
+    ScriptableEntity* Instance = nullptr;
+    ScriptableEntity* (*InstantiateScript)();
+    void (*DestroyScript)(NativeScriptComponent*);
 
     template <typename T>
     void Bind()
     {
-        m_instantiateScript = []()
+        InstantiateScript = []()
         {
             return static_cast<ScriptableEntity*>(new T());
         };
-        m_destroyScript = [](NativeScriptComponent* nsc)
+        DestroyScript = [](NativeScriptComponent* nsc)
         {
-            delete nsc->m_instance;
-            nsc->m_instance = nullptr;
+            delete nsc->Instance;
+            nsc->Instance = nullptr;
         };
     }
 };

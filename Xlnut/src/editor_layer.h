@@ -46,6 +46,7 @@ private:
     void saveSceneAs();
     void serializeScene(X::Ref<Scene> scene, const std::filesystem::path& path);
     void onScenePlay();
+    void onSceneSimulate();
     void onSceneStop();
     void onDuplicateEntity();
     void UI_Toolbar();
@@ -81,11 +82,12 @@ private:
 
     enum class SceneState
     {
-        Edit = 0,
-        Play = 1
+        Edit     = 0,
+        Play     = 1,
+        Simulate = 2,
     };
     SceneState m_sceneState{SceneState::Edit};
 
     // Editor resources
-    X::Ref<Texture2D> m_iconPlay, m_iconStop;
+    X::Ref<Texture2D> m_iconPlay, m_iconSimulate, m_iconStop;
 };

@@ -38,6 +38,7 @@ void EditorLayer::OnAttach()
 
     m_checkerboardTexture = Texture2D::Create("asset/texture/Checkerboard.png");
     m_iconPlay            = Texture2D::Create("asset/icon/PlayButton.png");
+    m_iconSimulate        = Texture2D::Create("asset/icon/SimulateButton.png");
     m_iconStop            = Texture2D::Create("asset/icon/StopButton.png");
 
     FramebufferSpecification fbSpec;
@@ -47,7 +48,8 @@ void EditorLayer::OnAttach()
                             FramebufferTextureFormat::kDepth};
     m_framebuffer        = FrameBuffer::Create(fbSpec);
 
-    m_activeScene        = X::CreateRef<Scene>();
+    m_editorScene        = X::CreateRef<Scene>();
+    m_activeScene        = m_editorScene;
     auto commandLineArgs = XApplication::Get().get_commandLineArgs();
     if (commandLineArgs.Count > 1)
     {
@@ -70,7 +72,7 @@ void EditorLayer::OnAttach()
 
     m_secondCamera = m_activeScene->CreateEntity("Camera B");
     auto& cc       = m_secondCamera.AddComponent<CameraComponent>();
-    cc.m_primary   = false;
+    cc.Primary   = false;
 
     class CameraController : public ScriptableEntity
     {
@@ -147,6 +149,12 @@ void EditorLayer::OnUpdate(Timestep ts)
             }
             m_editorCamera.OnUpdate(ts);
             m_activeScene->OnUpdateEditor(ts, m_editorCamera);
+            break;
+        }
+        case SceneState::Simulate:
+        {
+            m_editorCamera.OnUpdate(ts);
+            m_activeScene->OnUpdateSimulation(ts, m_editorCamera);
             break;
         }
         case SceneState::Play:
@@ -465,6 +473,10 @@ void EditorLayer::onOverlayRender()
     if (m_sceneState == SceneState::Play)
     {
         Entity camera = m_activeScene->GetPrimaryCameraEntity();
+        if (!camera)
+        {
+            return;
+        }
         Renderer2D::BeginScene(camera.GetComponent<CameraComponent>().Camera,
                                camera.GetComponent<TransformComponent>().GetTransform());
     }
@@ -574,16 +586,40 @@ void EditorLayer::serializeScene(X::Ref<Scene> scene, const std::filesystem::pat
 
 void EditorLayer::onScenePlay()
 {
+    if (m_sceneState == SceneState::Simulate)
+    {
+        return;
+    }
     m_sceneState  = SceneState::Play;
     m_activeScene = Scene::Copy(m_editorScene);
     m_activeScene->OnRuntimeStart();
     m_sceneHierarchyPanel.set_context(m_activeScene);
 }
 
+void EditorLayer::onSceneSimulate()
+{
+    if (m_sceneState == SceneState::Play)
+    {
+        onSceneStop();
+    }
+    m_sceneState  = SceneState::Simulate;
+    m_activeScene = Scene::Copy(m_editorScene);
+    m_activeScene->OnSimulationStart();
+    m_sceneHierarchyPanel.set_context(m_activeScene);
+}
+
 void EditorLayer::onSceneStop()
 {
-    m_sceneState = SceneState::Edit;
-    m_activeScene->OnRuntimeStop();
+    X_CORE_ASSERT(m_sceneState == SceneState::Play || m_sceneState == SceneState::Simulate);
+    if (m_sceneState == SceneState::Play)
+    {
+        m_activeScene->OnRuntimeStop();
+    }
+    else if (m_sceneState == SceneState::Simulate)
+    {
+        m_activeScene->OnSimulationStop();
+    }
+    m_sceneState  = SceneState::Edit;
     m_activeScene = m_editorScene;
     m_sceneHierarchyPanel.set_context(m_activeScene);
 }
@@ -601,4 +637,69 @@ void EditorLayer::onDuplicateEntity()
     }
 }
 
-void EditorLayer::UI_Toolbar() {}
+void EditorLayer::UI_Toolbar()
+{
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 2));
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0, 0));
+    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+    auto&       colors        = ImGui::GetStyle().Colors;
+    const auto& buttonHovered = colors[ImGuiCol_ButtonHovered];
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(buttonHovered.x, buttonHovered.y, buttonHovered.z, 0.5f));
+    const auto& buttonActive = colors[ImGuiCol_ButtonActive];
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(buttonActive.x, buttonActive.y, buttonActive.z, 0.5f));
+
+    ImGui::Begin("##toolbar", nullptr,
+                 ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+
+    bool toolbarEnabled = (bool)m_activeScene;
+
+    ImVec4 tintColor = ImVec4(1, 1, 1, 1);
+    if (!toolbarEnabled)
+    {
+        tintColor.w = 0.5f;
+    }
+    float size = ImGui::GetWindowHeight() - 4.0f;
+
+    {
+        X::Ref<Texture2D> icon =
+            (m_sceneState == SceneState::Edit || m_sceneState == SceneState::Simulate) ? m_iconPlay : m_iconStop;
+        ImGui::SetCursorPosX((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
+
+        ImTextureRef tex = (ImTextureRef)(uintptr_t)icon->GetRendererID();
+        ImVec2       buttonSize{size, size};
+        if (toolbarEnabled &&
+            ImGui::ImageButton("##ToolbarIcon", tex, buttonSize, {0, 0}, {1, 1}, {0, 0, 0, 0}, tintColor))
+        {
+            if (m_sceneState == SceneState::Edit || m_sceneState == SceneState::Simulate)
+            {
+                onScenePlay();
+            }
+            else if (m_sceneState == SceneState::Play)
+            {
+                onSceneStop();
+            }
+        }
+    }
+    ImGui::SameLine();
+    {
+        X::Ref<Texture2D> icon =
+            (m_sceneState == SceneState::Edit || m_sceneState == SceneState::Play) ? m_iconSimulate : m_iconStop;
+        ImTextureRef tex = (ImTextureRef)(uintptr_t)icon->GetRendererID();
+        ImVec2       buttonSize{size, size};
+        if (toolbarEnabled &&
+            ImGui::ImageButton("##ToolbarIcon", tex, buttonSize, {0, 0}, {1, 1}, {0, 0, 0, 0}, tintColor))
+        {
+            if (m_sceneState == SceneState::Edit || m_sceneState == SceneState::Play)
+            {
+                onSceneSimulate();
+            }
+            else if (m_sceneState == SceneState::Simulate)
+            {
+                onSceneStop();
+            }
+        }
+    }
+    ImGui::PopStyleVar(2);
+    ImGui::PopStyleColor(3);
+    ImGui::End();
+}

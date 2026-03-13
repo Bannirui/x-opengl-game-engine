@@ -292,9 +292,9 @@ void SceneHierarchyPanel::drawComponents(Entity entity)
         "Camera", entity,
         [](auto& component)
         {
-            auto& camera = component.m_camera;
+            auto& camera = component.Camera;
 
-            ImGui::Checkbox("Primary", &component.m_primary);
+            ImGui::Checkbox("Primary", &component.Primary);
 
             const char* projectionTypeStrings[]     = {"Perspective", "Orthographic"};
             const char* currentProjectionTypeString = projectionTypeStrings[(int)camera.get_projectionType()];
@@ -340,7 +340,7 @@ void SceneHierarchyPanel::drawComponents(Entity entity)
                 float orthoFar = camera.get_orthographicFarClip();
                 if (ImGui::DragFloat("Far", &orthoFar)) camera.SetOrthographicFarClip(orthoFar);
 
-                ImGui::Checkbox("Fixed Aspect Ratio", &component.m_fixedAspectRatio);
+                ImGui::Checkbox("Fixed Aspect Ratio", &component.FixedAspectRatio);
             }
         });
 
