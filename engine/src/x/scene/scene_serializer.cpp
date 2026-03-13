@@ -4,12 +4,13 @@
 
 #include "x/scene/scene_serializer.h"
 
+#include "x/renderer/texture.h"
+#include "x/scene/component.h"
+#include "x/scene/entity.h"
+
 #include <glm/glm.hpp>
 
 #include <yaml-cpp/yaml.h>
-
-#include "x/scene/component.h"
-#include "x/scene/entity.h"
 
 namespace YAML
 {
@@ -199,6 +200,11 @@ static void serializeEntity(YAML::Emitter& out, Entity entity)
         out << YAML::BeginMap;
         auto& sc = entity.GetComponent<SpriteRendererComponent>();
         out << YAML::Key << "Color" << YAML::Value << sc.Color;
+        if (sc.Texture)
+        {
+            out << YAML::Key << "TexturePath" << YAML::Value << sc.Texture->GetPath();
+        }
+        out << YAML::Key << "TilingFactor" << YAML::Value << sc.TilingFactor;
         out << YAML::EndMap;
     }
     if (entity.HasComponent<CircleRendererComponent>())
@@ -313,7 +319,7 @@ bool SceneSerializer::Deserialize(const std::string& filepath)
             auto   transformComponent = entity["TransformComponent"];
             if (transformComponent)
             {
-                auto& tc         = deserializeEntity.GetComponent<TransformComponent>();
+                auto& tc       = deserializeEntity.GetComponent<TransformComponent>();
                 tc.Translation = transformComponent["Translation"].as<glm::vec3>();
                 tc.Rotation    = transformComponent["Rotation"].as<glm::vec3>();
                 tc.Scale       = transformComponent["Scale"].as<glm::vec3>();
@@ -338,6 +344,14 @@ bool SceneSerializer::Deserialize(const std::string& filepath)
             {
                 auto& src = deserializeEntity.AddComponent<SpriteRendererComponent>();
                 src.Color = spriteRendererComponent["Color"].as<glm::vec4>();
+                if (spriteRendererComponent["TexturePath"])
+                {
+                    src.Texture = Texture2D::Create(spriteRendererComponent["TexturePath"].as<std::string>());
+                }
+                if (spriteRendererComponent["TilingFactor"])
+                {
+                    src.TilingFactor = spriteRendererComponent["TilingFactor"].as<float>();
+                }
             }
             auto circleRendererComponent = entity["CircleRendererComponent"];
             if (circleRendererComponent)

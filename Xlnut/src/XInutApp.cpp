@@ -12,8 +12,6 @@ class XInut : public XApplication
 {
 public:
     XInut(const ApplicationSpecification& spec) : XApplication(spec) { PushLayer(new EditorLayer()); }
-
-    ~XInut() override {}
 };
 
 XApplication* CreateApplication(ApplicationCommandLineArgs args)
