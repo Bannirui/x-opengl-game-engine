@@ -5,13 +5,13 @@
 #include "x/core/x_application.h"
 
 #include "pch.h"
-
-#include "x/renderer/renderer.h"
 #include "x/core/layer.h"
-#include "x/events/application_event.h"
-#include "x/window.h"
-#include "x/imgui/im_gui_layer.h"
 #include "x/core/timestep.h"
+#include "x/events/application_event.h"
+#include "x/imgui/im_gui_layer.h"
+#include "x/renderer/renderer.h"
+#include "x/util/platform_util.h"
+#include "x/window.h"
 
 XApplication* XApplication::s_instance = nullptr;
 
@@ -88,7 +88,7 @@ void XApplication::run()
     while (m_running)
     {
         X_PROFILE_SCOPE("RunLoop");
-        float    time     = static_cast<float>(glfwGetTime());
+        float    time     = Time::GetTime();
         Timestep timestep = time - m_lastFrameTime;
         m_lastFrameTime   = time;
 

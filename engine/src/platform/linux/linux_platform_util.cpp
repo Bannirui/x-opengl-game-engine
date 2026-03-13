@@ -6,6 +6,8 @@
 
     #include "x/util/platform_util.h"
 
+    #include <GLFW/glfw3.h>
+
     #include <cstdio>
     #include <array>
     #include <memory>
@@ -50,4 +52,8 @@ std::optional<std::string> FileDialog::SaveFile(const char* filter)
     return ExecCommand(command.c_str());
 }
 
+float Time::GetTime()
+{
+	return glfwGetTime();
+}
 #endif

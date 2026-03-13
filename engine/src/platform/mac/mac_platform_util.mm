@@ -6,6 +6,8 @@
 
     #include "x/util/platform_util.h"
 
+    #include <GLFW/glfw3.h>
+
     #import <Cocoa/Cocoa.h>
 
 std::optional<std::string> FileDialog::OpenFile(const char* filter)
@@ -54,4 +56,8 @@ std::optional<std::string> FileDialog::SaveFile(const char* filter)
     return nullptr;
 }
 
+float Time::GetTime()
+{
+	return glfwGetTime();
+}
 #endif
