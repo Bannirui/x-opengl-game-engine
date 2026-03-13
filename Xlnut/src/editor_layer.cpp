@@ -353,7 +353,10 @@ void EditorLayer::OnImguiRender()
 void EditorLayer::OnEvent(Event& e)
 {
     m_cameraController.OnEvent(e);
-    m_editorCamera.OnEvent(e);
+    if (m_sceneState == SceneState::Edit)
+    {
+        m_editorCamera.OnEvent(e);
+    }
     EventDispatcher dispatcher(e);
     dispatcher.Dispatch<KeyPressEvent>(
         [this](KeyPressEvent& e)
