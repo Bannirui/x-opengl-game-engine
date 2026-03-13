@@ -5,7 +5,6 @@
 #pragma once
 
 #include <x/core/base.h>
-
 #include <x/scene/entity.h>
 
 class Scene;
@@ -24,6 +23,9 @@ public:
     void OnImGuiRender();
 
 private:
+    template <typename T>
+    void displayAddComponentEntry(const std::string& entryName);
+
     void drawEntityNode(Entity entity);
     void drawComponents(Entity entity);
 
