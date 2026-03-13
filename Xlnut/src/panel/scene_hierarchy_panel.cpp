@@ -4,13 +4,13 @@
 
 #include "scene_hierarchy_panel.h"
 
-#include <imgui.h>
-#include <imgui_internal.h>
-
 #include <glm/gtc/type_ptr.hpp>
 
 #include <x/renderer/texture.h>
 #include <x/scene/component.h>
+
+#include <imgui.h>
+#include <imgui_internal.h>
 
 extern const std::filesystem::path g_assetPath;
 

@@ -65,5 +65,5 @@ namespace X
     }
 }  // namespace X
 
-#include "x/core/x_log.h"
 #include "x/core/x_assert.h"
+#include "x/core/x_log.h"

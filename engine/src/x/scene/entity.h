@@ -4,10 +4,10 @@
 
 #pragma once
 
-#include <entt/entt.hpp>
-
 #include "x/scene/component.h"
 #include "x/scene/scene.h"
+
+#include <entt/entt.hpp>
 
 class UUID;
 class Scene;

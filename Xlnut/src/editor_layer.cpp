@@ -4,9 +4,6 @@
 
 #include "editor_layer.h"
 
-#include <imgui.h>
-#include <ImGuizmo.h>
-
 #include <glm/gtc/type_ptr.hpp>
 
 #include <x/core/input.h>
@@ -24,6 +21,9 @@
 #include <x/scene/scene.h>
 #include <x/scene/scene_serializer.h>
 #include <x/util/platform_util.h>
+
+#include <imgui.h>
+#include <ImGuizmo.h>
 
 extern const std::filesystem::path g_assetPath;
 

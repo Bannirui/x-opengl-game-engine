@@ -4,17 +4,18 @@
 
 #include "platform/opengl/open_gl_shader.h"
 
+#include "x/core/base.h"
+#include "x/core/timer.h"
+#include "x/core/x_log.h"
+
 #include <glad/glad.h>
 
 #include <glm/gtc/type_ptr.inl>
 
 #include <shaderc/shaderc.hpp>
+
 #include <spirv_cross.hpp>
 #include <spirv_glsl.hpp>
-
-#include "x/core/base.h"
-#include "x/core/timer.h"
-#include "x/core/x_log.h"
 
 namespace Util
 {

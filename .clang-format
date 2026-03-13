@@ -20,29 +20,36 @@ SpacesInAngles: false
 SpaceBeforeParens: ControlStatements
 # 命名空间内缩进
 NamespaceIndentation: All
-# 自动排序include语句 有些依赖必须严格顺序否则会出错比如glad和glfw
+# 自动排序include语句 有些依赖必须严格顺序否则会出错
+# glad在glfw前面
+# imgui在ImGuizmo前面
 SortIncludes: CaseInsensitive
 # regroup 并合并相同模块的include
 IncludeBlocks: Regroup
 IncludeCategories:
-  # glad must always be first
-  - Regex: '^<glad/'
+  # project headers
+  - Regex: '^"'
     Priority: 1
+  # glad must always be first among graphics libs
+  - Regex: '^<glad/'
+    Priority: 2
   # glfw must come after glad
   - Regex: '^<GLFW/'
-    Priority: 2
-  # ImGuizmo must be after imgui, imgui+imguizmo together
-  - Regex: '^<(imgui|ImGuizmo).*>'
     Priority: 3
-  # third party headers
-  - Regex: '^<(vulkan|glm|spdlog)/'
+  # ImGuizmo must be after imgui, imgui+imguizmo together
+  - Regex: '^<imgui/'
     Priority: 4
+  - Regex: '^<ImGuizmo/'
+    Priority: 5
+  # major third-party libraries
+  - Regex: '^<(entt|glm|vulkan|spdlog|stb|fmt)/'
+    Priority: 6
+  # other third-party
+  - Regex: '^<[^/]+/'
+    Priority: 7
   # system headers
   - Regex: '^<.*>'
-    Priority: 5
-  # other
-  - Regex: '^".*"'
-    Priority: 6
+    Priority: 8
 
 # 自动换行注释
 ReflowComments: true

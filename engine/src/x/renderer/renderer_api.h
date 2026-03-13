@@ -4,10 +4,10 @@
 
 #pragma once
 
-#include <glm/glm.hpp>
-
 #include "pch.h"
 #include "x/core/base.h"
+
+#include <glm/glm.hpp>
 
 class VertexArray;
 

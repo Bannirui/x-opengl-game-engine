@@ -91,6 +91,7 @@ public:
 
 private:
     Instrumentor() : m_currentSession(nullptr) {}
+
     ~Instrumentor() { EndSession(); }
 
     void writeHeader()
@@ -98,11 +99,13 @@ private:
         m_outputStream << "{\"otherData\": {}, \"traceEvents\":[{}";
         m_outputStream.flush();
     }
+
     void writeFooter()
     {
         m_outputStream << "]}";
         m_outputStream.flush();
     }
+
     void internalEndSession()
     {
         if (m_currentSession)
@@ -124,6 +127,7 @@ class InstrumentationTimer
 {
 public:
     InstrumentationTimer(const char* name) : m_name(name) { m_startTimePoint = std::chrono::steady_clock::now(); }
+
     ~InstrumentationTimer()
     {
         if (!m_stopped)
@@ -154,31 +158,31 @@ private:
 // 跨平台兼容
 #if defined(__GNUC__) || (defined(__MWERKS__) && (__MWERKS__ >= 0x3000)) || (defined(__ICC) && (__ICC >= 600)) || \
     defined(__ghs__)
-#define X_FUNC_SIG __PRETTY_FUNCTION__
+    #define X_FUNC_SIG __PRETTY_FUNCTION__
 #elif defined(__DMC__) && (__DMC__ >= 0x810)
-#define X_FUNC_SIG __PRETTY_FUNCTION__
+    #define X_FUNC_SIG __PRETTY_FUNCTION__
 #elif defined(__FUNCSIG__) || (_MSC_VERION)
-#define X_FUNC_SIG __FUNCSIG__
+    #define X_FUNC_SIG __FUNCSIG__
 #elif (defined(__INTEL_COMPILER) && (__INTEL_COMPILER >= 600)) || (defined(__IBMCPP__) && (__IBMCPP__ >= 500))
-#define X_FUNC_SIG __FUNCTION__
+    #define X_FUNC_SIG __FUNCTION__
 #elif defined(__BORLANDC__) && (__BORLANDC__ >= 0x550)
-#define X_FUNC_SIG __FUNC__
+    #define X_FUNC_SIG __FUNC__
 #elif defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 199901)
-#define X_FUNC_SIG __func__
+    #define X_FUNC_SIG __func__
 #elif defined(__cplusplus) && (__cplusplus >= 201103)
-#define X_FUNC_SIG __func__
+    #define X_FUNC_SIG __func__
 #else
-#define X_FUNC_SIG "X_FUNC_SIG unknown!"
+    #define X_FUNC_SIG "X_FUNC_SIG unknown!"
 #endif
 
 #if X_PROFILE
-#define X_PROFILE_BEGIN_SESSION(name, filepath) ::Instrumentor::Get().BeginSession(name, filepath)
-#define X_PROFILE_END_SESSION() ::Instrumentor::Get().EndSession()
-#define X_PROFILE_SCOPE(name) ::InstrumentationTimer timer##__LINE__(name);
-#define X_PROFILE_FUNCTION() X_PROFILE_SCOPE(X_FUNC_SIG)
+    #define X_PROFILE_BEGIN_SESSION(name, filepath) ::Instrumentor::Get().BeginSession(name, filepath)
+    #define X_PROFILE_END_SESSION() ::Instrumentor::Get().EndSession()
+    #define X_PROFILE_SCOPE(name) ::InstrumentationTimer timer##__LINE__(name);
+    #define X_PROFILE_FUNCTION() X_PROFILE_SCOPE(X_FUNC_SIG)
 #else
-#define X_PROFILE_BEGIN_SESSION(name, filepath)
-#define X_PROFILE_END_SESSION()
-#define X_PROFILE_SCOPE(name)
-#define X_PROFILE_FUNCTION()
+    #define X_PROFILE_BEGIN_SESSION(name, filepath)
+    #define X_PROFILE_END_SESSION()
+    #define X_PROFILE_SCOPE(name)
+    #define X_PROFILE_FUNCTION()
 #endif

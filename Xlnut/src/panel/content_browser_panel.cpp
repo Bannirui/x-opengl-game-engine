@@ -4,11 +4,10 @@
 
 #include "content_browser_panel.h"
 
-#include <imgui.h>
-
 #include <x/renderer/texture.h>
 
-#include "ImGuizmo.h"
+#include <imgui.h>
+#include <ImGuizmo.h>
 
 extern const std::filesystem::path g_assetPath = "asset";
 

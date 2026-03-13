@@ -5,11 +5,10 @@
 #pragma once
 
 #include "pch.h"
-
-#include <glm/glm.hpp>
-
 #include "x/core/key_codes.h"
 #include "x/core/mouse_codes.h"
+
+#include <glm/glm.hpp>
 
 class Input
 {

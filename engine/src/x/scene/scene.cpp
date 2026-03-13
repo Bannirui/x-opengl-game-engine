@@ -4,15 +4,14 @@
 
 #include "x/scene/scene.h"
 
-#include <glm/glm.hpp>
-
-#include <box2d/box2d.h>
-
 #include "x/core/timestep.h"
 #include "x/renderer/renderer_2D.h"
 #include "x/scene/component.h"
 #include "x/scene/entity.h"
-#include "x/scene/scriptable_entity.h"
+
+#include <glm/glm.hpp>
+
+#include <box2d/box2d.h>
 
 static b2BodyType Rigidbody2DTypeToBox2DBody(Rigidbody2DComponent::BodyType bodyType)
 {

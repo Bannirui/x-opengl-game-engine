@@ -4,11 +4,12 @@
 
 #pragma once
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
 #include "pch.h"
 #include "x/core/base.h"
+
+#include <glad/glad.h>
+
+#include <GLFW/glfw3.h>
 
 class Event;
 
