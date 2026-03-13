@@ -4,13 +4,13 @@
 
 #pragma once
 
-#include <glm/ext/matrix_transform.hpp>
-#include <glm/glm.hpp>
-#include <glm/gtx/quaternion.hpp>
-
 #include "pch.h"
 #include "x/core/uuid.h"
 #include "x/scene/scene_camera.h"
+
+#include <glm/ext/matrix_transform.hpp>
+#include <glm/glm.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 class ScriptableEntity;
 class Texture2D;
@@ -82,6 +82,17 @@ struct CameraComponent
     CameraComponent()                       = default;
     CameraComponent(const CameraComponent&) = default;
 };
+
+struct ScriptComponent
+{
+    std::string ClassName;
+
+    ScriptComponent()                       = default;
+    ScriptComponent(const ScriptComponent&) = default;
+};
+
+// 前向声明
+class ScriptableEntity;
 
 struct NativeScriptComponent
 {
@@ -158,6 +169,6 @@ struct ComponentGroup
 {
 };
 
-using AllComponents =
-    ComponentGroup<TransformComponent, SpriteRendererComponent, CircleRendererComponent, CameraComponent,
-                   NativeScriptComponent, Rigidbody2DComponent, BoxCollider2DComponent, CircleCollider2DComponent>;
+using AllComponents = ComponentGroup<TransformComponent, SpriteRendererComponent, CircleRendererComponent,
+                                     CameraComponent, ScriptComponent, NativeScriptComponent, Rigidbody2DComponent,
+                                     BoxCollider2DComponent, CircleCollider2DComponent>;
