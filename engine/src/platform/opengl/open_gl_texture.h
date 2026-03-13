@@ -26,10 +26,7 @@ public:
 
     bool IsLoaded() override { return m_isLoaded; }
 
-    bool operator==(const Texture& other) const override
-    {
-        return m_rendererId == ((OpenGLTexture2D&)other).m_rendererId;
-    }
+    bool operator==(const Texture& other) const override { return m_rendererId == other.GetRendererID(); }
 
 private:
     std::string m_path;
