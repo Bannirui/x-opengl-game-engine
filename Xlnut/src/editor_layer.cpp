@@ -185,6 +185,10 @@ void EditorLayer::OnImguiRender()
             {
                 openScene();
             }
+            if (ImGui::MenuItem("Save", "Ctrl+S"))
+            {
+                saveScene();
+            }
             if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
             {
                 saveSceneAs();
