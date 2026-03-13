@@ -9,7 +9,6 @@
 #include "x/events/application_event.h"
 #include "x/events/key_event.h"
 #include "x/events/mouse_event.h"
-#include "platform/opengl/open_gl_context.h"
 
 static uint8_t s_GLFWWindowCount = 0;
 
