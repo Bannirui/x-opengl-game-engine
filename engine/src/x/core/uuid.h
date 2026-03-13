@@ -20,13 +20,13 @@ private:
 
 namespace std
 {
+    template <typename T>
+    struct hash;
+
     // 向std命名空间增加hash的特化 让std容器调用
     template <>
     struct hash<UUID>
     {
-        std::size_t operator() (const UUID& uuid)const
-        {
-            return hash<uint64_t>()((uint64_t)uuid);
-        }
+        std::size_t operator()(const UUID& uuid) const { return (uint64_t)uuid; }
     };
 }  // namespace std
