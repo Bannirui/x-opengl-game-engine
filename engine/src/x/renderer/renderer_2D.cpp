@@ -4,9 +4,6 @@
 
 #include "x/renderer/renderer_2D.h"
 
-#include <glm/ext/matrix_transform.hpp>
-#include <glm/gtx/quaternion.hpp>
-
 #include "x/core/base.h"
 #include "x/renderer/buffer.h"
 #include "x/renderer/camera.h"
@@ -17,6 +14,10 @@
 #include "x/renderer/uniform_buffer.h"
 #include "x/renderer/vertex_array.h"
 #include "x/scene/component.h"
+#include "x/scene/entity.h"
+
+#include <glm/ext/matrix_transform.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 // VBO 正方形顶点
 struct QuadVertex
@@ -428,10 +429,10 @@ void Renderer2D::DrawRect(const glm::vec3& position, const glm::vec2& size, cons
     glm::vec3 p1 = glm::vec3(position.x + size.x * 0.5f, position.y - size.y * 0.5f, position.z);
     glm::vec3 p2 = glm::vec3(position.x + size.x * 0.5f, position.y + size.y * 0.5f, position.z);
     glm::vec3 p3 = glm::vec3(position.x - size.x * 0.5f, position.y + size.y * 0.5f, position.z);
-    DrawLine(p0, p1, color);
-    DrawLine(p1, p2, color);
-    DrawLine(p2, p3, color);
-    DrawLine(p3, p0, color);
+    DrawLine(p0, p1, color, entityID);
+    DrawLine(p1, p2, color, entityID);
+    DrawLine(p2, p3, color, entityID);
+    DrawLine(p3, p0, color, entityID);
 }
 
 void Renderer2D::DrawRect(const glm::mat4& transform, const glm::vec4& color, int entityID)
@@ -441,10 +442,10 @@ void Renderer2D::DrawRect(const glm::mat4& transform, const glm::vec4& color, in
     {
         lineVertices[i] = transform * s_data.QuadVertexPositions[i];
     }
-    DrawLine(lineVertices[0], lineVertices[1], color);
-    DrawLine(lineVertices[1], lineVertices[2], color);
-    DrawLine(lineVertices[2], lineVertices[3], color);
-    DrawLine(lineVertices[3], lineVertices[0], color);
+    DrawLine(lineVertices[0], lineVertices[1], color, entityID);
+    DrawLine(lineVertices[1], lineVertices[2], color, entityID);
+    DrawLine(lineVertices[2], lineVertices[3], color, entityID);
+    DrawLine(lineVertices[3], lineVertices[0], color, entityID);
 }
 
 void Renderer2D::DrawSprite(const glm::mat4& transform, SpriteRendererComponent& src, int entityID)
