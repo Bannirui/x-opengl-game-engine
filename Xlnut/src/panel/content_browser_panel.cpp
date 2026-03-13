@@ -41,8 +41,7 @@ void ContentBrowserPanel::OnImGuiRender()
     for (auto& directoryEntry : std::filesystem::directory_iterator(m_currentDirectory))
     {
         const auto& path           = directoryEntry.path();
-        auto        relativePath   = std::filesystem::relative(path, g_assetPath);
-        std::string filenameString = relativePath.filename().string();
+        std::string filenameString = path.filename().string();
 
         ImGui::PushID(filenameString.c_str());
         X::Ref<Texture2D> icon = directoryEntry.is_directory() ? m_directoryIcon : m_fileIcon;
@@ -51,8 +50,10 @@ void ContentBrowserPanel::OnImGuiRender()
                            {thumbnailSize, thumbnailSize}, {0, 1}, {1, 0});
         if (ImGui::BeginDragDropSource())
         {
-            std::string pathStr = relativePath.string();
-            ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM", pathStr.c_str(), (pathStr.size() + 1) * sizeof(char));
+            const auto  relativePath = std::filesystem::relative(path, g_assetPath);
+            const auto& pathStr      = relativePath.native();
+            ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM", pathStr.c_str(),
+                                      (pathStr.size() + 1) * sizeof(pathStr[0]), ImGuiCond_Once);
             ImGui::EndDragDropSource();
         }
         ImGui::PopStyleColor();
