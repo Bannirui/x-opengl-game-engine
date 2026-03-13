@@ -28,10 +28,17 @@ struct ApplicationCommandLineArgs
     }
 };
 
+struct ApplicationSpecification
+{
+    std::string                Name = "X Application";
+    std::string                WorkingDirectory;
+    ApplicationCommandLineArgs CommandLineArgs;
+};
+
 class XApplication
 {
 public:
-    XApplication(const std::string& name = "X APP", ApplicationCommandLineArgs args = ApplicationCommandLineArgs());
+    XApplication(const ApplicationSpecification& specification);
     virtual ~XApplication();
 
     void OnEvent(Event& e);
@@ -47,7 +54,7 @@ public:
 
     static XApplication& Get() { return *s_instance; }
 
-    ApplicationCommandLineArgs get_commandLineArgs() const { return m_commandLineArgs; }
+    ApplicationSpecification get_specification() const { return m_specification; }
 
 private:
     void run();
@@ -55,13 +62,13 @@ private:
     bool onWindowResize(WindowResizeEvent& e);
 
 private:
-    ApplicationCommandLineArgs m_commandLineArgs;
-    X::Scope<Window>           m_window;
-    bool                       m_running{true};
-    LayerStack                 m_layerStack;
-    ImGuiLayer*                m_ImGuiLayer;
-    float                      m_lastFrameTime{0.0f};
-    bool                       m_minimized{false};  // 窗口最小化
+    ApplicationSpecification m_specification;
+    X::Scope<Window>         m_window;
+    bool                     m_running{true};
+    LayerStack               m_layerStack;
+    ImGuiLayer*              m_ImGuiLayer;
+    float                    m_lastFrameTime{0.0f};
+    bool                     m_minimized{false};  // 窗口最小化
 
 private:
     static XApplication* s_instance;

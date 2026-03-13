@@ -15,12 +15,16 @@
 
 XApplication* XApplication::s_instance = nullptr;
 
-XApplication::XApplication(const std::string& name, ApplicationCommandLineArgs args) : m_commandLineArgs(args)
+XApplication::XApplication(const ApplicationSpecification& specification) : m_specification(specification)
 {
     X_PROFILE_FUNCTION();
     X_CORE_ASSERT(!s_instance, "Application already exists");
     s_instance = this;
-    m_window   = Window::Create(WindowProps(name));
+    if (!m_specification.WorkingDirectory.empty())
+    {
+        std::filesystem::current_path(m_specification.WorkingDirectory);
+    }
+    m_window = Window::Create(WindowProps(m_specification.Name));
     m_window->SetEventCallback(
         [this](Event& e)
         {
