@@ -1,11 +1,11 @@
 #include "x/renderer/graphics_context.h"
 
 #include "platform/opengl/open_gl_context.h"
-#include "x/renderer/renderer.h"
 #include "x/core/base.h"
 #include "x/core/x_log.h"
+#include "x/renderer/renderer.h"
 
-X::Scope<GraphicsContext> GraphicsContext::Create(void *window)
+X::Scope<GraphicsContext> GraphicsContext::Create(void* window)
 {
     switch (Renderer::GetAPI())
     {
@@ -16,7 +16,7 @@ X::Scope<GraphicsContext> GraphicsContext::Create(void *window)
         }
         case RendererAPI::API::kOpenGL:
         {
-            return X::CreateScope<OpenGLContext>(static_cast<GLFWwindow *>(window));
+            return X::CreateScope<OpenGLContext>(static_cast<GLFWwindow*>(window));
         }
     }
     X_CORE_ASSERT(false, "Unknown RendererAPI!");

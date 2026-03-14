@@ -103,7 +103,7 @@ X::Ref<Scene> Scene::Copy(X::Ref<Scene> other)
     auto idView = srcSceneRegistry.view<IDComponent>();
     for (auto e : idView)
     {
-        UUID        uuid      = srcSceneRegistry.get<IDComponent>(e).id;
+        UUID        uuid      = srcSceneRegistry.get<IDComponent>(e).ID;
         const auto& name      = srcSceneRegistry.get<TagComponent>(e).m_tag;
         Entity      newEntity = newScene->CreateEntityWithUUID(uuid, name);
         enttMap[uuid]         = (entt::entity)newEntity;
@@ -157,17 +157,18 @@ void Scene::OnUpdateRuntime(Timestep ts)
 {
     // Update scripts
     {
-        m_registry.view<NativeScriptComponent>().each(
-            [=](auto entity, auto& nsc)
-            {
-                if (!nsc.m_instance)
-                {
-                    nsc.m_instance           = nsc.InstantiateScript();
-                    nsc.m_instance->m_entity = Entity(entity, this);
-                    nsc.m_instance->OnCreate();
-                }
-                nsc.m_instance->OnUpdate(ts);
-            });
+        // todo
+        // m_registry.view<NativeScriptComponent>().each(
+        //     [=](auto entity, auto& nsc)
+        // {
+        //         if (!nsc.Instance)
+        //         {
+        //             nsc.Instance           = nsc.InstantiateScript();
+        //             nsc.Instance->m_entity = Entity(entity, this);
+        //             nsc.Instance->OnCreate();
+        //         }
+        //         nsc.Instance->OnUpdate(ts);
+        //     });
     }
     // Physics
     {

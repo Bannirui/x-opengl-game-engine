@@ -4,9 +4,10 @@
 
 #pragma once
 
+#include "x/scene/entity.h"
+
 class Scene;
 class Timestep;
-class Entity;
 
 class ScriptableEntity
 {

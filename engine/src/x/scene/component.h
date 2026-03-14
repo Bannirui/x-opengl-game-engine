@@ -17,7 +17,7 @@ class Texture2D;
 
 struct IDComponent
 {
-    UUID id;
+    UUID ID;
 
     IDComponent()                   = default;
     IDComponent(const IDComponent&) = default;

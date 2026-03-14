@@ -12,7 +12,6 @@ file(GLOB_RECURSE HDRS
         "${HDR_DIR}/*.h"
         "${HDR_DIR}/*.hpp"
 )
-
 # 添加头文件的目的仅仅是为了让IDEA识别到 新建文件的时候添加索引
 add_library(${LIB_NAME} STATIC
         ${HDRS}
@@ -56,7 +55,7 @@ target_link_libraries(${LIB_NAME}
         EnTT
         yaml-cpp
         ImGuizmo
-        shaderc spirv-cross-core spirv-cross-glsl
+        shaderc spirv-cross-core spirv-cross-glsl spirv-cross-reflect
         box2d
 )
 
@@ -75,7 +74,7 @@ endif()
 if(UNIX AND NOT APPLE)
     target_compile_definitions(${LIB_NAME}
         PRIVATE X_GL_VERSION_MAJOR=4
-                X_GL_VERSION_MINOR=6
+                X_GL_VERSION_MINOR=5
     )
 endif()
 

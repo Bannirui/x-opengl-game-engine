@@ -50,7 +50,7 @@ void EditorLayer::OnAttach()
 
     m_editorScene        = X::CreateRef<Scene>();
     m_activeScene        = m_editorScene;
-    auto commandLineArgs = XApplication::Get().get_commandLineArgs();
+    auto commandLineArgs = XApplication::Get().get_specification().CommandLineArgs;
     if (commandLineArgs.Count > 1)
     {
         auto            sceneFilePath = commandLineArgs[1];

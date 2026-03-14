@@ -102,9 +102,9 @@ if (NOT EXISTS ${GLAD_C_FILE} OR NOT EXISTS ${GLAD_H_FILE})
         message(FATAL_ERROR "Unknown platform, cannot specify OpenGL version")
     endif ()
     message(STATUS "Glad output not found, will generate with glad2 for OpenGL${GLAD_API_VER}")
-    # Set proxy if required, using environment variables
-    set(HTTP_PROXY "http://127.0.0.1:7890")
-    set(HTTPS_PROXY "http://127.0.0.1:7890")
+    # Set proxy if required, using environment variables 用wsl的时候写宿主机的ip
+    set(HTTP_PROXY "http://192.168.31.168:7890")
+    set(HTTPS_PROXY "http://192.168.31.168:7890")
     # Show full command being executed for debugging purposes
     # glad2没做隔离 会把所有函数都生成 禁用所有扩展 避免看到4.x的高版本gl函数
     set(GLAD_COMMAND "${MY_PYTHON} -m glad --generator c --spec gl --api gl=${GLAD_API_VER} --profile core --out-path ${GLAD_GENERATED_DIR} --extensions=GL_KHR_debug")
