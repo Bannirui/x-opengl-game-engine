@@ -6,6 +6,7 @@
       "name": "linux-gcc-debug-proxy",
       "inherits": "linux-gcc-debug",
       "environment": {
+        // 代理 wsl不要用127.0.0.0:8090 要用宿主机的地址
         "http_proxy": "http://10.0.0.123:10809",
         "https_proxy": "http://10.0.0.123:10809"
       }
@@ -15,7 +16,9 @@
   "buildPresets": [
     {
       "name": "linux-gcc-debug-proxy",
-      "configurePreset": "linux-gcc-debug-proxy"
+      "configurePreset": "linux-gcc-debug-proxy",
+      // 编译并行数，默认用 14 所有cpu都顶满了 建议4-6
+      "jobs": 10
     }
   ]
 }

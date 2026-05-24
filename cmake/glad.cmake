@@ -79,20 +79,32 @@ set(GLAD_H_FILE "${GLAD_GENERATED_DIR}/include/glad/glad.h")
 file(MAKE_DIRECTORY ${GLAD_GENERATED_DIR})
 
 # glad源码文件不存在 再执行生成
-if (NOT EXISTS ${GLAD_C_FILE} OR NOT EXISTS ${GLAD_H_FILE})
+if (NOT EXISTS ${GLAD_C_FILE})
     # OpenGL 3.3是apple平台支持的最后一个版本
     if (APPLE)
         set(GLAD_API_VER "3.3")
+        set(GLAD_EXTENSIONS "")
     elseif (LINUX)
         set(GLAD_API_VER "4.5")
+        set(GLAD_EXTENSIONS "GL_ARB_gl_spirv")
     else ()
         message(FATAL_ERROR "Unknown platform, cannot specify OpenGL version")
     endif ()
     message(STATUS "Glad output not found, will generate with glad2 for OpenGL${GLAD_API_VER}")
+
+    set(GLAD_ENV)
+    if(DEFINED ENV{http_proxy})
+        list(APPEND GLAD_ENV http_proxy=$ENV{http_proxy})
+    endif()
+    if(DEFINED ENV{https_proxy})
+        list(APPEND GLAD_ENV https_proxy=$ENV{https_proxy})
+    endif()
+
     add_custom_command(
             OUTPUT ${GLAD_C_FILE} ${GLAD_H_FILE}
             COMMAND ${CMAKE_COMMAND} -E env
-                ${MY_PYTHON} -m glad --generator c --spec gl --api gl=${GLAD_API_VER} --profile core --out-path ${GLAD_GENERATED_DIR} --extensions=''
+                ${GLAD_ENV}
+                ${MY_PYTHON} -m glad --generator c --spec gl --api gl=${GLAD_API_VER} --profile core --out-path ${GLAD_GENERATED_DIR} --extensions "${GLAD_EXTENSIONS}"
             DEPENDS ${MY_PYTHON} ${MY_VENV}/bin/glad
             COMMENT "Generating glad loader with glad2"
             VERBATIM
