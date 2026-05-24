@@ -24,3 +24,7 @@ cmake-**
 
 .vscode
 .idea
+
+AGENTS.md
+openspec
+.opencode

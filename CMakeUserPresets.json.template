@@ -1,0 +1,21 @@
+{
+  "version": 3,
+
+  "configurePresets": [
+    {
+      "name": "linux-gcc-debug-proxy",
+      "inherits": "linux-gcc-debug",
+      "environment": {
+        "http_proxy": "http://10.0.0.123:10809",
+        "https_proxy": "http://10.0.0.123:10809"
+      }
+    }
+  ],
+
+  "buildPresets": [
+    {
+      "name": "linux-gcc-debug-proxy",
+      "configurePreset": "linux-gcc-debug-proxy"
+    }
+  ]
+}

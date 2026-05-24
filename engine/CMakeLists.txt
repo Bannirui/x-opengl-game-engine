@@ -1,10 +1,5 @@
-set(COPY_NAME "${LIB_NAME}-copy-assets")
-# 拷贝资源文件到构建目录和运行目录
-add_custom_target(${COPY_NAME} ALL
-        COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/asset" "${CMAKE_CURRENT_BINARY_DIR}/asset"
-        COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/asset" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/asset"
-        COMMENT "Copying assets to build and runtime directories"
-)
+add_asset_copy_target(${LIB_NAME} "${CMAKE_CURRENT_SOURCE_DIR}/asset")
+
 # 源文件
 file(GLOB_RECURSE SRCS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 set(HDR_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
@@ -55,7 +50,7 @@ target_link_libraries(${LIB_NAME}
         EnTT
         yaml-cpp
         ImGuizmo
-        shaderc spirv-cross-core spirv-cross-glsl spirv-cross-reflect
+        shaderc spirv-cross-core
         box2d
 )
 
@@ -84,5 +79,4 @@ target_compile_definitions(${LIB_NAME}
         $<$<CONFIG:Debug>:X_ENABLE_ASSERTS> # Enable the debug option
 )
 
-# 构建时触发资源文件复制
-add_dependencies(${LIB_NAME} ${COPY_NAME})
+add_dependencies(${LIB_NAME} ${ASSET_COPY_TARGET})

@@ -15,11 +15,9 @@
 #include <shaderc/shaderc.hpp>
 
 #include <spirv_cross.hpp>
-#include <spirv_glsl.hpp>
 
 namespace Util
 {
-    // shader源码用#type vertex跟#type fragment区分
     static GLenum shaderTypeFromString(const std::string& type)
     {
         if (type == "vertex")
@@ -39,13 +37,9 @@ namespace Util
         switch (stage)
         {
             case GL_VERTEX_SHADER:
-            {
                 return shaderc_glsl_vertex_shader;
-            }
             case GL_FRAGMENT_SHADER:
-            {
                 return shaderc_glsl_fragment_shader;
-            }
         }
         X_CORE_ASSERT(false);
         return (shaderc_shader_kind)0;
@@ -56,13 +50,9 @@ namespace Util
         switch (stage)
         {
             case GL_VERTEX_SHADER:
-            {
                 return "GL_VERTEX_SHADER";
-            }
             case GL_FRAGMENT_SHADER:
-            {
                 return "GL_FRAGMENT_SHADER";
-            }
         }
         X_CORE_ASSERT(false);
         return nullptr;
@@ -82,33 +72,16 @@ namespace Util
         }
     }
 
-    static const char* GLShaderStageCachedOpenGFileExtension(uint32_t stage)
+    static const char* GLShaderStageCachedFileExtension(GLenum stage)
     {
         switch (stage)
         {
             case GL_VERTEX_SHADER:
-            {
-                return ".cached_opengl.vert";
-            }
+                return ".cached_spirv.vert";
             case GL_FRAGMENT_SHADER:
-            {
-                return ".cached_opengl.frag";
-            }
+                return ".cached_spirv.frag";
         }
         X_CORE_ASSERT(false, "Unknown shader stage");
-        return "";
-    }
-
-    static const char* GLShaderStageCachedVulkanFilExtension(uint32_t stage)
-    {
-        switch (stage)
-        {
-            case GL_VERTEX_SHADER:
-                return ".cached_vulkan.vert";
-            case GL_FRAGMENT_SHADER:
-                return ".cached_vulkan.frag";
-        }
-        X_CORE_ASSERT(false);
         return "";
     }
 }  // namespace Util
@@ -135,12 +108,10 @@ OpenGLShader::OpenGLShader(const std::string& filepath) : m_filePath(filepath)
     auto        shaderSources = preProcess(source);
     {
         Timer timer;
-        compileOrGetVulkanBinaries(shaderSources);
-        compileOrGetOpenGLBinaries();
+        compileOrGetBinaries(shaderSources);
         creatProgram();
         X_CORE_INFO("Shader creation took {} ms", timer.ElapsedMillis());
     }
-    // 文件名
     auto lastSlash = filepath.find_last_of("/\\");
     lastSlash      = lastSlash == std::string::npos ? 0 : lastSlash + 1;
     auto lastDot   = filepath.rfind('.');
@@ -155,8 +126,7 @@ OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexSrc
     std::unordered_map<GLenum, std::string> shaderSources;
     shaderSources[GL_VERTEX_SHADER]   = vertexSrc;
     shaderSources[GL_FRAGMENT_SHADER] = fragmentSrc;
-    compileOrGetVulkanBinaries(shaderSources);
-    compileOrGetOpenGLBinaries();
+    compileOrGetBinaries(shaderSources);
     creatProgram();
 }
 
@@ -275,7 +245,7 @@ std::string OpenGLShader::readFile(const std::string& filepath)
 {
     X_PROFILE_FUNCTION();
     std::string   ret;
-    std::ifstream in(filepath, std::ios::in | std::ios::binary);  // ifstream closes itself due to RAII
+    std::ifstream in(filepath, std::ios::in | std::ios::binary);
     X_CORE_ASSERT(in, "Could not open file");
     in.seekg(0, std::ios::end);
     size_t size = in.tellg();
@@ -290,22 +260,21 @@ std::unordered_map<GLenum, std::string> OpenGLShader::preProcess(const std::stri
 {
     X_PROFILE_FUNCTION();
     std::string modifiedSource = glslSrc;
-    // 动态替换#version占位符
     if (modifiedSource.find("#version") != std::string::npos)
     {
         X_CORE_INFO("shader using OpenGL:{}", X_GL_VERSION_CORE);
         modifiedSource = replaceVersion(modifiedSource, X_GL_VERSION_CORE);
     }
     std::unordered_map<GLenum, std::string> shaderSources;
-    const char*                             typeToken       = "#type";  // vertex跟frag的区分用#type vertex跟#type frag
+    const char*                             typeToken       = "#type";
     size_t                                  typeTokenLength = strlen(typeToken);
-    size_t                                  pos             = modifiedSource.find(typeToken, 0);  // 找到第一个#type标识
+    size_t                                  pos             = modifiedSource.find(typeToken, 0);
     while (pos != std::string::npos)
     {
-        size_t eol = modifiedSource.find_first_of("\r\n", pos);  // 定位位#type那一行最后 中间就是#type的内容
+        size_t eol = modifiedSource.find_first_of("\r\n", pos);
         X_CORE_ASSERT(eol != std::string::npos, "Syntax error");
         size_t      begin = pos + typeTokenLength + 1;
-        std::string type  = modifiedSource.substr(begin, eol - begin);  // vertex or frag
+        std::string type  = modifiedSource.substr(begin, eol - begin);
         X_CORE_ASSERT(Util::shaderTypeFromString(type), "Invalid shader type specified");
         size_t nextLinePos = modifiedSource.find_first_not_of("\r\n", eol);
         X_CORE_ASSERT(nextLinePos != std::string::npos, "Syntax error");
@@ -317,113 +286,61 @@ std::unordered_map<GLenum, std::string> OpenGLShader::preProcess(const std::stri
     return shaderSources;
 }
 
-void OpenGLShader::compileOrGetVulkanBinaries(const std::unordered_map<GLenum, std::string>& shaderSources)
+void OpenGLShader::compileOrGetBinaries(const std::unordered_map<GLenum, std::string>& shaderSources)
 {
-    // todo
-    // GLuint                  program = glCreateProgram();
-    shaderc::Compiler       compiler;
-    shaderc::CompileOptions options;
-    options.SetTargetEnvironment(shaderc_target_env_vulkan, shaderc_env_version_vulkan_1_2);
-    const bool optimize = true;
-    if (optimize)
-    {
-        options.SetOptimizationLevel(shaderc_optimization_level_performance);
-    }
-    std::filesystem::path cacheDirectory = Util::GetCacheDirectory();
-    auto&                 shaderData     = m_vulkanSPIRV;
-    shaderData.clear();
-    for (auto&& [stage, source] : shaderSources)
-    {
-        std::filesystem::path shaderFilePath = m_filePath;
-        std::filesystem::path cachedPath =
-            cacheDirectory / (shaderFilePath.filename().string() + Util::GLShaderStageCachedVulkanFilExtension(stage));
-        std::ifstream in(source, std::ios::in | std::ios::binary);
-        if (in.is_open())
-        {
-            in.seekg(0, std::ios::end);
-            auto size = in.tellg();
-            in.seekg(0, std::ios::beg);
-            auto& data = shaderData[stage];
-            data.resize(size / sizeof(uint32_t));
-            in.read((char*)data.data(), size);
-        }
-        else
-        {
-            shaderc::SpvCompilationResult module =
-                compiler.CompileGlslToSpv(source, Util::GLShaderStageToShaderC(stage), m_filePath.c_str(), options);
-            if (module.GetCompilationStatus() != shaderc_compilation_status_success)
-            {
-                X_CORE_ERROR(module.GetErrorMessage());
-                X_CORE_ASSERT(false);
-            }
-            shaderData[stage] = std::vector<uint32_t>(module.cbegin(), module.cend());
-            std::ofstream out(cachedPath, std::ios::out | std::ios::binary);
-            if (out.is_open())
-            {
-                auto& data = shaderData[stage];
-                out.write((char*)data.data(), data.size() * sizeof(uint32_t));
-                out.flush();
-                out.close();
-            }
-        }
-    }
-    for (auto& [stage, data] : shaderData)
-    {
-        reflect(stage, data);
-    }
-}
-
-void OpenGLShader::compileOrGetOpenGLBinaries()
-{
-    auto&                   shaderData = m_openGLSPIRV;
     shaderc::Compiler       compiler;
     shaderc::CompileOptions options;
     options.SetTargetEnvironment(shaderc_target_env_opengl, shaderc_env_version_opengl_4_5);
-    const bool optimize = true;
-    if (optimize)
+    options.SetOptimizationLevel(shaderc_optimization_level_performance);
+
+    std::filesystem::path cacheDirectory = Util::GetCacheDirectory();
+    bool                  useCache       = !m_filePath.empty();
+    m_spirvBinaries.clear();
+    for (auto&& [stage, source] : shaderSources)
     {
-        options.SetOptimizationLevel(shaderc_optimization_level_performance);
-    }
-    std::filesystem::path cachedDirectory = Util::GetCacheDirectory();
-    shaderData.clear();
-    m_openGLSourceCode.clear();
-    for (auto&& [stage, spirv] : m_vulkanSPIRV)
-    {
-        std::filesystem::path shaderFilePath = m_filePath;
-        std::filesystem::path cachedPath =
-            cachedDirectory / (shaderFilePath.filename().string() + Util::GLShaderStageCachedOpenGFileExtension(stage));
-        std::ifstream in(cachedPath, std::ios::in | std::ios::binary);
-        if (in.is_open())
+        if (useCache)
         {
-            in.seekg(0, std::ios::end);
-            auto size = in.tellg();
-            in.seekg(0, std::ios::beg);
-            auto& data = shaderData[stage];
-            data.resize(size / sizeof(uint32_t));
-            in.read((char*)data.data(), size);
-        }
-        else
-        {
-            spirv_cross::CompilerGLSL glslCompiler(spirv);
-            m_openGLSourceCode[stage]            = glslCompiler.compile();
-            auto&                         source = m_openGLSourceCode[stage];
-            shaderc::SpvCompilationResult module =
-                compiler.CompileGlslToSpv(source, Util::GLShaderStageToShaderC(stage), m_filePath.c_str());
-            if (module.GetCompilationStatus() != shaderc_compilation_status_success)
+            std::filesystem::path cachedPath = cacheDirectory /
+                                               (std::filesystem::path(m_filePath).filename().string() +
+                                                Util::GLShaderStageCachedFileExtension(stage));
+            std::ifstream in(cachedPath, std::ios::in | std::ios::binary);
+            if (in.is_open())
             {
-                X_CORE_ERROR(module.GetErrorMessage());
-                X_CORE_ASSERT(false);
+                in.seekg(0, std::ios::end);
+                auto size = in.tellg();
+                in.seekg(0, std::ios::beg);
+                auto& data = m_spirvBinaries[stage];
+                data.resize(size / sizeof(uint32_t));
+                in.read((char*)data.data(), size);
+                reflect(stage, m_spirvBinaries[stage]);
+                continue;
             }
-            shaderData[stage] = std::vector<uint32_t>(module.cbegin(), module.cend());
+        }
+
+        shaderc::SpvCompilationResult module =
+            compiler.CompileGlslToSpv(source, Util::GLShaderStageToShaderC(stage), m_filePath.c_str(), options);
+        if (module.GetCompilationStatus() != shaderc_compilation_status_success)
+        {
+            X_CORE_ERROR(module.GetErrorMessage());
+            X_CORE_ASSERT(false);
+        }
+        m_spirvBinaries[stage] = std::vector<uint32_t>(module.cbegin(), module.cend());
+
+        if (useCache)
+        {
+            std::filesystem::path cachedPath = cacheDirectory /
+                                               (std::filesystem::path(m_filePath).filename().string() +
+                                                Util::GLShaderStageCachedFileExtension(stage));
             std::ofstream out(cachedPath, std::ios::out | std::ios::binary);
             if (out.is_open())
             {
-                auto& data = shaderData[stage];
+                auto& data = m_spirvBinaries[stage];
                 out.write((char*)data.data(), data.size() * sizeof(uint32_t));
                 out.flush();
-                out.close();
             }
         }
+
+        reflect(stage, m_spirvBinaries[stage]);
     }
 }
 
@@ -431,7 +348,7 @@ void OpenGLShader::creatProgram()
 {
     GLuint              program = glCreateProgram();
     std::vector<GLuint> shaderIDs;
-    for (auto&& [stage, spirv] : m_openGLSPIRV)
+    for (auto&& [stage, spirv] : m_spirvBinaries)
     {
         GLuint shaderID = shaderIDs.emplace_back(glCreateShader(stage));
         glShaderBinary(1, &shaderID, GL_SHADER_BINARY_FORMAT_SPIR_V, spirv.data(), spirv.size() * sizeof(uint32_t));

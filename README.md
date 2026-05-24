@@ -31,12 +31,29 @@ sudo apt install python3.12-venv
 
 ## 2 网络代理
 
-配置了网络代理的地方有
+代理通过 `CMakePresets.json` 中的 `$env{http_proxy}` / `$env{https_proxy}` 从环境变量读取，不硬编码 IP。
 
-- cmake preset用到 从github下载源码
-- glad的整合用到 Python下载glad
+**方式一：CLion 按 profile 设置（推荐，不污染系统环境）**
 
-在本机可以直接用127地址，在wsl上换成宿主机的ip
+Settings → Build, Execution, Deployment → CMake → 选择 profile → Environment：
+
+```
+http_proxy=http://192.168.31.168:7890
+https_proxy=http://192.168.31.168:7890
+```
+
+**方式二：命令行临时设置**
+
+```sh
+http_proxy=http://192.168.31.168:7890 https_proxy=http://192.168.31.168:7890 cmake --preset linux-gcc-debug
+```
+
+**方式三：shell 配置文件（不推荐）**
+
+```sh
+export http_proxy=http://192.168.31.168:7890
+export https_proxy=http://192.168.31.168:7890
+```
 
 ## 3 编译
 

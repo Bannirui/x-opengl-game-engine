@@ -1,8 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
 
-# 输出详细日志
-set(CMAKE_VERBOSE_MAKEFILE ON)
-
 # 项目信息
 project(x-opengl-game-engine VERSION 1.0 LANGUAGES C CXX)
 
@@ -34,6 +31,7 @@ include(${LIB_DIRECTORY}/yaml_cpp.cmake)
 include(${LIB_DIRECTORY}/ImGuizmo.cmake)
 include(${LIB_DIRECTORY}/shaderc.cmake)
 include(${LIB_DIRECTORY}/box2d.cmake)
+include(${LIB_DIRECTORY}/AssetCopy.cmake)
 
 set(LIB_NAME "${PROJECT_NAME}-core")
 

@@ -58,8 +58,7 @@ private:
     std::string readFile(const std::string& filepath);
     // 源码区分vertex和frag
     std::unordered_map<GLenum, std::string> preProcess(const std::string& glslSrc);
-    void compileOrGetVulkanBinaries(const std::unordered_map<GLenum, std::string>& shaderSources);
-    void compileOrGetOpenGLBinaries();
+    void compileOrGetBinaries(const std::unordered_map<GLenum, std::string>& shaderSources);
     void creatProgram();
     void reflect(GLenum stage, const std::vector<uint32_t>& shaderData);
 
@@ -67,7 +66,5 @@ private:
     uint32_t                                          m_rendererId{0};
     std::string                                       m_filePath;
     std::string                                       m_name;
-    std::unordered_map<GLenum, std::vector<uint32_t>> m_vulkanSPIRV;
-    std::unordered_map<GLenum, std::vector<uint32_t>> m_openGLSPIRV;
-    std::unordered_map<GLenum, std::string>           m_openGLSourceCode;
+    std::unordered_map<GLenum, std::vector<uint32_t>> m_spirvBinaries;
 };
