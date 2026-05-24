@@ -6,6 +6,8 @@
 
 #include "pch.h"
 
+#include <filesystem>
+
 using FloatingPointMicroseconds = std::chrono::duration<double, std::micro>;
 
 struct ProfileResult
@@ -40,6 +42,11 @@ public:
             internalEndSession();
         }
 
+        std::filesystem::path outputPath(filepath);
+        if (outputPath.has_parent_path())
+        {
+            std::filesystem::create_directories(outputPath.parent_path());
+        }
         m_outputStream.open(filepath);
         if (m_outputStream.is_open())
         {

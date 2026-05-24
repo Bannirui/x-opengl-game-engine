@@ -23,8 +23,7 @@ public:
 XApplication* CreateApplication(ApplicationCommandLineArgs args)
 {
     ApplicationSpecification spec;
-    spec.Name             = "Sandbox";
-    spec.WorkingDirectory = "../Xlnut";
+    spec.Name    = "Sandbox";
     spec.CommandLineArgs  = args;
     return new Sandbox(spec);
 }

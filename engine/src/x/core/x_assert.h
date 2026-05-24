@@ -21,8 +21,16 @@
                 X_DEBUGBREAK();                           \
             }                                             \
         }
-    #define X_INTERNAL_ASSERT_WITH_MSG(type, check, ...) \
-        X_INTERNAL_ASSERT_IMPL(type, check, "Assertion failed: {0}", __VA_ARGS__)
+    #define X_INTERNAL_ASSERT_WITH_MSG(type, check, msg, ...) \
+        {                                                    \
+            if (!(check))                                    \
+            {                                                \
+                X##type##ERROR("[{}:{}] {}",                  \
+                               std::filesystem::path(__FILE__).filename().string(), \
+                               __LINE__, msg);                \
+                X_DEBUGBREAK();                               \
+            }                                                \
+        }
     #define X_INTERNAL_ASSERT_NO_MSG(type, check)                                                          \
         X_INTERNAL_ASSERT_IMPL(type, check, "Assertion '{0}' failed at {1}:{2}", X_STRINGIFY_MACRO(check), \
                                std::filesystem::path(__FILE__).filename().string(), __LINE__)
