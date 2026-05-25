@@ -1,0 +1,19 @@
+engine/src/x/core/x_assert.h
+  s_bb6b5a27bafee7::t_4c1cfd17e46c48 46-52
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.1",
+  "base_commit_sha": "94d36ec30796f2b7bfbdcb5390f572514c75e367",
+  "prompts": {},
+  "sessions": {
+    "s_bb6b5a27bafee7": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_1a30ec4e9ffeRK2n7kem3VoJSK",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "dingrui <Bannirui@outlook.com>"
+    }
+  }
+}
