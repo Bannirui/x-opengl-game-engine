@@ -1,0 +1,24 @@
+engine/src/x/core/x_application.h
+  s_bb6b5a27bafee7::t_93efd7d3c8ff1f 77
+  s_bb6b5a27bafee7::t_b1d184eeb15710 44-45
+engine/src/x/core/x_application.cpp
+  s_bb6b5a27bafee7::t_e5651ef2aab942 33-36
+  s_bb6b5a27bafee7::t_57ab97cd2ef709 82,84,87,89
+  s_bb6b5a27bafee7::t_cdbea4e2584afd 111,120
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.1",
+  "base_commit_sha": "c2f6a90e8e41c325e70b9500a5b13670e1d5c680",
+  "prompts": {},
+  "sessions": {
+    "s_bb6b5a27bafee7": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_1a30ec4e9ffeRK2n7kem3VoJSK",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "dingrui <Bannirui@outlook.com>"
+    }
+  }
+}
