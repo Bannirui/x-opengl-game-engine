@@ -1,0 +1,27 @@
+engine/src/x/renderer/renderer_2D.cpp
+  s_bb6b5a27bafee7::t_15960544281ebe 183-185
+  s_bb6b5a27bafee7::t_dfec8d57fead14 246
+  s_bb6b5a27bafee7::t_f433cfc6164724 234
+  s_bb6b5a27bafee7::t_c1e891b7c9b962 254
+  s_bb6b5a27bafee7::t_abb98a6b0df7ae 153
+  s_bb6b5a27bafee7::t_d5ea47469d2517 67-68,71-72,75-76
+  s_bb6b5a27bafee7::t_909aba15f1a740 143
+  s_bb6b5a27bafee7::t_77a2f9e9f5fe23 235,247,255,262,266,274,279,286,289-290,292-293,296-300,302,310,313,315,320-321,326-327,330,334-338,340,348,353,362,367,376,378,381-384,391,393,398,405,416,418,427-428,430,435,439,443,447,451-453,455-456,458-459
+  s_bb6b5a27bafee7::t_461cedca559a1c 113
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.1",
+  "base_commit_sha": "7a845b783e41fd5a839d651fb8a11425e5d05799",
+  "prompts": {},
+  "sessions": {
+    "s_bb6b5a27bafee7": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_1a30ec4e9ffeRK2n7kem3VoJSK",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "dingrui <Bannirui@outlook.com>"
+    }
+  }
+}
