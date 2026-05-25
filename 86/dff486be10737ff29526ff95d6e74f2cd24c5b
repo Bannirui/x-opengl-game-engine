@@ -1,0 +1,19 @@
+engine/src/platform/linux/linux_input.cpp
+  s_bb6b5a27bafee7::t_d2a90dab38567e 12-16,19,25,32
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.1",
+  "base_commit_sha": "86dff486be10737ff29526ff95d6e74f2cd24c5b",
+  "prompts": {},
+  "sessions": {
+    "s_bb6b5a27bafee7": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_1a30ec4e9ffeRK2n7kem3VoJSK",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "dingrui <Bannirui@outlook.com>"
+    }
+  }
+}
