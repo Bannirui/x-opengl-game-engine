@@ -1,0 +1,23 @@
+engine/src/x/scene/scene.h
+  s_bb6b5a27bafee7::t_726062fd8591ec 71
+engine/src/x/scene/scene.cpp
+  s_bb6b5a27bafee7::t_ce8c62e5dccd74 76
+  s_bb6b5a27bafee7::t_7dd61c3e23dbcf 349
+  s_bb6b5a27bafee7::t_dd92fc9c66424c 300
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.1",
+  "base_commit_sha": "89663400a424a070610321c7d87afb201881b216",
+  "prompts": {},
+  "sessions": {
+    "s_bb6b5a27bafee7": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_1a30ec4e9ffeRK2n7kem3VoJSK",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "dingrui <Bannirui@outlook.com>"
+    }
+  }
+}
