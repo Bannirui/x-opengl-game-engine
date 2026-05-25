@@ -1,0 +1,38 @@
+engine/src/x/core/base.h
+  s_bb6b5a27bafee7::t_9606ffa7999f36 37-43,45-48,50-57
+  s_bb6b5a27bafee7::t_1ebc7abd92d842 8
+  s_bb6b5a27bafee7::t_6c62ed7702c25d 32-33
+engine/src/x/imgui/im_gui_layer.cpp
+  s_bb6b5a27bafee7::t_781898567a18d1 50
+engine/src/platform/opengl/open_gl_context.cpp
+  s_bb6b5a27bafee7::t_979a6050ecea8a 62
+  s_bb6b5a27bafee7::t_fdaa57de7573f0 13-21
+  s_bb6b5a27bafee7::t_6a8290bb41e056 41-43,46-57,59-61
+  s_bb6b5a27bafee7::t_c8d14d15084145 45
+engine/src/platform/linux/linux_window.cpp
+  s_bb6b5a27bafee7::t_2ce2cb1a671b99 70
+engine/src/platform/opengl/open_gl_shader.cpp
+  s_bb6b5a27bafee7::t_c8d14d15084145 35,77,299,364
+  s_bb6b5a27bafee7::t_3d0b570ed9ad8b 300-308
+  s_bb6b5a27bafee7::t_80dfbfeffd39e0 362,365-373,375,377,379-397
+  s_bb6b5a27bafee7::t_155b7ea6c333ec 269-270
+  s_bb6b5a27bafee7::t_dcf1dec1ff7aec 297
+engine/src/platform/mac/mac_window.cpp
+  s_bb6b5a27bafee7::t_e4f8fb4384a778 70-72
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.1",
+  "base_commit_sha": "28dd9a8ee2846fb06603a065c63b97956233033e",
+  "prompts": {},
+  "sessions": {
+    "s_bb6b5a27bafee7": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_1a30ec4e9ffeRK2n7kem3VoJSK",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "dingrui <Bannirui@outlook.com>"
+    }
+  }
+}
