@@ -1,0 +1,19 @@
+sandbox/src/sandbox_application.cpp
+  s_bb6b5a27bafee7::t_9968eb396147c8 17
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.1",
+  "base_commit_sha": "7edaf84af86567a9aedd11d8323a882abeb349e6",
+  "prompts": {},
+  "sessions": {
+    "s_bb6b5a27bafee7": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_1a30ec4e9ffeRK2n7kem3VoJSK",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "dingrui <Bannirui@outlook.com>"
+    }
+  }
+}
