@@ -1,0 +1,21 @@
+engine/src/x/layer_stack.h
+  s_bb6b5a27bafee7::t_8dbf012e20e2a3 22,28,30,34,36,57
+engine/src/x/layer_stack.cpp
+  s_bb6b5a27bafee7::t_b6748ad2309734 11,17-18,20,24-25,27,31-34,36,43-48
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.1",
+  "base_commit_sha": "ebdb70a3808a98e89dece9b893a5991b3c70c52d",
+  "prompts": {},
+  "sessions": {
+    "s_bb6b5a27bafee7": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_1a30ec4e9ffeRK2n7kem3VoJSK",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "dingrui <Bannirui@outlook.com>"
+    }
+  }
+}
