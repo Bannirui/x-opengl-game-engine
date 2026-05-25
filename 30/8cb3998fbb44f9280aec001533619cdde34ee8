@@ -1,0 +1,19 @@
+engine/src/x/renderer/render_command.h
+  s_bb6b5a27bafee7::t_2d6c12712ea2fc 16-18,20-21,29-30,32-33,36-37,40-42,45-48
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.1",
+  "base_commit_sha": "308cb3998fbb44f9280aec001533619cdde34ee8",
+  "prompts": {},
+  "sessions": {
+    "s_bb6b5a27bafee7": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_1a30ec4e9ffeRK2n7kem3VoJSK",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "dingrui <Bannirui@outlook.com>"
+    }
+  }
+}
