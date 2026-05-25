@@ -1,0 +1,22 @@
+engine/src/x/events/event.h
+  s_bb6b5a27bafee7::t_5d80752f2d82fd 51
+  s_bb6b5a27bafee7::t_c9a18b0cd2df16 68,74
+  s_bb6b5a27bafee7::t_bfbcc178504902 49-50
+  s_bb6b5a27bafee7::t_f81bdd3dfb1d2d 75
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.1",
+  "base_commit_sha": "d816049f47ae33a9951894fc2651b23b249a9fe8",
+  "prompts": {},
+  "sessions": {
+    "s_bb6b5a27bafee7": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_1a30ec4e9ffeRK2n7kem3VoJSK",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "dingrui <Bannirui@outlook.com>"
+    }
+  }
+}
