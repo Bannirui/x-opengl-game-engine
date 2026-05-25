@@ -1,0 +1,23 @@
+engine/src/x/renderer/renderer_2D.cpp
+  s_bb6b5a27bafee7::t_d012ff06241c4b 192-212
+engine/src/platform/mac/mac_window.cpp
+  s_bb6b5a27bafee7::t_88f93515ab3ba4 29
+engine/src/platform/linux/linux_window.cpp
+  s_bb6b5a27bafee7::t_2850a1dc454e09 29
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.1",
+  "base_commit_sha": "b57bf80d8be259345808ea49505371a3d9dc2e0f",
+  "prompts": {},
+  "sessions": {
+    "s_bb6b5a27bafee7": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_1a30ec4e9ffeRK2n7kem3VoJSK",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "dingrui <Bannirui@outlook.com>"
+    }
+  }
+}
