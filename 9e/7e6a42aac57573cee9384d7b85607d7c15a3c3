@@ -1,0 +1,43 @@
+engine/src/platform/opengl/open_gl_shader.h
+  s_bb6b5a27bafee7::t_f5a3bf69721ec1 79
+engine/src/platform/mac/mac_platform_util.mm
+  s_bb6b5a27bafee7::t_ba7713e8f2cb6b 46-47,49
+CMakeLists.txt
+  s_bb6b5a27bafee7::t_8d14ae007cd67c 18
+cmake/glm.cmake
+  s_bb6b5a27bafee7::t_c317eff38f631c 10
+engine/src/platform/opengl/open_gl_shader.cpp
+  s_bb6b5a27bafee7::t_2d4c70bad261f9 35
+  s_bb6b5a27bafee7::t_68d1e7696d650d 295-297,352
+  s_bb6b5a27bafee7::t_636670accc2fd1 368,373-387
+  s_bb6b5a27bafee7::t_a8fd942ed983e1 359-360,369-372,390
+  s_bb6b5a27bafee7::t_2d281925bdd249 90
+  s_bb6b5a27bafee7::t_846983de5b09d8 77
+  s_bb6b5a27bafee7::t_c6827caf6f1ae5 48
+engine/src/platform/opengl/open_gl_framebuffer.cpp
+  s_bb6b5a27bafee7::t_fa447172cb80b7 232-243
+engine/src/x/core/uuid.h
+  s_bb6b5a27bafee7::t_940572d4ee1c4d 13
+engine/src/x/scene/component.h
+  s_bb6b5a27bafee7::t_8e2a95a911e7bc 119-120,122
+  s_bb6b5a27bafee7::t_96ec5141107b71 46,78,89,98
+  s_bb6b5a27bafee7::t_0ea28b07d51407 65
+  s_bb6b5a27bafee7::t_3da87429280dc7 143,160,177
+  s_bb6b5a27bafee7::t_bbe2df8671e64e 24,33
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.1",
+  "base_commit_sha": "9e7e6a42aac57573cee9384d7b85607d7c15a3c3",
+  "prompts": {},
+  "sessions": {
+    "s_bb6b5a27bafee7": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_1a30ec4e9ffeRK2n7kem3VoJSK",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "dingrui <Bannirui@outlook.com>"
+    }
+  }
+}
