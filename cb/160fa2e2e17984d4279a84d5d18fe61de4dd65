@@ -1,0 +1,58 @@
+engine/asset/shader/Renderer2D_Quad.glsl
+  s_bb6b5a27bafee7::t_22673c34ea64a8 29-31
+  s_bb6b5a27bafee7::t_7ba92e6a96057c 18
+  s_bb6b5a27bafee7::t_141ebddd465db2 19-20
+  s_bb6b5a27bafee7::t_d85db0867a6395 22
+  s_bb6b5a27bafee7::t_55a147dad29a82 46-48,53
+Xlnut/asset/shader/Renderer2D_Circle.glsl
+  s_bb6b5a27bafee7::t_7ba92e6a96057c 18
+  s_bb6b5a27bafee7::t_ed3871ac5816f7 19
+  s_bb6b5a27bafee7::t_e6916c8ddc4e49 21,46-47
+  s_bb6b5a27bafee7::t_22673c34ea64a8 28-31
+engine/asset/shader/Renderer2D_Line.glsl
+  s_bb6b5a27bafee7::t_7ba92e6a96057c 13
+  s_bb6b5a27bafee7::t_39f56d6663d3ea 17
+  s_bb6b5a27bafee7::t_22673c34ea64a8 24
+  s_bb6b5a27bafee7::t_141ebddd465db2 14
+  s_bb6b5a27bafee7::t_4107d80f1ec8dc 36-37
+Xlnut/asset/shader/Renderer2D_Quad.glsl
+  s_bb6b5a27bafee7::t_e6916c8ddc4e49 21,45-47,52
+  s_bb6b5a27bafee7::t_22673c34ea64a8 28-30
+  s_bb6b5a27bafee7::t_ed3871ac5816f7 18-19
+  s_bb6b5a27bafee7::t_7ba92e6a96057c 17
+engine/asset/shader/Renderer2D_Circle.glsl
+  s_bb6b5a27bafee7::t_22673c34ea64a8 30-33
+  s_bb6b5a27bafee7::t_7ba92e6a96057c 20
+  s_bb6b5a27bafee7::t_141ebddd465db2 21
+  s_bb6b5a27bafee7::t_7cc953cebf7ace 49-51
+  s_bb6b5a27bafee7::t_456a85185819f4 23
+Xlnut/asset/shader/FlatColor.glsl
+  s_bb6b5a27bafee7::t_7ba92e6a96057c 19
+sandbox/asset/shader/Texture.glsl
+  s_bb6b5a27bafee7::t_22673c34ea64a8 29-32
+  s_bb6b5a27bafee7::t_0b2128b6154ea7 47-48,53
+  s_bb6b5a27bafee7::t_141ebddd465db2 20
+  s_bb6b5a27bafee7::t_782316ababf934 22
+  s_bb6b5a27bafee7::t_7ba92e6a96057c 19
+Xlnut/asset/shader/Renderer2D_Line.glsl
+  s_bb6b5a27bafee7::t_7ba92e6a96057c 12
+  s_bb6b5a27bafee7::t_ed3871ac5816f7 13
+  s_bb6b5a27bafee7::t_e6916c8ddc4e49 15,34-35
+  s_bb6b5a27bafee7::t_22673c34ea64a8 22
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.1",
+  "base_commit_sha": "cb160fa2e2e17984d4279a84d5d18fe61de4dd65",
+  "prompts": {},
+  "sessions": {
+    "s_bb6b5a27bafee7": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_1a30ec4e9ffeRK2n7kem3VoJSK",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "dingrui <Bannirui@outlook.com>"
+    }
+  }
+}
