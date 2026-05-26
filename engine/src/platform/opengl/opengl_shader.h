@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include "pch.h"
 #include "x/renderer/shader.h"
 
 #include <glad/glad.h>

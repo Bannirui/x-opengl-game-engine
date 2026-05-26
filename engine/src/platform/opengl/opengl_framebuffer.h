@@ -4,8 +4,6 @@
 
 #pragma once
 
-#include "pch.h"
-
 #include "x/renderer/frame_buffer.h"
 
 class OpenGLFramebuffer : public FrameBuffer

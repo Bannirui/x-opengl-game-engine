@@ -2,14 +2,21 @@ add_asset_copy_target(${LIB_NAME} "${CMAKE_CURRENT_SOURCE_DIR}/asset")
 
 # 源文件
 file(GLOB_RECURSE SRCS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
+# private头文件
 set(HDR_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 file(GLOB_RECURSE HDRS
         "${HDR_DIR}/*.h"
         "${HDR_DIR}/*.hpp"
 )
+# public头文件
+file(GLOB_RECURSE INCLUDE_HDRS
+        "${CMAKE_CURRENT_SOURCE_DIR}/include/*.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp"
+)
 # 添加头文件的目的仅仅是为了让IDEA识别到 新建文件的时候添加索引
 add_library(${LIB_NAME} STATIC
         ${HDRS}
+        ${INCLUDE_HDRS}
         ${SRCS}
 )
 
@@ -38,8 +45,12 @@ if(APPLE)
 endif()
 
 target_include_directories(${LIB_NAME}
-    PUBLIC
-        ${HDR_DIR}
+        # 给别的项目使用的
+        PUBLIC
+            ${CMAKE_CURRENT_SOURCE_DIR}/include
+        # 给自己项目使用的
+        PRIVATE
+            ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
 target_link_libraries(${LIB_NAME}
