@@ -21,6 +21,7 @@ public:
     static void BeginScene(const OrthographicCamera& camera);
     static void BeginScene(const Camera& camera, const glm::mat4& transform);
     static void BeginScene(const EditorCamera& camera);
+    // 每个帧可能绘制多个图形 把所有要绘制的图形VBO数据都收集好了再一起提交给GPU
     static void EndScene();
 
     static void Flush();
