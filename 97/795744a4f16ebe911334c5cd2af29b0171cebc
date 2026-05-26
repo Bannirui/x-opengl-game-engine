@@ -1,0 +1,19 @@
+engine/src/x/renderer/renderer_2D.cpp
+  s_205c7f1788f50e::t_01bded60ca8132 192-204
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.1",
+  "base_commit_sha": "97795744a4f16ebe911334c5cd2af29b0171cebc",
+  "prompts": {},
+  "sessions": {
+    "s_205c7f1788f50e": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_19e0cca58ffeGIV5GUck2FR5y2",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "dingrui <Bannirui@outlook.com>"
+    }
+  }
+}
