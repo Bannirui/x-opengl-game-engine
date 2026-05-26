@@ -1,0 +1,35 @@
+engine/src/x/core/layer.h
+  s_205c7f1788f50e::t_d199e4e1e95bad 13-21,40-43,51-56,61-62
+engine/src/x/core/x_application.cpp
+  s_205c7f1788f50e::t_59fe9231222a10 45,47-76,78-79
+  s_205c7f1788f50e::t_bce73420ad96c9 108-110
+  s_205c7f1788f50e::t_fc0f1a3b0931b9 28-31
+engine/src/x/layer_stack.cpp
+  s_205c7f1788f50e::t_8af13364da5d32 22,24,30
+engine/src/x/core/layer.cpp
+  s_205c7f1788f50e::t_51dcadabc3f5e8 6,9-13
+engine/src/x/core/x_application.h
+  s_205c7f1788f50e::t_abf76dde30bee5 61-64,74-75
+engine/src/x/events/event.h
+  s_205c7f1788f50e::t_949e812cd38e8e 42-53
+  s_205c7f1788f50e::t_0b125e3eda4aff 72-79
+  s_205c7f1788f50e::t_7474483a0d816c 10
+engine/src/x/layer_stack.h
+  s_205c7f1788f50e::t_ef0d55a0f41560 11-19,26-47,50
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.1",
+  "base_commit_sha": "b531cb9b4919a13e55a9ac9f7f9aef32a818924b",
+  "prompts": {},
+  "sessions": {
+    "s_205c7f1788f50e": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_19e0cca58ffeGIV5GUck2FR5y2",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "dingrui <Bannirui@outlook.com>"
+    }
+  }
+}
