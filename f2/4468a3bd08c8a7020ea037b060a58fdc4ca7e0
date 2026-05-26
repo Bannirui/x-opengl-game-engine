@@ -1,0 +1,28 @@
+engine/asset/shader/Renderer2D_Line.410.glsl
+  s_205c7f1788f50e::t_af73ee6b1675d3 13,15,35
+  s_205c7f1788f50e::t_3d697d8242dfb7 34,42
+engine/asset/shader/Renderer2D_Quad.410.glsl
+  s_205c7f1788f50e::t_0347145242452b 18-19,21,46-47
+  s_205c7f1788f50e::t_11e828876b9775 45,56,59-74
+engine/asset/shader/Renderer2D_Circle.410.glsl
+  s_205c7f1788f50e::t_d3b5c8eef48557 19,21,47
+  s_205c7f1788f50e::t_3b2a516f98bc04 46,54-56,60
+sandbox/asset/shader/Texture.410.glsl
+  s_205c7f1788f50e::t_3abbcbffc4684b 21
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.1",
+  "base_commit_sha": "f24468a3bd08c8a7020ea037b060a58fdc4ca7e0",
+  "prompts": {},
+  "sessions": {
+    "s_205c7f1788f50e": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_19e0cca58ffeGIV5GUck2FR5y2",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "dingrui <Bannirui@outlook.com>"
+    }
+  }
+}
