@@ -40,19 +40,16 @@ struct LineVertex {
 struct Renderer2DData {
     static const uint32_t MaxTextureSlots = 16;
 
-    BatchGroup<QuadVertex> Quad;
+    // 矩形用glDrawElements的方式画 每个矩形4个顶点 画2个三角形
+    BatchGroup<QuadVertex, 4> Quad;
     X::Ref<Shader> QuadShader;
     X::Ref<Texture2D> WhiteTexture;
-
-    BatchGroup<CircleVertex> Circle;
+    // 圆形用glDrawElements的方式画 每个圆形4个顶点 画2个三角形
+    BatchGroup<CircleVertex, 4> Circle;
     X::Ref<Shader> CircleShader;
-
-    X::Ref<VertexArray> LineVertexArray;
-    X::Ref<VertexBuffer> LineVertexBuffer;
+    // 线段用glDrawArrays的方式画 每个线段2个顶点
+    BatchGroup<LineVertex, 2, false> Line;
     X::Ref<Shader> LineShader;
-    LineVertex* LineVertexBufferBase{nullptr};
-    LineVertex* LineVertexBufferPtr{nullptr};
-    uint32_t LineVertexCount{0};
     float LineWidth{2.0f};
 
     std::array<X::Ref<Texture2D>, MaxTextureSlots> TextureSlots;

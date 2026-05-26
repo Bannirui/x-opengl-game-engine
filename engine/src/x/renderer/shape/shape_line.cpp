@@ -6,17 +6,17 @@
 #include "x/renderer/renderer_2D_internal.h"
 
 void Renderer2D::DrawLine(const glm::vec3& p0, glm::vec3& p1, const glm::vec4& color, int entityID) {
-    s_data.LineVertexBufferPtr->Position = p0;
-    s_data.LineVertexBufferPtr->Color = color;
-    s_data.LineVertexBufferPtr->EntityID = entityID;
-    s_data.LineVertexBufferPtr++;
+    s_data.Line.Ptr->Position = p0;
+    s_data.Line.Ptr->Color    = color;
+    s_data.Line.Ptr->EntityID = entityID;
+    s_data.Line.Ptr++;
 
-    s_data.LineVertexBufferPtr->Position = p1;
-    s_data.LineVertexBufferPtr->Color = color;
-    s_data.LineVertexBufferPtr->EntityID = entityID;
-    s_data.LineVertexBufferPtr++;
+    s_data.Line.Ptr->Position = p1;
+    s_data.Line.Ptr->Color    = color;
+    s_data.Line.Ptr->EntityID = entityID;
+    s_data.Line.Ptr++;
 
-    s_data.LineVertexCount += 2;
+    s_data.Line.Count += 2;
 }
 
 void Renderer2D::DrawRect(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color, int entityID) {

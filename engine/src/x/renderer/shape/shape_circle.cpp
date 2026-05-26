@@ -17,6 +17,6 @@ void Renderer2D::DrawCircle(const glm::mat4& transform, const glm::vec4& color, 
         s_data.Circle.Ptr->EntityID      = entityID;
         s_data.Circle.Ptr++;
     }
-    s_data.Circle.IndexCount += 6;
+    s_data.Circle.Count += 6;
     s_data.Stats.QuadCount++;
 }

@@ -4,6 +4,7 @@
 
 #include "x/renderer/renderer_2D.h"
 #include "x/renderer/renderer_2D_internal.h"
+
 #include "x/scene/component.h"
 
 #include <glm/ext/matrix_transform.hpp>
@@ -36,23 +37,22 @@ void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, cons
 void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color, int entityID) {
     X_PROFILE_FUNCTION();
 
-    constexpr size_t quadVertexCount = 4;
-    const float textureIndex = 0.0f;
+    const float         textureIndex    = 0.0f;
     constexpr glm::vec2 textureCoords[] = {{0.0f, 0.0f}, {1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f}};
-    const float tilingFactor = 1.0f;
+    const float         tilingFactor    = 1.0f;
     if (s_data.Quad.IsFull()) {
         nextBatch();
     }
-    for (size_t i = 0; i < quadVertexCount; i++) {
-        s_data.Quad.Ptr->position = transform * s_data.QuadVertexPositions[i];
-        s_data.Quad.Ptr->color = color;
-        s_data.Quad.Ptr->texCoord = textureCoords[i];
-        s_data.Quad.Ptr->texIndex = textureIndex;
+    for (size_t i = 0; i < 4; i++) {
+        s_data.Quad.Ptr->position     = transform * s_data.QuadVertexPositions[i];
+        s_data.Quad.Ptr->color        = color;
+        s_data.Quad.Ptr->texCoord     = textureCoords[i];
+        s_data.Quad.Ptr->texIndex     = textureIndex;
         s_data.Quad.Ptr->tilingFactor = tilingFactor;
-        s_data.Quad.Ptr->entityID = entityID;
+        s_data.Quad.Ptr->entityID     = entityID;
         s_data.Quad.Ptr++;
     }
-    s_data.Quad.IndexCount += 6;
+    s_data.Quad.Count += 6;
     s_data.Stats.QuadCount++;
 }
 
@@ -60,7 +60,6 @@ void Renderer2D::DrawQuad(const glm::mat4& transform, const X::Ref<Texture2D>& t
                           const glm::vec4& tintColor, int entityID) {
     X_PROFILE_FUNCTION();
 
-    constexpr size_t quadVertexCount = 4;
     constexpr glm::vec2 textureCoords[] = {{0.0f, 0.0f}, {1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f}};
     if (s_data.Quad.IsFull()) {
         nextBatch();
@@ -77,20 +76,20 @@ void Renderer2D::DrawQuad(const glm::mat4& transform, const X::Ref<Texture2D>& t
         if (s_data.TextureSlotIndex >= Renderer2DData::MaxTextureSlots) {
             nextBatch();
         }
-        textureIndex = (float)s_data.TextureSlotIndex;
+        textureIndex                                 = (float)s_data.TextureSlotIndex;
         s_data.TextureSlots[s_data.TextureSlotIndex] = texture;
         s_data.TextureSlotIndex++;
     }
-    for (size_t i = 0; i < quadVertexCount; i++) {
-        s_data.Quad.Ptr->position = transform * s_data.QuadVertexPositions[i];
-        s_data.Quad.Ptr->color = tintColor;
-        s_data.Quad.Ptr->texCoord = textureCoords[i];
-        s_data.Quad.Ptr->texIndex = textureIndex;
+    for (size_t i = 0; i < 4; i++) {
+        s_data.Quad.Ptr->position     = transform * s_data.QuadVertexPositions[i];
+        s_data.Quad.Ptr->color        = tintColor;
+        s_data.Quad.Ptr->texCoord     = textureCoords[i];
+        s_data.Quad.Ptr->texIndex     = textureIndex;
         s_data.Quad.Ptr->tilingFactor = tilingFactor;
-        s_data.Quad.Ptr->entityID = entityID;
+        s_data.Quad.Ptr->entityID     = entityID;
         s_data.Quad.Ptr++;
     }
-    s_data.Quad.IndexCount += 6;
+    s_data.Quad.Count += 6;
     s_data.Stats.QuadCount++;
 }
 

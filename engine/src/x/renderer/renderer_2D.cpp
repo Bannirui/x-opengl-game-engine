@@ -35,13 +35,11 @@ void Renderer2D::Init() {
         {ShaderDataType::kInt, "a_EntityID"},
     });
 
-    s_data.LineVertexArray = VertexArray::Create();
-    s_data.LineVertexBuffer = VertexBuffer::Create(s_data.Quad.MaxVertices() * sizeof(LineVertex));
-    s_data.LineVertexBuffer->SetLayout({{ShaderDataType::kFloat3, "a_Position"},
-                                        {ShaderDataType::kFloat4, "a_Color"},
-                                        {ShaderDataType::kInt, "a_EntityID"}});
-    s_data.LineVertexArray->AddVertexBuffer(s_data.LineVertexBuffer);
-    s_data.LineVertexBufferBase = new LineVertex[s_data.Quad.MaxVertices()];
+    s_data.Line.Init({
+        {ShaderDataType::kFloat3, "a_Position"},
+        {ShaderDataType::kFloat4, "a_Color"},
+        {ShaderDataType::kInt, "a_EntityID"},
+    });
 
     s_data.WhiteTexture = Texture2D::Create(1, 1);
     uint32_t whiteTextureData = 0xffffffff;
@@ -65,14 +63,12 @@ void Renderer2D::Shutdown() {
     X_PROFILE_FUNCTION();
     s_data.Quad.Shutdown();
     s_data.Circle.Shutdown();
+    s_data.Line.Shutdown();
     s_data.QuadShader.reset();
     s_data.CircleShader.reset();
     s_data.LineShader.reset();
     s_data.WhiteTexture.reset();
     s_data.CameraUniformBuffer.reset();
-    delete[] s_data.LineVertexBufferBase;
-    s_data.LineVertexArray.reset();
-    s_data.LineVertexBuffer.reset();
 }
 
 void Renderer2D::BeginScene(const OrthographicCamera& camera) {
@@ -101,28 +97,29 @@ void Renderer2D::EndScene() {
     Flush();
 }
 
+/**
+ * 每绘制一帧 CPU一次性把要画的所有图形的数据一次性一起告诉GPU
+ */
 void Renderer2D::Flush() {
-    if (s_data.Quad.IndexCount) {
+    if (s_data.Quad.Count) {
         s_data.Quad.VBO->SetData(s_data.Quad.Base, s_data.Quad.GetDataSize());
         for (uint32_t i = 0; i < s_data.TextureSlotIndex; i++) {
             s_data.TextureSlots[i]->Bind(i);
         }
         s_data.QuadShader->Bind();
-        RenderCommand::DrawIndexed(s_data.Quad.VAO, s_data.Quad.IndexCount);
+        RenderCommand::DrawIndexed(s_data.Quad.VAO, s_data.Quad.Count);
         s_data.Stats.DrawCalls++;
     }
-    if (s_data.Circle.IndexCount) {
+    if (s_data.Circle.Count) {
         s_data.Circle.VBO->SetData(s_data.Circle.Base, s_data.Circle.GetDataSize());
         s_data.CircleShader->Bind();
-        RenderCommand::DrawIndexed(s_data.Circle.VAO, s_data.Circle.IndexCount);
+        RenderCommand::DrawIndexed(s_data.Circle.VAO, s_data.Circle.Count);
         s_data.Stats.DrawCalls++;
     }
-    if (s_data.LineVertexCount) {
-        uint32_t dataSize = static_cast<uint32_t>(reinterpret_cast<uint8_t*>(s_data.LineVertexBufferPtr) -
-                                                  reinterpret_cast<uint8_t*>(s_data.LineVertexBufferBase));
-        s_data.LineVertexBuffer->SetData(s_data.LineVertexBufferBase, dataSize);
+    if (s_data.Line.Count) {
+        s_data.Line.VBO->SetData(s_data.Line.Base, s_data.Line.GetDataSize());
         s_data.LineShader->Bind();
-        RenderCommand::DrawLines(s_data.LineVertexArray, s_data.LineVertexCount);
+        RenderCommand::DrawLines(s_data.Line.VAO, s_data.Line.Count);
         s_data.Stats.DrawCalls++;
     }
 }
@@ -138,9 +135,7 @@ Renderer2D::Statistics Renderer2D::GetStats() {
 void Renderer2D::startBatch() {
     s_data.Quad.StartBatch();
     s_data.Circle.StartBatch();
-
-    s_data.LineVertexCount = 0;
-    s_data.LineVertexBufferPtr = s_data.LineVertexBufferBase;
+    s_data.Line.StartBatch();
 
     s_data.TextureSlotIndex = 1;
 }
