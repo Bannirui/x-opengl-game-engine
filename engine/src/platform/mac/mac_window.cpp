@@ -66,8 +66,8 @@ void MacWindow::init(const WindowProps& props)
         X_CORE_ASSERT(succ, "Could not init GLFW");
         glfwSetErrorCallback(glfwErrorCallback);
     }
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, X_GL_VERSION_MAJOR);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, X_GL_VERSION_MINOR);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     {
         X_PROFILE_SCOPE("glfwCreateWindow");

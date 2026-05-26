@@ -60,21 +60,6 @@ target_precompile_headers(${LIB_NAME}
     PRIVATE ${HDR_DIR}/pch.h
 )
 
-if(APPLE)
-    target_compile_definitions(${LIB_NAME}
-        # OpenGL版本
-        PRIVATE X_GL_VERSION_MAJOR=3
-                X_GL_VERSION_MINOR=3
-    )
-endif()
-
-if(UNIX AND NOT APPLE)
-    target_compile_definitions(${LIB_NAME}
-        PRIVATE X_GL_VERSION_MAJOR=4
-                X_GL_VERSION_MINOR=5
-    )
-endif()
-
 # 系统构建类型在pre set中指定 debug就启用X_DEBUG 在cpp中可以使用调试日志 release就不启用
 target_compile_definitions(${LIB_NAME}
     PRIVATE
