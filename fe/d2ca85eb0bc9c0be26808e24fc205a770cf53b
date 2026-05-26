@@ -1,0 +1,30 @@
+engine/asset/shader/Renderer2D_Circle.410.glsl
+  s_205c7f1788f50e::t_9e4a19b44960ea 2-60
+engine/asset/shader/Renderer2D_Line.410.glsl
+  s_205c7f1788f50e::t_6fd5385c984d8f 2-42
+sandbox/asset/shader/Texture.410.glsl
+  s_205c7f1788f50e::t_80cde12818e1a7 2-74
+engine/src/platform/opengl/opengl_shader.cpp
+  s_205c7f1788f50e::t_c8fa7a058530b6 146,148-149,151
+  s_205c7f1788f50e::t_27ef50a9233ebf 296
+  s_205c7f1788f50e::t_06b1281f225792 99-145
+  s_205c7f1788f50e::t_ab669622fe8ddb 377
+engine/asset/shader/Renderer2D_Quad.410.glsl
+  s_205c7f1788f50e::t_5f701bd8651973 2-74
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.1",
+  "base_commit_sha": "fed2ca85eb0bc9c0be26808e24fc205a770cf53b",
+  "prompts": {},
+  "sessions": {
+    "s_205c7f1788f50e": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_19e0cca58ffeGIV5GUck2FR5y2",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "dingrui <Bannirui@outlook.com>"
+    }
+  }
+}
