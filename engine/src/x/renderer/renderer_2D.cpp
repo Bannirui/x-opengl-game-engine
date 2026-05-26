@@ -189,6 +189,19 @@ void Renderer2D::Shutdown()
 {
     X_PROFILE_FUNCTION();
     delete[] s_data.QuadVertexBufferBase;
+    delete[] s_data.CircleVertexBufferBase;
+    delete[] s_data.LineVertexBufferBase;
+    s_data.QuadShader.reset();
+    s_data.CircleShader.reset();
+    s_data.LineShader.reset();
+    s_data.WhiteTexture.reset();
+    s_data.QuadVertexArray.reset();
+    s_data.QuadVertexBuffer.reset();
+    s_data.CircleVertexArray.reset();
+    s_data.CircleVertexBuffer.reset();
+    s_data.LineVertexArray.reset();
+    s_data.LineVertexBuffer.reset();
+    s_data.CameraUniformBuffer.reset();
 }
 
 void Renderer2D::BeginScene(const OrthographicCamera& camera)
