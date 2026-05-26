@@ -2,7 +2,7 @@
 // Created by rui ding on 2026/2/27.
 //
 
-#include "platform/opengl/open_gl_buffer.h"
+#include "platform/opengl/opengl_buffer.h"
 
 #include <glad/glad.h>
 

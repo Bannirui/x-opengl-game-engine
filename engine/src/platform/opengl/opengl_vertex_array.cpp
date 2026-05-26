@@ -2,7 +2,7 @@
 // Created by rui ding on 2026/2/27.
 //
 
-#include "platform/opengl/open_gl_vertex_array.h"
+#include "platform/opengl/opengl_vertex_array.h"
 
 #include "x/renderer/buffer.h"
 

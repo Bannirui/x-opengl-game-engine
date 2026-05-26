@@ -4,7 +4,7 @@
 
 #include "x/renderer/buffer.h"
 
-#include "platform/opengl/open_gl_buffer.h"
+#include "platform/opengl/opengl_buffer.h"
 #include "x/renderer/renderer.h"
 #include "x/core/base.h"
 #include "x/core/x_log.h"

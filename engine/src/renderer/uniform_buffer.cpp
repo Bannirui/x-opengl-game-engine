@@ -4,7 +4,7 @@
 
 #include "x/renderer/uniform_buffer.h"
 
-#include "platform/opengl/open_gl_uniform_buffer.h"
+#include "platform/opengl/opengl_uniform_buffer.h"
 #include "x/renderer/renderer.h"
 
 X::Ref<UniformBuffer> UniformBuffer::Create(uint32_t size, uint32_t binding)

@@ -4,7 +4,7 @@
 
 #include "x/renderer/texture.h"
 
-#include "platform/opengl/open_gl_texture.h"
+#include "platform/opengl/opengl_texture.h"
 #include "x/renderer/renderer.h"
 #include "x/core/x_log.h"
 #include "x/core/base.h"

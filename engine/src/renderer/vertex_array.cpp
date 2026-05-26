@@ -5,7 +5,7 @@
 #include "x/renderer/vertex_array.h"
 
 #include "x/renderer/renderer_api.h"
-#include "platform/opengl/open_gl_vertex_array.h"
+#include "platform/opengl/opengl_vertex_array.h"
 #include "x/renderer/renderer.h"
 #include "x/core/x_log.h"
 

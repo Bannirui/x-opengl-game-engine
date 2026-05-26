@@ -2,7 +2,7 @@
 // Created by dingrui on 3/7/26.
 //
 
-#include "platform//opengl/open_gl_uniform_buffer.h"
+#include "platform//opengl/opengl_uniform_buffer.h"
 
 #include <glad/glad.h>
 

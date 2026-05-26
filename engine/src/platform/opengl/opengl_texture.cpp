@@ -2,14 +2,14 @@
 // Created by dingrui on 2/28/26.
 //
 
-#include "platform/opengl/open_gl_texture.h"
+#include "platform/opengl/opengl_texture.h"
+
+#include "x/core/base.h"
+#include "x/core/x_log.h"
 
 #include <glad/glad.h>
 
 #include <stb_image.h>
-
-#include "x/core/base.h"
-#include "x/core/x_log.h"
 
 OpenGLTexture2D::OpenGLTexture2D(const std::string& path) : m_path(path)
 {
