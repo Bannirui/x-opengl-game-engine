@@ -84,7 +84,8 @@ if (NOT EXISTS ${GLAD_C_FILE})
         set(GLAD_API_VER "4.1")
         set(GLAD_EXTENSIONS "")
     elseif (LINUX)
-        set(GLAD_API_VER "4.5")
+        # linux上支持的OpenGL的版本上限
+        set(GLAD_API_VER "4.6")
         # 借助shaderc把glsl编译成spriv字节码提交给GPU
         set(GLAD_EXTENSIONS "GL_ARB_gl_spirv")
     else ()
