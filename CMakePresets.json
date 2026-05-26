@@ -21,6 +21,16 @@
         "CMAKE_BUILD_TYPE": "Debug",
         "CMAKE_VERBOSE_MAKEFILE": "ON"
       }
+    },
+    {
+      "name": "mac-clang-debug",
+      "inherits": "base",
+      "displayName": "Mac Clang Debug",
+      "binaryDir": "build/mac-clang-debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_VERBOSE_MAKEFILE": "ON"
+      }
     }
   ],
 
@@ -28,6 +38,10 @@
     {
       "name": "linux-gcc-debug",
       "configurePreset": "linux-gcc-debug"
+    },
+    {
+      "name": "mac-clang-debug",
+      "configurePreset": "mac-clang-debug"
     }
   ]
 }

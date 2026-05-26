@@ -80,9 +80,8 @@ file(MAKE_DIRECTORY ${GLAD_GENERATED_DIR})
 
 # glad源码文件不存在 再执行生成
 if (NOT EXISTS ${GLAD_C_FILE})
-    # OpenGL 3.3是apple平台支持的最后一个版本
     if (APPLE)
-        set(GLAD_API_VER "3.3")
+        set(GLAD_API_VER "4.1")
         set(GLAD_EXTENSIONS "")
     elseif (LINUX)
         set(GLAD_API_VER "4.5")
