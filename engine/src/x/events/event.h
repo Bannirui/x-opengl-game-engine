@@ -7,6 +7,7 @@
 #include "pch.h"
 #include "x/core/base.h"
 
+// 事件枚举
 enum class EventType
 {
     kNone = 0,
@@ -27,6 +28,7 @@ enum class EventType
     kMouseScrolled,
 };
 
+// 事件类型枚举 层看自己感不感兴趣就看标识里面有没有这个类型
 enum EventCategory
 {
     kNone                     = 0,
@@ -37,18 +39,18 @@ enum EventCategory
     kEventCategoryMouseButton = BIT(4),
 };
 
-#define EVENT_CLASS_TYPE(type)                      \
-    static EventType GetStaticType()                \
-    {                                               \
-        return EventType::type;                     \
-    }                                               \
-    virtual EventType GetEventType() const override \
-    {                                               \
-        return GetStaticType();                     \
-    }                                               \
-    virtual const char* GetName() const override    \
-    {                                               \
-        return #type;                               \
+#define EVENT_CLASS_TYPE(type)                                                                      \
+    static EventType GetStaticType() {                                                              \
+        return EventType::type;                                                                     \
+    }                                                                                               \
+    virtual EventType GetEventType() const override {                                               \
+        return GetStaticType();                                                                     \
+    }                                                                                               \
+    virtual const char* GetName() const override {                                                  \
+        return #type;                                                                               \
+    }                                                                                               \
+    std::unique_ptr<Event> Clone() const override {                                                 \
+        return std::make_unique<std::remove_cv_t<std::remove_reference_t<decltype(*this)>>>(*this); \
     }
 
 #define EVENT_CLASS_CATEGORY(category)       \
@@ -67,6 +69,14 @@ public:
     virtual EventType   GetEventType() const = 0;
     virtual const char* GetName() const      = 0;
     virtual int         GetCategory() const  = 0;
+    /**
+     * 虚函数版本的拷贝构造 解决两个问题
+     *   - 多态拷贝 拿到的是Event&基类引用 直接按值拷贝会切片丢失子类数据
+     * Clone()通过虚函数分发到正确的子类make_unique<KeyPressEvent>(*this)
+     *   - 生命周期 GLFW回调中事件在栈上临时构造 回调返回即销毁 Clone()将事件拷贝到堆上 所有权转移给事件队列
+     * 在下一帧ProcessEvents中处理
+     */
+    virtual std::unique_ptr<Event> Clone() const = 0;
 
     virtual std::string ToString() const { return GetName(); }
 

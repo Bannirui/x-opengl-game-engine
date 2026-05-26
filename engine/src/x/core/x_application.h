@@ -58,8 +58,10 @@ public:
 
 private:
     void run();
-    bool onWindowClose(WindowCloseEvent& e);
-    bool onWindowResize(WindowResizeEvent& e);
+    /**
+     * 在run的循环里面 每个帧一起处理缓存的事件队列
+     */
+    void ProcessEvents();
 
 private:
     ApplicationSpecification m_specification;
@@ -69,6 +71,8 @@ private:
     ImGuiLayer*              m_ImGuiLayer;
     float                    m_lastFrameTime{0.0f};
     bool                     m_minimized{false};  // 窗口最小化
+    // 事件队列 把收到的回调事件缓存着延迟批量处理
+    std::queue<std::unique_ptr<Event>> m_eventQueue;
 
 private:
     static XApplication* s_instance;

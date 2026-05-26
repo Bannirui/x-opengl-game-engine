@@ -17,6 +17,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <array>
+#include <queue>
 
 #include <fmt/format.h>
 

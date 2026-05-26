@@ -2,6 +2,7 @@
 // Created by dingrui on 2/23/26.
 //
 
+#include "example_layer.h"
 #include "sandbox_2D.h"
 
 #include <x/core/entry_point.h>

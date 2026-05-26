@@ -8,36 +8,45 @@
 
 class Layer;
 
-// 用栈的方式管理不同的系统模块 用指针分层管理 普通层和覆盖层
-// 普通层最先渲染
-// 覆盖层最先接收事件
+/**
+ * 引擎采用分层思想 每层{@see Layer}实现OnUpdate/OnEvent/OnImguiRender
+ * ImGui先消费事件
+ *   - 鼠标点击
+ *   - 键盘
+ * 如果ImGui处理了事件 事件的Handled就被标记true 不再传给游戏层 这就是为什么ImGui窗口能拦截鼠标/键盘输入
+ *
+ * LayerStack本质是一个有分割线的Vector
+ */
 class LayerStack
 {
 public:
     LayerStack();
     ~LayerStack();
 
-    // 向系统添加普通层模块 放普通模块化的时候往分层点放
-    void PushLayer(Layer *layer);
-    // 向系统添加覆盖层模块 往最后放
-    void PushOverlay(Layer *overlay);
-    // 从系统移除普通层模块
-    void PopLayer(Layer *layer);
-    // 从系统移除覆盖层模块
-    void PopOverlay(Layer *overlay);
+    /**
+     * 插入位置是分割线
+     * 添加结束之后的效果是 被放在了分割线左边
+     */
+    void PushLayer(Layer* layer);
+    /**
+     * 插入位置是Vector的最后
+     * 添加结束之后的效果是 被放在了分割线右边
+     */
+    void PushOverlay(Layer* overlay);
+    void PopLayer(Layer* layer);
+    void PopOverlay(Layer* overlay);
 
-    std::vector<Layer *>::iterator         begin() { return m_layers.begin(); }
-    std::vector<Layer *>::iterator         end() { return m_layers.end(); }
-    std::vector<Layer *>::reverse_iterator rbegin() { return m_layers.rbegin(); }
-    std::vector<Layer *>::reverse_iterator rend() { return m_layers.rend(); }
+    std::vector<Layer*>::iterator         begin() { return m_layers.begin(); }
+    std::vector<Layer*>::iterator         end() { return m_layers.end(); }
+    std::vector<Layer*>::reverse_iterator rbegin() { return m_layers.rbegin(); }
+    std::vector<Layer*>::reverse_iterator rend() { return m_layers.rend(); }
 
-    std::vector<Layer *>::const_iterator         cbegin() const { return m_layers.begin(); }
-    std::vector<Layer *>::const_iterator         cend() const { return m_layers.end(); }
-    std::vector<Layer *>::const_reverse_iterator rbegin() const { return m_layers.rbegin(); }
-    std::vector<Layer *>::const_reverse_iterator rend() const { return m_layers.rend(); }
+    std::vector<Layer*>::const_iterator         cbegin() const { return m_layers.begin(); }
+    std::vector<Layer*>::const_iterator         cend() const { return m_layers.end(); }
+    std::vector<Layer*>::const_reverse_iterator rbegin() const { return m_layers.rbegin(); }
+    std::vector<Layer*>::const_reverse_iterator rend() const { return m_layers.rend(); }
 
 private:
-    std::vector<Layer *> m_layers;
-    // 隔开普通层和覆盖层 前面是普通层 后面是覆盖层
+    std::vector<Layer*> m_layers;
     uint32_t m_layerInsertIndex{0};
 };

@@ -19,12 +19,15 @@ LayerStack::~LayerStack()
 
 void LayerStack::PushLayer(Layer *layer)
 {
+    // 插入到分割线位置 后面的元素整体右移
     m_layers.emplace(m_layers.begin() + m_layerInsertIndex, layer);
+    // 后移分割线 保证左边跟右边被分割的语义
     ++m_layerInsertIndex;
 }
 
 void LayerStack::PushOverlay(Layer *overlay)
 {
+    // 直接丢到Vector的末尾
     m_layers.emplace_back(overlay);
 }
 

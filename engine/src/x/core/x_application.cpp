@@ -25,11 +25,10 @@ XApplication::XApplication(const ApplicationSpecification& specification) : m_sp
         std::filesystem::current_path(m_specification.WorkingDirectory);
     }
     m_window = Window::Create(WindowProps(m_specification.Name));
-    m_window->SetEventCallback(
-        [this](Event& e)
-        {
-            this->OnEvent(e);
-        });
+    m_window->SetEventCallback([this](Event& e) {
+        // 窗口事件丢给引擎 引擎不会立即处理 先缓存到队列里面 延迟批量一起处理
+        this->OnEvent(e);
+    });
 
     Renderer::Init();
 
@@ -43,27 +42,41 @@ XApplication::~XApplication()
     Renderer::Shutdown();
 }
 
-void XApplication::OnEvent(Event& e)
-{
+void XApplication::OnEvent(Event& e) {
     X_PROFILE_FUNCTION();
-    EventDispatcher dispatcher(e);
-    dispatcher.Dispatch<WindowCloseEvent>(
-        [this](WindowCloseEvent& e)
-        {
-            return this->onWindowClose(e);
-        });
-    dispatcher.Dispatch<WindowResizeEvent>(
-        [this](WindowResizeEvent& e)
-        {
-            return this->onWindowResize(e);
-        });
-    for (auto it = m_layerStack.rbegin(); it != m_layerStack.rend(); ++it)
-    {
-        if (e.Handled)
-        {
-            break;
+    m_eventQueue.push(e.Clone());
+}
+
+void XApplication::ProcessEvents() {
+    // 把攒着的事件一次性处理掉
+    while (!m_eventQueue.empty()) {
+        auto& e = *m_eventQueue.front();
+
+        switch (e.GetEventType()) {
+            case EventType::kWindowClose:
+                m_running = false;
+                break;
+            case EventType::kWindowResize: {
+                WindowResizeEvent& resize = static_cast<WindowResizeEvent&>(e);
+                if (resize.get_width() == 0 || resize.get_height() == 0) {
+                    m_minimized = true;
+                } else {
+                    m_minimized = false;
+                    Renderer::OnWindowResize(resize.get_width(), resize.get_height());
+                }
+                break;
+            }
+            default:
+                break;
         }
-        (*it)->OnEvent(e);
+        // 反向遍历 每层都看看当前事件自己感不感兴趣 反向的原因是保证ImGui层可以比渲染层优先吞掉键鼠事件
+        for (auto it = m_layerStack.rbegin(); it != m_layerStack.rend(); ++it) {
+            if (e.Handled) break;
+            if (!(*it)->IsInterestedIn(e)) continue;
+            (*it)->OnEvent(e);
+        }
+
+        m_eventQueue.pop();
     }
 }
 
@@ -92,6 +105,9 @@ void XApplication::run()
     while (m_running)
     {
         X_PROFILE_SCOPE("RunLoop");
+        // 每一帧都一次性处理一下攒着的事件
+        ProcessEvents();
+
         float    time     = Time::GetTime();
         Timestep timestep = time - m_lastFrameTime;
         m_lastFrameTime   = time;
@@ -117,23 +133,4 @@ void XApplication::run()
         }
         m_window->OnUpdate();
     }
-}
-
-bool XApplication::onWindowClose(WindowCloseEvent& e)
-{
-    m_running = false;
-    return true;
-}
-
-bool XApplication::onWindowResize(WindowResizeEvent& e)
-{
-    X_PROFILE_FUNCTION();
-    if (e.get_width() == 0 || e.get_height() == 0)
-    {
-        m_minimized = true;
-        return false;
-    }
-    m_minimized = false;
-    Renderer::OnWindowResize(e.get_width(), e.get_height());
-    return false;
 }
