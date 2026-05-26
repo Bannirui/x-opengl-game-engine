@@ -15,127 +15,118 @@
 class ScriptableEntity;
 class Texture2D;
 
-struct IDComponent
-{
+struct IDComponent {
     UUID ID;
 
-    IDComponent()                   = default;
+    IDComponent() = default;
     IDComponent(const IDComponent&) = default;
+    IDComponent& operator=(const IDComponent&) = default;
 };
 
-struct TagComponent
-{
+struct TagComponent {
     std::string m_tag;
 
-    TagComponent()                    = default;
+    TagComponent() = default;
     TagComponent(const TagComponent&) = default;
+    TagComponent& operator=(const TagComponent&) = default;
 
     TagComponent(const std::string& tag) : m_tag(tag) {}
 };
 
-struct TransformComponent
-{
+struct TransformComponent {
     glm::vec3 Translation{0.0f};
     glm::vec3 Rotation{0.0f};
     glm::vec3 Scale{1.0f};
 
-    TransformComponent()                          = default;
+    TransformComponent() = default;
     TransformComponent(const TransformComponent&) = default;
 
     TransformComponent(const glm::vec3& translation) : Translation(translation) {}
 
-    glm::mat4 GetTransform() const
-    {
+    glm::mat4 GetTransform() const {
         glm::mat4 rotation = glm::toMat4(glm::quat(Rotation));
         return glm::translate(glm::mat4(1.0f), Translation) * rotation * glm::scale(glm::mat4(1.0f), Scale);
     }
 };
 
-struct SpriteRendererComponent
-{
-    glm::vec4         Color{1.0f};
+struct SpriteRendererComponent {
+    glm::vec4 Color{1.0f};
     X::Ref<Texture2D> Texture;
-    float             TilingFactor{1.0f};
+    float TilingFactor{1.0f};
 
-    SpriteRendererComponent()                               = default;
+    SpriteRendererComponent() = default;
     SpriteRendererComponent(const SpriteRendererComponent&) = default;
 
     SpriteRendererComponent(const glm::vec4& color) : Color(color) {}
 };
 
-struct CircleRendererComponent
-{
+struct CircleRendererComponent {
     glm::vec4 Color{1.0f};
-    float     Thickness{1.0f};
-    float     Fade{0.005f};
+    float Thickness{1.0f};
+    float Fade{0.005f};
 
-    CircleRendererComponent()                               = default;
+    CircleRendererComponent() = default;
     CircleRendererComponent(const CircleRendererComponent&) = default;
 };
 
-struct CameraComponent
-{
+struct CameraComponent {
     SceneCamera Camera;
-    bool        Primary = true;
-    bool        FixedAspectRatio{false};
+    bool Primary = true;
+    bool FixedAspectRatio{false};
 
-    CameraComponent()                       = default;
+    CameraComponent() = default;
     CameraComponent(const CameraComponent&) = default;
 };
 
-struct ScriptComponent
-{
+struct ScriptComponent {
     std::string ClassName;
 
-    ScriptComponent()                       = default;
+    ScriptComponent() = default;
     ScriptComponent(const ScriptComponent&) = default;
 };
 
 // 前向声明
 class ScriptableEntity;
 
-struct NativeScriptComponent
-{
+struct NativeScriptComponent {
     ScriptableEntity* Instance = nullptr;
     ScriptableEntity* (*InstantiateScript)();
     void (*DestroyScript)(NativeScriptComponent*);
 
     template <typename T>
-    void Bind()
-    {
-        InstantiateScript = []()
-        {
+    void Bind() {
+        InstantiateScript = []() {
             return static_cast<ScriptableEntity*>(new T());
         };
-        DestroyScript = [](NativeScriptComponent* nsc)
-        {
+        DestroyScript = [](NativeScriptComponent* nsc) {
+#ifdef X_PLATFORM_MAC
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wdelete-incomplete"
+#endif
+            // mac上 前向声明信息不完整delete 编译不过
             delete nsc->Instance;
+#ifdef X_PLATFORM_MAC
+    #pragma clang diagnostic pop
+#endif
             nsc->Instance = nullptr;
         };
     }
 };
 
 // Physics
-struct Rigidbody2DComponent
-{
-    enum class BodyType
-    {
-        Static = 0,
-        Dynamic,
-        Kinematic
-    };
+struct Rigidbody2DComponent {
+    enum class BodyType { Static = 0, Dynamic, Kinematic };
     BodyType Type = BodyType::Static;
-    bool     FixedRotation{false};
-    void*    RuntimeBody{nullptr};
+    bool FixedRotation{false};
+    void* RuntimeBody{nullptr};
 
-    Rigidbody2DComponent()                            = default;
+    Rigidbody2DComponent() = default;
     Rigidbody2DComponent(const Rigidbody2DComponent&) = default;
 };
 
-struct BoxCollider2DComponent
-{
+struct BoxCollider2DComponent {
     glm::vec2 Offset = {0.0f, 0.0f};
-    glm::vec2 Size   = {0.5f, 0.5f};
+    glm::vec2 Size = {0.5f, 0.5f};
 
     float Density{1.0f};
     float Friction{0.5f};
@@ -144,14 +135,13 @@ struct BoxCollider2DComponent
 
     void* RuntimeFixture{nullptr};
 
-    BoxCollider2DComponent()                              = default;
+    BoxCollider2DComponent() = default;
     BoxCollider2DComponent(const BoxCollider2DComponent&) = default;
 };
 
-struct CircleCollider2DComponent
-{
+struct CircleCollider2DComponent {
     glm::vec2 Offset{0.0f, 0.0f};
-    float     Radius{0.5f};
+    float Radius{0.5f};
 
     float Density{1.0f};
     float Friction{0.5f};
@@ -160,14 +150,12 @@ struct CircleCollider2DComponent
 
     void* RuntimeFixture{nullptr};
 
-    CircleCollider2DComponent()                                 = default;
+    CircleCollider2DComponent() = default;
     CircleCollider2DComponent(const CircleCollider2DComponent&) = default;
 };
 
 template <typename... Component>
-struct ComponentGroup
-{
-};
+struct ComponentGroup {};
 
 using AllComponents = ComponentGroup<TransformComponent, SpriteRendererComponent, CircleRendererComponent,
                                      CameraComponent, ScriptComponent, NativeScriptComponent, Rigidbody2DComponent,

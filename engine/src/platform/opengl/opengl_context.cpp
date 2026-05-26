@@ -1,0 +1,66 @@
+//
+// Created by rui ding on 2026/2/27.
+//
+
+#include "platform/opengl/opengl_context.h"
+#include "x/core/base.h"
+#include "x/core/x_log.h"
+
+#include <glad/glad.h>
+
+#include <GLFW/glfw3.h>
+
+X::GLRendererInfo& X::GLRendererInfo::Get() {
+    static GLRendererInfo s_info;
+    return s_info;
+}
+
+OpenGLContext::OpenGLContext(GLFWwindow* windowHandle) : m_windowHandle(windowHandle) {
+    X_CORE_ASSERT(windowHandle, "windowHandle is null");
+}
+
+OpenGLContext::~OpenGLContext() {}
+
+void OpenGLContext::Init() {
+    X_PROFILE_FUNCTION();
+    glfwMakeContextCurrent(m_windowHandle);
+    int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+    X_CORE_ASSERT(status, "Could not load GLAD function");
+    X_CORE_INFO("OpenGL Info:");
+    X_CORE_INFO("  Vendor: {0}", reinterpret_cast<const char*>(glGetString(GL_VENDOR)));
+    X_CORE_INFO("  Renderer: {0}", reinterpret_cast<const char*>(glGetString(GL_RENDERER)));
+    X_CORE_INFO("  Version: {0}", reinterpret_cast<const char*>(glGetString(GL_VERSION)));
+
+    int versionMajor;
+    int versionMinor;
+    glGetIntegerv(GL_MAJOR_VERSION, &versionMajor);
+    glGetIntegerv(GL_MINOR_VERSION, &versionMinor);
+
+    X_CORE_ASSERT(versionMajor > 3 || (versionMajor == 3 && versionMinor >= 3),
+                  "requires at least OpenGL version 3.3!");
+
+    // 拿到运行时的OpenGL版本缓存起来
+    auto& info = X::GLRendererInfo::Get();
+    info.MajorVersion = versionMajor;
+    info.MinorVersion = versionMinor;
+
+#ifdef glSpecializeShaderARB
+    // 因为要用Shaderc编译GLSL成spirv 看看现在OpenGL版本支持不支持
+    GLint numExtensions;
+    glGetIntegerv(GL_NUM_EXTENSIONS, &numExtensions);
+    for (GLint i = 0; i < numExtensions; ++i) {
+        const char* extension = reinterpret_cast<const char*>(glGetStringi(GL_EXTENSIONS, i));
+        if (strcmp(extension, "GL_ARB_gl_spirv") == 0) {
+            info.ARB_gl_spirv = true;
+            break;
+        }
+    }
+#endif
+
+    X_CORE_INFO("  GL version: {}.{}, ARB_gl_spirv: {}", info.MajorVersion, info.MinorVersion, info.ARB_gl_spirv);
+}
+
+void OpenGLContext::SwapBuffers() {
+    X_PROFILE_FUNCTION();
+    glfwSwapBuffers(m_windowHandle);
+}

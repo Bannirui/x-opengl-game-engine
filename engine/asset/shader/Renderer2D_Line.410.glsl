@@ -1,5 +1,5 @@
 #type vertex
-#version 330 core
+#version 410 core
 
 layout(location = 0) in vec3 a_Position;
 layout(location = 1) in vec4 a_Color;
@@ -10,9 +10,9 @@ struct VertexOutput
     vec4 Color;
 };
 layout(location = 0) out VertexOutput Output;
-layout(location = 1) out flat int v_EntityID;
+layout(location = 1) flat out int v_EntityID;
 
-layout(std140, binding = 0) uniform Camera
+layout(std140) uniform Camera
 {
     mat4 u_ViewProjection;
 };
@@ -25,20 +25,20 @@ void main()
 }
 
 #type fragment
-#version 330 core
+#version 410 core
 
 struct VertexOutput
 {
     vec4 Color;
 };
-layout(location = 0) in VertexOutput Input;
-layout(location = 1) in flat int v_EntityID;
+layout(location = 0) in VertexOutput Output;
+layout(location = 1) flat in int v_EntityID;
 
 layout(location = 0) out vec4 o_Color;
 layout(location = 1) out int o_EntityID;
 
 void main()
 {
-    o_Color = Input.Color;
+    o_Color = Output.Color;
     o_EntityID = v_EntityID;
 }

@@ -10,8 +10,8 @@ public:
     UUID();
     UUID(uint64_t uuid);
     UUID(const UUID&) = default;
+    UUID& operator=(const UUID&) = default;
 
-    // 类型转换
     operator uint64_t() const { return m_UUID; }
 
 private:
@@ -20,10 +20,6 @@ private:
 
 namespace std
 {
-    template <typename T>
-    struct hash;
-
-    // 向std命名空间增加hash的特化 让std容器调用
     template <>
     struct hash<UUID>
     {

@@ -1,5 +1,5 @@
 #type vertex
-#version 330 core
+#version 410 core
 
 layout(location = 0) in vec3 a_WorldPosition;
 layout(location = 1) in vec3 a_LocalPosition;
@@ -16,9 +16,9 @@ struct VertexOutput
     float Fade;
 };
 layout(location = 0) out VertexOutput Output;
-layout(location = 4) out flat int v_EntityID;
+layout(location = 4) flat out int v_EntityID;
 
-layout(std140, binding = 0) uniform Camera
+layout(std140) uniform Camera
 {
     mat4 u_ViewProjection;
 };
@@ -34,7 +34,7 @@ void main()
 }
 
 #type fragment
-#version 330 core
+#version 410 core
 
 struct VertexOutput
 {
@@ -43,22 +43,21 @@ struct VertexOutput
     float Thickness;
     float Fade;
 };
-layout(location = 0) in VertexOutput Input;
-layout(location = 4) in flat int v_EntityID;
+layout(location = 0) in VertexOutput Output;
+layout(location = 4) flat in int v_EntityID;
 
 layout(location = 0) out vec4 o_Color;
 layout(location = 1) out int o_EntityID;
 
 void main()
 {
-    float distance = 1.0 - length(Input.LocalPosition);
-    float circle = smoothstep(0.0, Input.Fade, distance);
-    circle *= smoothstep(Input.Thickness + Input.Fade, Input.Thickness, distance);
+    float distance = 1.0 - length(Output.LocalPosition);
+    float circle = smoothstep(0.0, Output.Fade, distance);
+    circle *= smoothstep(Output.Thickness + Output.Fade, Output.Thickness, distance);
     if (circle == 0.0) {
         discard;
     }
-    // Set output color
-    o_Color = Input.Color;
+    o_Color = Output.Color;
     o_Color.a *= circle;
 
     o_EntityID = v_EntityID;

@@ -4,15 +4,14 @@
 
 #pragma once
 
+#include "pch.h"
+#include "x/renderer/shader.h"
+
 #include <glad/glad.h>
 
 #include <glm/glm.hpp>
 
-#include "pch.h"
-#include "x/renderer/shader.h"
-
-class OpenGLShader : public Shader
-{
+class OpenGLShader : public Shader {
 public:
     /**
      * @param filepath glsl源码路径 vertex跟frag在同一个文件 用type区分
@@ -28,7 +27,9 @@ public:
 
     ~OpenGLShader() override;
 
-    const std::string& get_name() const override { return m_name; }
+    const std::string& get_name() const override {
+        return m_name;
+    }
 
     void Bind() const override;
     void Unbind() const override;
@@ -63,8 +64,18 @@ private:
     void reflect(GLenum stage, const std::vector<uint32_t>& shaderData);
 
 private:
-    uint32_t                                          m_rendererId{0};
-    std::string                                       m_filePath;
-    std::string                                       m_name;
+    uint32_t m_rendererId{0};
+    /**
+     * 创建Shader程序时候传捡来的路径可能是x.glsl
+     * 拿到这个路径并不是直接就用它的源码了
+     *   - 1 先拼接上运行时的OpenGL版本成为类似x.330.glsl路径
+     *   - 2 找不到带版本的源码再用找传进来的路径
+     * 达到了根据运行时OpenGL版本动态适配GLSL语法的效果
+     */
+    std::string m_filePath;
+    std::string m_name;
+    // GLSL->Shaderc->Spir-V字节码 把GLSL编译成了spirv字节码 高版本支持spirv就用这种
     std::unordered_map<GLenum, std::vector<uint32_t>> m_spirvBinaries;
+    // GLSL源码 低版本不支持spirv就用源码
+    std::unordered_map<GLenum, std::string> m_glslSources;
 };

@@ -4,11 +4,11 @@
 
 #include "platform/linux/linux_window.h"
 
+#include "platform/opengl/opengl_context.h"
 #include "x/core/x_log.h"
 #include "x/events/application_event.h"
 #include "x/events/key_event.h"
 #include "x/events/mouse_event.h"
-#include "platform/opengl/open_gl_context.h"
 
 static uint8_t s_GLFWWindowCount = 0;
 

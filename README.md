@@ -1,8 +1,6 @@
 # x-opengl-game-engine
 cxx+OpenGL
 
-mac平台用cmake的pre set不要指定toolchain，会导致find OpenGL的时候没有用apple的默认路径
-
 ## 1 HOST REQUIREMENT
 
 ### 1.1 OpenGL
@@ -31,29 +29,8 @@ sudo apt install python3.12-venv
 
 ## 2 网络代理
 
-代理通过 `CMakePresets.json` 中的 `$env{http_proxy}` / `$env{https_proxy}` 从环境变量读取，不硬编码 IP。
-
-**方式一：CLion 按 profile 设置（推荐，不污染系统环境）**
-
-Settings → Build, Execution, Deployment → CMake → 选择 profile → Environment：
-
-```
-http_proxy=http://192.168.31.168:7890
-https_proxy=http://192.168.31.168:7890
-```
-
-**方式二：命令行临时设置**
-
-```sh
-http_proxy=http://192.168.31.168:7890 https_proxy=http://192.168.31.168:7890 cmake --preset linux-gcc-debug
-```
-
-**方式三：shell 配置文件（不推荐）**
-
-```sh
-export http_proxy=http://192.168.31.168:7890
-export https_proxy=http://192.168.31.168:7890
-```
+- 1 复制根目录下的CMakeUserPresets.json.template文件，重名名CmakeUserPresets.json
+- 2 修改environment下的http_proxy和https_proxy为自己的代理
 
 ## 3 编译
 
@@ -68,7 +45,7 @@ cmake \
 --preset linux-gcc-debug
 ```
 
-### 3.2 构建
+### 3.2 编译
 
 ```shell
 cmake --build build/linux-gcc-debug --target all

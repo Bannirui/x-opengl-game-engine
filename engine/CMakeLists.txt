@@ -20,6 +20,7 @@ target_compile_options(${LIB_NAME}
     -Wextra
     -Werror
     -Wno-error=unused-parameter
+    -Wno-deprecated-copy
 )
 
 # macOS Objective-C++
@@ -32,6 +33,7 @@ if(APPLE)
             src/platform/mac/mac_platform_util.mm
             PROPERTIES
             SKIP_PRECOMPILE_HEADERS ON
+            COMPILE_FLAGS "-Wno-deprecated-declarations"
     )
 endif()
 
