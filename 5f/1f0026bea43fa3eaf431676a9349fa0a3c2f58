@@ -1,0 +1,33 @@
+sandbox/src/sandbox_2D.cpp
+  s_205c7f1788f50e::t_576360a4f99105 44-51,57-65
+  s_205c7f1788f50e::t_9a31abaf5dc100 53-55
+engine/src/x/renderer/renderer_2D.cpp
+  s_205c7f1788f50e::t_8ccdf84501934b 366
+  s_205c7f1788f50e::t_33df3bf5c73254 132-133,135-137,139-140,145-148,150-151,157
+  s_205c7f1788f50e::t_66dae89552562e 327,332-338,340
+  s_205c7f1788f50e::t_803f6696c3c11c 166,168,177-184,186-187,192
+  s_205c7f1788f50e::t_575760f1540981 265-268,272,275-276,278,281,286
+  s_205c7f1788f50e::t_3d381203f92e25 219,221-222,227-228
+  s_205c7f1788f50e::t_05b2c43c10b2c6 425-431,433
+  s_205c7f1788f50e::t_0c95b66b9c601c 375-381,383
+  s_205c7f1788f50e::t_96188b6d4164ac 509-511,513
+  s_205c7f1788f50e::t_666ebfe38c6a6b 47-102
+  s_205c7f1788f50e::t_4eb9f21ce4ebc5 351
+  s_205c7f1788f50e::t_5e5c2d0126689b 22,31,36,39,46
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.1",
+  "base_commit_sha": "5f1f0026bea43fa3eaf431676a9349fa0a3c2f58",
+  "prompts": {},
+  "sessions": {
+    "s_205c7f1788f50e": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_19e0cca58ffeGIV5GUck2FR5y2",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "dingrui <Bannirui@outlook.com>"
+    }
+  }
+}
