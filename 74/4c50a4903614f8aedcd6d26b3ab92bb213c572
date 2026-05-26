@@ -1,0 +1,21 @@
+engine/src/x/imgui/im_gui_layer.cpp
+  s_205c7f1788f50e::t_66bc93a1cd3a73 50
+engine/src/platform/mac/mac_window.cpp
+  s_205c7f1788f50e::t_e891069ebf1632 69-70
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.1",
+  "base_commit_sha": "744c50a4903614f8aedcd6d26b3ab92bb213c572",
+  "prompts": {},
+  "sessions": {
+    "s_205c7f1788f50e": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_19e0cca58ffeGIV5GUck2FR5y2",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "dingrui <Bannirui@outlook.com>"
+    }
+  }
+}
