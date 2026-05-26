@@ -5,10 +5,25 @@
     {
       "name": "linux-gcc-debug-proxy",
       "inherits": "linux-gcc-debug",
+      "cacheVariables": {
+        "ENABLE_X_DEBUG": "ON"
+      },
       "environment": {
         // 代理 wsl不要用127.0.0.0:8090 要用宿主机的地址
-        "http_proxy": "http://10.0.0.123:10809",
-        "https_proxy": "http://10.0.0.123:10809"
+        "http_proxy": "http://127.0.0.1:7890",
+        "https_proxy": "http://127.0.0.1:7890"
+      }
+    },
+    {
+      "name": "mac-clang-debug-proxy",
+      "inherits": "mac-clang-debug",
+      "cacheVariables": {
+        "ENABLE_X_DEBUG": "ON"
+      },
+      "environment": {
+        // 代理 wsl不要用127.0.0.0:8090 要用宿主机的地址
+        "http_proxy": "http://127.0.0.1:7890",
+        "https_proxy": "http://127.0.0.1:7890"
       }
     }
   ],
