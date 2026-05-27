@@ -53,8 +53,8 @@ void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color, in
     }
     // 画矩形用的是DrawElements 用顶点索引的方式 每个矩形用4个顶点画两个三角形 用6个索引顶点来表示两个三角形的位置
     s_data.Quad.Count += 6;
-    // 要画多少个矩形
-    s_data.Stats.QuadCount++;
+    // 矩形绘制方式是4个顶点画2个三角形
+    s_data.Stats.PrimitiveCount++;
 }
 
 void Renderer2D::DrawQuad(const glm::mat4& transform, const X::Ref<Texture2D>& texture, float tilingFactor,
@@ -91,7 +91,8 @@ void Renderer2D::DrawQuad(const glm::mat4& transform, const X::Ref<Texture2D>& t
         s_data.Quad.Ptr++;
     }
     s_data.Quad.Count += 6;
-    s_data.Stats.QuadCount++;
+    // 矩形绘制方式是4个顶点画2个三角形
+    s_data.Stats.PrimitiveCount++;
 }
 
 void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation,

@@ -216,7 +216,8 @@ void EditorLayer::OnImguiRender()
     auto stats = Renderer2D::GetStats();
     ImGui::Text("Renderer2D Stats:");
     ImGui::Text("Draw Calls: %d", stats.DrawCalls);
-    ImGui::Text("Quads: %d", stats.QuadCount);
+    // 有多少个图形是用4个顶点画2个三角形生成的
+    ImGui::Text("Primitives: %d", stats.PrimitiveCount);
     ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
     ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
     ImGui::End();

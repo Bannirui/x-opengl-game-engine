@@ -81,12 +81,14 @@ public:
     struct Statistics
     {
         uint32_t DrawCalls = 0;
-        // 要画多少个矩形
-        uint32_t QuadCount = 0;
+        // 有多少个图形是用 4个顶点画2个三角形形成的
+        uint32_t PrimitiveCount = 0;
 
-        uint32_t GetTotalVertexCount() const { return QuadCount * 4; }
+        // 4个顶点画2个三角形这种方式 画1个图形用到4个顶点
+        uint32_t GetTotalVertexCount() const { return PrimitiveCount * 4; }
 
-        uint32_t GetTotalIndexCount() const { return QuadCount * 6; }
+        // 4个顶点画2个三角形这种方式 画1个图形用到6个索引
+        uint32_t GetTotalIndexCount() const { return PrimitiveCount * 6; }
     };
 
     static void       ResetStats();
