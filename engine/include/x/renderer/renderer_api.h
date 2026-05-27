@@ -33,8 +33,8 @@ public:
     virtual void Clear()                                                              = 0;
 
     /**
-     * @param vertexArray VAO
-     * @param indexCount VAO管理的EBO里面有多少个顶点索引
+     * @param vertexArray VAO在内存的什么位置
+     * @param indexCount VAO管理了多少个VBO顶点
      */
     virtual void DrawIndexed(const X::Ref<VertexArray>& vertexArray, uint32_t indexCount = 0) = 0;
     virtual void DrawLines(const X::Ref<VertexArray>& vertexArray, uint32_t vertexCount)      = 0;

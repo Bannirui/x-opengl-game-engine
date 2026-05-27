@@ -51,7 +51,9 @@ void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color, in
         s_data.Quad.Ptr->entityID = entityID;
         s_data.Quad.Ptr++;
     }
+    // 画矩形用的是DrawElements 用顶点索引的方式 每个矩形用4个顶点画两个三角形 用6个索引顶点来表示两个三角形的位置
     s_data.Quad.Count += 6;
+    // 要画多少个矩形
     s_data.Stats.QuadCount++;
 }
 

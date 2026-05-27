@@ -17,6 +17,8 @@ void Renderer2D::DrawCircle(const glm::mat4& transform, const glm::vec4& color, 
         s_data.Circle.Ptr->EntityID = entityID;
         s_data.Circle.Ptr++;
     }
+    // 画圆是用DrawElements的方式 用的是顶点索引 每个4个顶点画两个三角形 用了6个顶点索引来表示这两个三角形
     s_data.Circle.Count += 6;
+    // 要画多少个矩形
     s_data.Stats.QuadCount++;
 }

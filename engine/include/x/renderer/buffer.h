@@ -210,8 +210,8 @@ public:
     virtual void                SetLayout(const BufferLayout& layout) = 0;
 
     /**
-     * 往空的VBO里面灌数据
-     * @param data 要灌的数据
+     * 把顶点信息从CPU侧的内存灌给GPU侧显存上的VBO
+     * @param data 要灌的数据在CPU侧的内存地址
      * @param size 数据多少个字节
      */
     virtual void SetData(const void* data, uint32_t size) = 0;

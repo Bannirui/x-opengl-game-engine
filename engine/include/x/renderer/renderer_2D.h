@@ -12,6 +12,11 @@ class EditorCamera;
 class Camera;
 class Texture2D;
 
+/**
+ * 使用批量思想
+ * GPU层面 VBO预先申请开辟n个顶点容量的显存 init的时候申请好
+ * CPU层面 [Base...Ptr)堆内存表示实际放的顶点数据 flush的时候数据灌给GPU
+ */
 class Renderer2D
 {
 public:
@@ -76,6 +81,7 @@ public:
     struct Statistics
     {
         uint32_t DrawCalls = 0;
+        // 要画多少个矩形
         uint32_t QuadCount = 0;
 
         uint32_t GetTotalVertexCount() const { return QuadCount * 4; }

@@ -101,21 +101,26 @@ void Renderer2D::EndScene() {
  * 每绘制一帧 CPU一次性把要画的所有图形的数据一次性一起告诉GPU
  */
 void Renderer2D::Flush() {
+    // 告诉GPU绘制有矩形要绘制 用的是DrawElements
     if (s_data.Quad.Count) {
+        // 把顶点数据灌给GPU的显存
         s_data.Quad.VBO->SetData(s_data.Quad.Base, s_data.Quad.GetDataSize());
         for (uint32_t i = 0; i < s_data.TextureSlotIndex; i++) {
             s_data.TextureSlots[i]->Bind(i);
         }
         s_data.QuadShader->Bind();
+        // 告诉GPU怎么取这些VBO顶点
         RenderCommand::DrawIndexed(s_data.Quad.VAO, s_data.Quad.Count);
         s_data.Stats.DrawCalls++;
     }
+    // 告诉GPU绘制有圆形要绘制 用的是DrawElements
     if (s_data.Circle.Count) {
         s_data.Circle.VBO->SetData(s_data.Circle.Base, s_data.Circle.GetDataSize());
         s_data.CircleShader->Bind();
         RenderCommand::DrawIndexed(s_data.Circle.VAO, s_data.Circle.Count);
         s_data.Stats.DrawCalls++;
     }
+    // 告诉GPU绘制有线段要绘制 用的是DrawArrays
     if (s_data.Line.Count) {
         s_data.Line.VBO->SetData(s_data.Line.Base, s_data.Line.GetDataSize());
         s_data.LineShader->Bind();

@@ -30,9 +30,10 @@ public:
     }
 
     /**
-     * 用索引方式调用底层绘制API DrawElements
-     * @param vertexArray VBO数据在哪儿 地址
-     * @param count 要画多少个顶点
+     * 调用底层绘制API DrawElements
+     * 用索引方式告诉GPU怎么选取这些顶点
+     * @param vertexArray VAO数据在CPU侧内存什么位置
+     * @param count VAO管理了多少个顶点VBO
      */
     static void DrawIndexed(const X::Ref<VertexArray>& vertexArray, uint32_t count = 0) {
         s_rendererAPI->DrawIndexed(vertexArray, count);
