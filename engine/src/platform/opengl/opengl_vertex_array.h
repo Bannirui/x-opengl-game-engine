@@ -9,6 +9,7 @@
 class OpenGLVertexArray : public VertexArray
 {
 public:
+    // 在GPU显存申请一个VAO 空白的显存
     OpenGLVertexArray();
     ~OpenGLVertexArray() override;
 

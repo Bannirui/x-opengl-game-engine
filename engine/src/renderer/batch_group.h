@@ -53,9 +53,9 @@ struct BatchGroup {
         return MaxBatches * (UseIndex ? VerticesPerDraw / 4 * 6 : VerticesPerDraw);
     }
 
-    // 顶点的索引信息
+    // GPU显存 顶点的索引信息
     X::Ref<VertexArray> VAO;
-    // 顶点信息
+    // GPU显存 顶点信息
     X::Ref<VertexBuffer> VBO;
     /**
      * 双指针管理缓存空间
@@ -74,16 +74,31 @@ struct BatchGroup {
      */
     uint32_t Count{0};
 
+    /**
+     * 初始化的时候干两件事
+     *   - GPU侧显存预先创建好VBO和VAO
+     *     - VBO申请个很大的空间 后面真正画图的时候再把CPU内存上的数据灌过去
+     *     - VAO先创建好 后面再把顶点索引数组告诉GPU
+     *   - CPU侧在堆上开辟缓存数组 用来缓存画图形的数据 一次性提交给GPU
+     * @param layout
+     */
     void Init(const BufferLayout& layout) {
+        // GPU显存创建VAO 空的显存 只有用DrawElements方式绘制的时候才用到VAO
         VAO = VertexArray::Create();
+        // GPU显存预先申请好个很大的空间
         VBO = VertexBuffer::Create(MaxVertices() * sizeof(VertexType));
+        // VBO顶点里面的属性布局
         VBO->SetLayout(layout);
+        // 告诉VAO怎么解析VBO的布局 pos步长 颜色步长 法线步长...
         VAO->AddVertexBuffer(VBO);
+        // CPU侧内存开辟缓存
         Base = new VertexType[MaxVertices()];
 
         if constexpr (UseIndex) {
+            // EBO 存储索引顶点的方式
             auto indices = std::make_unique<uint32_t[]>(MaxIndices());
             uint32_t offset = 0;
+            // 4个顶点 6个索引 怎么画2个三角形
             for (uint32_t i = 0; i < MaxIndices(); i += 6) {
                 indices[i + 0] = offset + 0;
                 indices[i + 1] = offset + 1;
@@ -94,9 +109,10 @@ struct BatchGroup {
                 offset += VerticesPerDraw;
             }
             auto ib = IndexBuffer::Create(indices.get(), MaxIndices());
+            // 告诉VAO怎么取顶点
             VAO->SetIndexBuffer(ib);
         }
-
+        // 初始化的时候缓存逻辑是空的 [Base...Ptr)表示的就是缓存数据 把Ptr拨到Base就表示空的缓存
         Ptr = Base;
         Count = 0;
     }
