@@ -1,0 +1,27 @@
+engine/src/renderer/shape/shape_quad.cpp
+  s_2124f15e061083::t_c3dabd20b49a95 57,94-95
+engine/include/x/renderer/renderer_2D.h
+  s_2124f15e061083::t_24927b7daff14c 85,87-88,90-91
+engine/src/renderer/shape/shape_circle.cpp
+  s_2124f15e061083::t_6e57af46845288 23
+sandbox/src/sandbox_2D.cpp
+  s_2124f15e061083::t_806b99de82f166 76
+Xlnut/src/editor_layer.cpp
+  s_2124f15e061083::t_0e87d18b5a1cba 220
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.1",
+  "base_commit_sha": "4cc423554ce56debc901f34d17df770b7a0a7ef2",
+  "prompts": {},
+  "sessions": {
+    "s_2124f15e061083": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_198d935cdffeDJ0pt4zMYGQ3Yl",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "dingrui <Bannirui@outlook.com>"
+    }
+  }
+}
