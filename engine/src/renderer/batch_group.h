@@ -80,14 +80,14 @@ struct BatchGroup {
      *     - VBO申请个很大的空间 后面真正画图的时候再把CPU内存上的数据灌过去
      *     - VAO先创建好 后面再把顶点索引数组告诉GPU
      *   - CPU侧在堆上开辟缓存数组 用来缓存画图形的数据 一次性提交给GPU
-     * @param layout
+     * @param layout 要送给VBO的顶点数据的布局情况 比如依次是 pos点3个float 颜色占4个float...
      */
     void Init(const BufferLayout& layout) {
         // GPU显存创建VAO 空的显存 只有用DrawElements方式绘制的时候才用到VAO
         VAO = VertexArray::Create();
         // GPU显存预先申请好个很大的空间
         VBO = VertexBuffer::Create(MaxVertices() * sizeof(VertexType));
-        // VBO顶点里面的属性布局
+        // VBO顶点里面的属性怎么布局的 将来要告诉GPU去按照布局取数据进行渲染
         VBO->SetLayout(layout);
         // 告诉VAO怎么解析VBO的布局 pos步长 颜色步长 法线步长...
         VAO->AddVertexBuffer(VBO);
@@ -98,7 +98,7 @@ struct BatchGroup {
             // EBO 存储索引顶点的方式
             auto indices = std::make_unique<uint32_t[]>(MaxIndices());
             uint32_t offset = 0;
-            // 4个顶点 6个索引 怎么画2个三角形
+            // 4个顶点 6个索引 怎么画2个三角形 顺时针绕一圈 0-1-2画第1个三角形 2-3-0画第2个三角形
             for (uint32_t i = 0; i < MaxIndices(); i += 6) {
                 indices[i + 0] = offset + 0;
                 indices[i + 1] = offset + 1;

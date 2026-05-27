@@ -15,15 +15,47 @@
 
 Renderer2DData s_data;
 
+/**
+ * 每绘制一帧 CPU一次性把要画的所有图形的数据一次性一起告诉GPU
+ */
+void Renderer2D::Flush() {
+    // 告诉GPU绘制有矩形要绘制 用的是DrawElements
+    if (s_data.Quad.Count) {
+        // 把顶点数据灌给GPU的显存
+        s_data.Quad.VBO->SetData(s_data.Quad.Base, s_data.Quad.GetDataSize());
+        for (uint32_t i = 0; i < s_data.TextureSlotIndex; i++) {
+            s_data.TextureSlots[i]->Bind(i);
+        }
+        s_data.QuadShader->Bind();
+        // 告诉GPU怎么取这些VBO顶点
+        RenderCommand::DrawIndexed(s_data.Quad.VAO, s_data.Quad.Count);
+        s_data.Stats.DrawCalls++;
+    }
+    // 告诉GPU绘制有圆形要绘制 用的是DrawElements
+    if (s_data.Circle.Count) {
+        s_data.Circle.VBO->SetData(s_data.Circle.Base, s_data.Circle.GetDataSize());
+        s_data.CircleShader->Bind();
+        RenderCommand::DrawIndexed(s_data.Circle.VAO, s_data.Circle.Count);
+        s_data.Stats.DrawCalls++;
+    }
+    // 告诉GPU绘制有线段要绘制 用的是DrawArrays
+    if (s_data.Line.Count) {
+        s_data.Line.VBO->SetData(s_data.Line.Base, s_data.Line.GetDataSize());
+        s_data.LineShader->Bind();
+        RenderCommand::DrawLines(s_data.Line.VAO, s_data.Line.Count);
+        s_data.Stats.DrawCalls++;
+    }
+}
+
 void Renderer2D::Init() {
     X_PROFILE_FUNCTION();
     s_data.Quad.Init({
-        {ShaderDataType::kFloat3, "a_Position"},
-        {ShaderDataType::kFloat4, "a_Color"},
-        {ShaderDataType::kFloat2, "a_TexCoord"},
-        {ShaderDataType::kFloat, "a_TexIndex"},
-        {ShaderDataType::kFloat, "a_TilingFactor"},
-        {ShaderDataType::kInt, "a_EntityID"},
+        {ShaderDataType::kFloat3, "a_Position"},     // 对应shader的location=0 glsl里面的变量是a_Position
+        {ShaderDataType::kFloat4, "a_Color"},        // 对应shader的location=1 glsl里面的变量是a_Color
+        {ShaderDataType::kFloat2, "a_TexCoord"},     // 对应shader的location=2 glsl里面的变量是a_TexCoord
+        {ShaderDataType::kFloat, "a_TexIndex"},      // 对应shader的location=3 glsl里面的变量是a_TexIndex
+        {ShaderDataType::kFloat, "a_TilingFactor"},  // 对应shader的location=4 glsl里面的变量是a_TilingFactor
+        {ShaderDataType::kInt, "a_EntityID"},        // 对应shader的location=5 glsl里面的变量是a_EntityID
     });
 
     s_data.Circle.Init({
@@ -95,38 +127,6 @@ void Renderer2D::BeginScene(const EditorCamera& camera) {
 void Renderer2D::EndScene() {
     X_PROFILE_FUNCTION();
     Flush();
-}
-
-/**
- * 每绘制一帧 CPU一次性把要画的所有图形的数据一次性一起告诉GPU
- */
-void Renderer2D::Flush() {
-    // 告诉GPU绘制有矩形要绘制 用的是DrawElements
-    if (s_data.Quad.Count) {
-        // 把顶点数据灌给GPU的显存
-        s_data.Quad.VBO->SetData(s_data.Quad.Base, s_data.Quad.GetDataSize());
-        for (uint32_t i = 0; i < s_data.TextureSlotIndex; i++) {
-            s_data.TextureSlots[i]->Bind(i);
-        }
-        s_data.QuadShader->Bind();
-        // 告诉GPU怎么取这些VBO顶点
-        RenderCommand::DrawIndexed(s_data.Quad.VAO, s_data.Quad.Count);
-        s_data.Stats.DrawCalls++;
-    }
-    // 告诉GPU绘制有圆形要绘制 用的是DrawElements
-    if (s_data.Circle.Count) {
-        s_data.Circle.VBO->SetData(s_data.Circle.Base, s_data.Circle.GetDataSize());
-        s_data.CircleShader->Bind();
-        RenderCommand::DrawIndexed(s_data.Circle.VAO, s_data.Circle.Count);
-        s_data.Stats.DrawCalls++;
-    }
-    // 告诉GPU绘制有线段要绘制 用的是DrawArrays
-    if (s_data.Line.Count) {
-        s_data.Line.VBO->SetData(s_data.Line.Base, s_data.Line.GetDataSize());
-        s_data.LineShader->Bind();
-        RenderCommand::DrawLines(s_data.Line.VAO, s_data.Line.Count);
-        s_data.Stats.DrawCalls++;
-    }
 }
 
 void Renderer2D::ResetStats() {

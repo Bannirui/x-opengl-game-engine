@@ -81,6 +81,7 @@ void Renderer2D::DrawQuad(const glm::mat4& transform, const X::Ref<Texture2D>& t
         s_data.TextureSlots[s_data.TextureSlotIndex] = texture;
         s_data.TextureSlotIndex++;
     }
+    // 在CPU侧缓存[Base...Ptr)上放4个顶点
     for (size_t i = 0; i < 4; i++) {
         s_data.Quad.Ptr->position = transform * s_data.QuadVertexPositions[i];
         s_data.Quad.Ptr->color = tintColor;

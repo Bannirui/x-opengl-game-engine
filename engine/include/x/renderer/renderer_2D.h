@@ -17,8 +17,10 @@ class Texture2D;
  * GPU层面 VBO预先申请开辟n个顶点容量的显存 init的时候申请好
  * CPU层面 [Base...Ptr)堆内存表示实际放的顶点数据 flush的时候数据灌给GPU
  */
-class Renderer2D
-{
+class Renderer2D {
+private:
+    static void Flush();
+
 public:
     static void Init();
     static void Shutdown();
@@ -28,8 +30,6 @@ public:
     static void BeginScene(const EditorCamera& camera);
     // 每个帧可能绘制多个图形 把所有要绘制的图形VBO数据都收集好了再一起提交给GPU
     static void EndScene();
-
-    static void Flush();
 
     /**
      * 绘制矩形
@@ -75,23 +75,26 @@ public:
     static void DrawSprite(const glm::mat4& transform, SpriteRendererComponent& src, int entityID);
 
     static float GetLineWidth();
-    static void  SetLineWidth(float width);
+    static void SetLineWidth(float width);
 
     // Stats
-    struct Statistics
-    {
+    struct Statistics {
         uint32_t DrawCalls = 0;
         // 有多少个图形是用 4个顶点画2个三角形形成的
         uint32_t PrimitiveCount = 0;
 
         // 4个顶点画2个三角形这种方式 画1个图形用到4个顶点
-        uint32_t GetTotalVertexCount() const { return PrimitiveCount * 4; }
+        uint32_t GetTotalVertexCount() const {
+            return PrimitiveCount * 4;
+        }
 
         // 4个顶点画2个三角形这种方式 画1个图形用到6个索引
-        uint32_t GetTotalIndexCount() const { return PrimitiveCount * 6; }
+        uint32_t GetTotalIndexCount() const {
+            return PrimitiveCount * 6;
+        }
     };
 
-    static void       ResetStats();
+    static void ResetStats();
     static Statistics GetStats();
 
 private:

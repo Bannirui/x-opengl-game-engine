@@ -10,6 +10,15 @@
 #include <initializer_list>
 #include <vector>
 
+/**
+ * VBO的分量类型
+ * 什么叫分量 比如VBO顶点数据每个顶点数据包含
+ *   - pos
+ *   - color
+ *   - 法线
+ *   - ...
+ * 顶点数据里面的pos就是一个分量 color也是一个分量
+ */
 enum class ShaderDataType : uint16_t {
     kNone = 0,
     kFloat,
@@ -69,18 +78,64 @@ static uint32_t ShaderDataTypeSize(ShaderDataType type) {
     return 0;
 }
 
+/**
+ * VBO的布局情况
+ * VBO里面就是1个或多个顶点
+ * 每个顶点由1个或多个分量组成
+ *   - pos
+ *   - color
+ *   - normal
+ *   - ...
+ * 这么多个分量是什么顺序 每个分量多少个数字 每个数字是什么类型
+ * BufferElement就表达一个分量
+ */
 struct BufferElement {
+    /**
+     * 这个分量对应着色器里面location的名字
+     *   - a_Position
+     *   - a_Color
+     *   - ...
+     */
     std::string name;
+    /**
+     * 这个分量有什么数据类型表达的
+     *   - pos用3个float
+     *   - color用4个float
+     */
     ShaderDataType type;
+    // 这个分量的数据多少个字节
     uint32_t size;
+    /**
+     * 每个分量在顶点的偏移是多少
+     * 假设顶点      pos            color
+     *          x    y    z    r    g    b   a
+     *        0.1f 0.2f 0.3f 0.1f 0.2f 0.3f 0.4f
+     * 那么
+     *   - pos这个分量在顶点的偏移是0
+     *   - color这个分量在顶点的偏移是3个float=24字节
+     */
     size_t offset;
+    // 数据是不是归一化的
     bool normalized;
 
     BufferElement() = default;
 
+    /**
+     * 顶点的分量
+     * @param type 分量用的什么数据表达的 比如pos用3个float color用4个float
+     * @param name 这个分量对应shader着色器glsl代码里面的变量名 比如a_Position a_Color
+     * @param normalized 数据是不是归一化的
+     */
     BufferElement(ShaderDataType type, const std::string& name, bool normalized = false)
         : name(name), type(type), size(ShaderDataTypeSize(type)), offset(0), normalized(normalized) {}
 
+    /**
+     * 每个分量都由1个或多个数据组成 比如
+     *   - pos有3个float xyz
+     *   - color有4个float rgba
+     *   - ...
+     * @return 分量有几个数据
+     */
     uint32_t GetComponentCount() const {
         switch (type) {
             case ShaderDataType::kNone: {
@@ -125,6 +180,16 @@ struct BufferElement {
     }
 };
 
+/**
+ * VBO的布局情况
+ * VBO里面就是1个或多个顶点
+ * 每个顶点由1个或多个分量组成
+ *   - pos
+ *   - color
+ *   - normal
+ *   - ...
+ * 这么多个分量是什么顺序 每个分量多少个数字 每个数字是什么类型
+ */
 class BufferLayout {
 public:
     BufferLayout() {}
@@ -160,16 +225,22 @@ public:
 private:
     void calculateOffsetsAndStride() {
         size_t offset = 0;
+        // 统计顶点数据多少字节 就是顶点里面所有分量大小加起来
         m_stride = 0;
         for (auto& element : m_elements) {
+            // 顶点分量在顶点的偏移
             element.offset = offset;
             offset += element.size;
+            // 每个分量大小求和
             m_stride += element.size;
         }
     }
 
 private:
+    // 一个顶点的分量 放在vector就顺序性就是每个分量的顺序
     std::vector<BufferElement> m_elements;
+    // 一个顶点的步长 也就是一个顶点数据多少字节 VBO是GPU显存上一个连续内存空间 一连串的数据
+    // GPU不知道这些数据哪些是顶点A 哪些是顶点B 这个步长就是负责告诉GPU每个顶点数据是怎么划分的
     uint32_t m_stride = 0;
 };
 
