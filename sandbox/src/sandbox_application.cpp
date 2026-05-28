@@ -9,22 +9,19 @@
 
 #include <engine.h>
 
-class Sandbox : public XApplication
-{
+class Sandbox : public XApplication {
 public:
-    Sandbox(const ApplicationSpecification& spec) : XApplication(spec)
-    {
-        // PushLayer(new ExampleLayer());
-        PushLayer(new Sandbox2D());
+    Sandbox(const ApplicationSpecification& spec) : XApplication(spec) {
+        // PushLayer(X::CreateScope<ExampleLayer>());
+        PushLayer(X::CreateScope<Sandbox2D>());
     }
 
     ~Sandbox() override {}
 };
 
-XApplication* CreateApplication(ApplicationCommandLineArgs args)
-{
+XApplication* CreateApplication(ApplicationCommandLineArgs args) {
     ApplicationSpecification spec;
-    spec.Name    = "Sandbox";
-    spec.CommandLineArgs  = args;
+    spec.Name = "Sandbox";
+    spec.CommandLineArgs = args;
     return new Sandbox(spec);
 }

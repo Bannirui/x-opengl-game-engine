@@ -15,13 +15,11 @@
 
 XApplication* XApplication::s_instance = nullptr;
 
-XApplication::XApplication(const ApplicationSpecification& specification) : m_specification(specification)
-{
+XApplication::XApplication(const ApplicationSpecification& specification) : m_specification(specification) {
     X_PROFILE_FUNCTION();
     X_CORE_ASSERT(!s_instance, "Application already exists");
     s_instance = this;
-    if (!m_specification.WorkingDirectory.empty())
-    {
+    if (!m_specification.WorkingDirectory.empty()) {
         std::filesystem::current_path(m_specification.WorkingDirectory);
     }
     // 窗体
@@ -33,12 +31,12 @@ XApplication::XApplication(const ApplicationSpecification& specification) : m_sp
 
     Renderer::Init();
 
-    m_ImGuiLayer = new ImGuiLayer();
-    PushOverlay(m_ImGuiLayer);
+    auto imGuiLayer = X::CreateScope<ImGuiLayer>();
+    m_ImGuiLayer = imGuiLayer.get();
+    PushOverlay(std::move(imGuiLayer));
 }
 
-XApplication::~XApplication()
-{
+XApplication::~XApplication() {
     X_PROFILE_FUNCTION();
     Renderer::Shutdown();
 }
@@ -81,52 +79,44 @@ void XApplication::ProcessEvents() {
     }
 }
 
-void XApplication::PushLayer(Layer* layer)
-{
+void XApplication::PushLayer(X::Scope<Layer> layer) {
     X_PROFILE_FUNCTION();
-    m_layerStack.PushLayer(layer);
     layer->OnAttach();
+    m_layerStack.PushLayer(std::move(layer));
 }
 
-void XApplication::PushOverlay(Layer* layer)
-{
+void XApplication::PushOverlay(X::Scope<Layer> overlay) {
     X_PROFILE_FUNCTION();
-    m_layerStack.PushOverlay(layer);
-    layer->OnAttach();
+    overlay->OnAttach();
+    m_layerStack.PushOverlay(std::move(overlay));
 }
 
-void XApplication::Close()
-{
+void XApplication::Close() {
     m_running = false;
 }
 
-void XApplication::run()
-{
+void XApplication::run() {
     X_PROFILE_FUNCTION();
-    while (m_running)
-    {
+    while (m_running) {
         X_PROFILE_SCOPE("RunLoop");
         // 每一帧都一次性处理一下攒着的事件
         ProcessEvents();
 
-        float    time     = Time::GetTime();
+        float time = Time::GetTime();
         Timestep timestep = time - m_lastFrameTime;
-        m_lastFrameTime   = time;
+        m_lastFrameTime = time;
 
-        if (!m_minimized)
-        {
+        if (!m_minimized) {
             {
                 X_PROFILE_SCOPE("LayerStack OnUpdate");
-                for (Layer* layer : m_layerStack)
-                {
+                for (auto& layer : m_layerStack) {
                     layer->OnUpdate(timestep);
                 }
             }
             m_ImGuiLayer->Begin();
             {
                 X_PROFILE_SCOPE("LayerStack OnImguiRender");
-                for (Layer* layer : m_layerStack)
-                {
+                for (auto& layer : m_layerStack) {
                     layer->OnImguiRender();
                 }
             }

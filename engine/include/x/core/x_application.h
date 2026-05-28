@@ -45,8 +45,8 @@ public:
 
     void OnEvent(Event& e);
 
-    void PushLayer(Layer* layer);
-    void PushOverlay(Layer* layer);
+    void PushLayer(X::Scope<Layer> layer);
+    void PushOverlay(X::Scope<Layer> overlay);
 
     void Close();
 
