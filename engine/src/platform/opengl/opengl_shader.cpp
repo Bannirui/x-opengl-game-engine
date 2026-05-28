@@ -215,7 +215,8 @@ OpenGLShader::OpenGLShader(const std::string& filepath) {
     auto shaderSources = preProcess(m_filePath, source);
     {
         Timer timer;
-        compileOrGetBinaries(shaderSources);
+        compileBinariesIfSupportSpirv(shaderSources);
+        // 创建OpenGL的shader object
         creatProgram();
         X_CORE_INFO("Shader creation took {} ms", timer.ElapsedMillis());
     }
@@ -232,7 +233,7 @@ OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexSrc
     std::unordered_map<GLenum, std::string> shaderSources;
     shaderSources[GL_VERTEX_SHADER] = vertexSrc;
     shaderSources[GL_FRAGMENT_SHADER] = fragmentSrc;
-    compileOrGetBinaries(shaderSources);
+    compileBinariesIfSupportSpirv(shaderSources);
     creatProgram();
 }
 
@@ -328,7 +329,7 @@ void OpenGLShader::uploadUniformMat4(const std::string& name, const glm::mat4& m
     glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
-void OpenGLShader::compileOrGetBinaries(const std::unordered_map<GLenum, std::string>& shaderSources) {
+void OpenGLShader::compileBinariesIfSupportSpirv(const std::unordered_map<GLenum, std::string>& shaderSources) {
     m_glslSources = shaderSources;
 
     if (X::GLRendererInfo::Get().ARB_gl_spirv) {
@@ -385,7 +386,13 @@ void OpenGLShader::compileOrGetBinaries(const std::unordered_map<GLenum, std::st
     }
 }
 
+/**
+ * OpenGL有program object
+ * 它是多个shader程序(vertex和frag)链接成的程序 最终这个program object的作用就是渲染
+ * 只在渲染前执行一下glUseProgram激活它就可以用它进行渲染了
+ */
 void OpenGLShader::creatProgram() {
+    // 创建OpenGL的shader object
     GLuint program = glCreateProgram();
     std::vector<GLuint> shaderIDs;
 
@@ -393,6 +400,7 @@ void OpenGLShader::creatProgram() {
 #ifdef glSpecializeShaderARB
         // 支持spriv 用字节码创建shader程序
         for (auto&& [stage, spirv] : m_spirvBinaries) {
+            // 创建OpenGL的shader object OpenGL会分配唯一id引用它
             GLuint shaderID = shaderIDs.emplace_back(glCreateShader(stage));
             glShaderBinary(1, &shaderID, GL_SHADER_BINARY_FORMAT_SPIR_V_ARB, spirv.data(),
                            spirv.size() * sizeof(uint32_t));
@@ -403,9 +411,12 @@ void OpenGLShader::creatProgram() {
     } else {
         // 不支持spirv就用GLSL源码创建shader程序
         for (auto&& [stage, source] : m_glslSources) {
+            // 创建OpenGL的shader object OpenGL会分配唯一的id引用它
             GLuint shaderID = shaderIDs.emplace_back(glCreateShader(stage));
             const char* src = source.c_str();
+            // 把shader源码告诉它
             glShaderSource(shaderID, 1, &src, nullptr);
+            // 编译shader源码
             glCompileShader(shaderID);
 
             GLint isCompiled = 0;
@@ -419,9 +430,11 @@ void OpenGLShader::creatProgram() {
                 glDeleteShader(shaderID);
                 X_CORE_ASSERT(false);
             }
+            // 告诉program object要链接哪些shader object
             glAttachShader(program, shaderID);
         }
     }
+    // 执行链接 把多个shader程序链接成一个完整的程序
     glLinkProgram(program);
     GLint isLinked = 0;
     glGetProgramiv(program, GL_LINK_STATUS, &isLinked);
