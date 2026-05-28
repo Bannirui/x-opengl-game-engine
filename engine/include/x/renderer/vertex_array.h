@@ -11,7 +11,11 @@
 class IndexBuffer;
 class VertexBuffer;
 
-// VAO
+/**
+ * 封装VAO(vertex array object)
+ * 跟VBO一样也是OpenGL抽象的状态 会在显存上开辟空间存储一堆数据 OpenGL会分配唯一的id引用它
+ * VAO的本质就是让shader的attribute知道怎么用VBO
+ */
 class VertexArray {
 public:
     virtual ~VertexArray() = default;

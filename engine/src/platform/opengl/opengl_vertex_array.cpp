@@ -62,6 +62,7 @@ static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type) {
 
 OpenGLVertexArray::OpenGLVertexArray() {
     X_PROFILE_FUNCTION();
+    // 让OpenGL在显存开辟空间作为vertex array object 用id引用
     glGenVertexArrays(1, &m_rendererID);
 }
 
@@ -72,6 +73,7 @@ OpenGLVertexArray::~OpenGLVertexArray() {
 
 void OpenGLVertexArray::Bind() const {
     X_PROFILE_FUNCTION();
+    // 在渲染时只要调用一下 GPU就知道去哪个VBO按照什么格式读取顶点
     glBindVertexArray(m_rendererID);
 }
 
@@ -88,6 +90,7 @@ void OpenGLVertexArray::Unbind() const {
  * 负责告诉OpenGL怎么把VBO里面的数据解释成着色器shader的各个属性
  *   - 把VBO绑定到VAO
  *   - 然后遍历VBO的顶点布局信息 对每个属性逐一处理 让OpenGL建立显存中每段字节->着色器attribute location的映射
+ * 所以配置而言配置的就是让shader的attribute知道怎么使用VBO
  * @param vertexBuffer VBO VBO里面不仅有多个顶点的数据信息 还有这些每个顶点的有多少个分量
  */
 void OpenGLVertexArray::AddVertexBuffer(const X::Ref<VertexBuffer>& vertexBuffer) {
