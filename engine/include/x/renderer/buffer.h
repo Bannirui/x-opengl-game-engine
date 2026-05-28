@@ -244,7 +244,16 @@ private:
     uint32_t m_stride = 0;
 };
 
-// VBO
+/**
+ * VBO(vertex buffer object)
+ * 在显存上内存空间 OpenGL会生成唯一id标识object
+ * OpenGL有很多我buffer类型 VBO对应的buffer类型是GL_ARRAY_BUFFER OpenGL提供了API用为绑定buffer object的类型
+ * buffer object的作用是作为媒介用来在内存到显存传数据
+ * 拷贝数据的时候根据应用场景选择合适的类型
+ *   - GL_STREAM_DRAW 数据不变 GPU用的少
+ *   - GL_STATIC_DRAW 数据不变 GPU用的多
+ *   - GL_DYNAMIC_DRAW 数据经常变 GPU用的多
+ */
 class VertexBuffer {
 public:
     virtual ~VertexBuffer() = default;
@@ -256,22 +265,23 @@ public:
     virtual void SetLayout(const BufferLayout& layout) = 0;
 
     /**
-     * 把顶点信息从CPU侧的内存灌给GPU侧显存上的VBO
-     * @param data 要灌的数据在CPU侧的内存地址
-     * @param size 数据多少个字节
+     * 把顶点信息从CPU侧的内存灌给GPU侧显存
+     * @param data 要灌的数据在内存什么位置 内存地址
+     * @param size 要传多少数据 字节
      */
     virtual void SetData(const void* data, uint32_t size) = 0;
 
     /**
-     * 在GPU显存申请VBO
-     * @param vertices VBO里面放的数据 这些数据在CPU侧内存的地址
-     * @param size VBO要多大空间 多少个字节
+     * 创建VBO(vertex buffer object)
+     * 本质就是一片连续的显存空间
+     * @param vertices VBO里面放的数据 这些数据在CPU侧内存位置 内存地址
+     * @param size 需要多大的显存空间 多少个字节
      */
     static X::Ref<VertexBuffer> Create(float* vertices, uint32_t size);
     /**
-     * 在GPU显存申请VBO
-     * 空的VBO 没有数据
-     * @param size VBO要多大空间 多少个字节 后面再放数据
+     * 创建VBO
+     * 只要分配空的显存 暂时不放数据
+     * @param size 需要多大的显存 字节
      */
     static X::Ref<VertexBuffer> Create(uint32_t size);
 };
