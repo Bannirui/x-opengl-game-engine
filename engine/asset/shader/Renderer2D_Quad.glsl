@@ -1,11 +1,12 @@
 #type vertex
-#version 330 core
+#version 450 core
 
 layout(location = 0) in vec3 a_Position;
 layout(location = 1) in vec4 a_Color;
 layout(location = 2) in vec2 a_TexCoord;
 layout(location = 3) in float a_TexIndex;
 layout(location = 4) in float a_TilingFactor;
+// 实体id 用于鼠标拾取
 layout(location = 5) in int a_EntityID;
 
 struct VertexOutput
@@ -18,6 +19,7 @@ layout(location = 0) out VertexOutput Output;
 layout(location = 3) out flat float v_TexIndex;
 layout(location = 4) out flat int v_EntityID;
 
+// UBO的用法 拿到共享的UBO的常量缓存区Camera 所有绑到slot=0的shader着色器都可以拿到这个变量
 layout(std140, binding = 0) uniform Camera
 {
     mat4 u_ViewProjection;
@@ -34,7 +36,7 @@ void main()
 }
 
 #type fragment
-#version 330 core
+#version 450 core
 
 struct VertexOutput
 {

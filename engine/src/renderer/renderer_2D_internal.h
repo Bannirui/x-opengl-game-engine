@@ -64,6 +64,7 @@ struct Renderer2DData {
     };
 
     CameraData CameraBuffer;
+    // GPU共享的Camera常量缓冲区 里面存储ViewProjection矩阵 所有绑定到slot 0的shader都能访问
     X::Ref<UniformBuffer> CameraUniformBuffer;
 };
 

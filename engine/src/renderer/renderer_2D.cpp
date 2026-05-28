@@ -87,7 +87,7 @@ void Renderer2D::Init() {
     s_data.QuadVertexPositions[1] = {0.5f, -0.5f, 0.0f, 1.0f};
     s_data.QuadVertexPositions[2] = {0.5f, 0.5f, 0.0f, 1.0f};
     s_data.QuadVertexPositions[3] = {-0.5f, 0.5f, 0.0f, 1.0f};
-
+    // 在GPU显存上创建一个UBO binding=0
     s_data.CameraUniformBuffer = UniformBuffer::Create(sizeof(Renderer2DData::CameraData), 0);
 }
 
