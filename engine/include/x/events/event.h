@@ -35,7 +35,7 @@ enum class EventType {
 #undef ENUM_VALUE
 };
 
-// 事件类别枚举 层看自己感不感兴趣就看标识里面有没有这个类型
+// 事件类别枚举 层看自己感不感兴趣就看标识里面有没有这个类型 C风格枚举原生支持运算
 enum EventCategory {
     kNone = 0,
     kEventCategoryApplication = BIT(0),
@@ -103,7 +103,7 @@ public:
  *
  * @tparam Derived   具体事件类型 比如KeyPressEvent
  * @tparam eType     事件类型枚举值
- * @tparam eCategory 事件类别位掩码
+ * @tparam eCategory 事件类别枚举 这个枚举是C风格
  * @tparam Base      中间基类 如KeyEvent提供m_keyCode 默认直接继承Event
  */
 template <typename Derived, EventType eType, int eCategory, typename Base = Event>
