@@ -246,6 +246,7 @@ OpenGLShader::~OpenGLShader() {
 
 void OpenGLShader::Bind() const {
     X_PROFILE_FUNCTION();
+    // 告诉OpenGL把program object activate 准备要用它渲染了
     glUseProgram(m_rendererId);
 }
 

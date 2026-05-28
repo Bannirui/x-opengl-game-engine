@@ -109,6 +109,7 @@ void OpenGLVertexArray::AddVertexBuffer(const X::Ref<VertexBuffer>& vertexBuffer
             case ShaderDataType::kFloat3:
             case ShaderDataType::kFloat4: {
                 glEnableVertexAttribArray(m_vertexBufferIndex);
+                // 告诉OpenGL怎么理解顶点数据
                 glVertexAttribPointer(
                     m_vertexBufferIndex,          // 对应着色器的location 比如0,1,2...就对应着色器location 0,1,2...
                     element.GetComponentCount(),  // 顶点的这个分量有多少个数据
@@ -137,6 +138,8 @@ void OpenGLVertexArray::AddVertexBuffer(const X::Ref<VertexBuffer>& vertexBuffer
             case ShaderDataType::kMat4: {
                 uint8_t count = element.GetComponentCount();
                 for (uint8_t i = 0; i < count; i++) {
+                    // OpenGL默认是关闭了顶点属性的 所以要告诉OpenGL启用attribute输入
+                    // 这样shader程序就可以通过location=x取到显存里面的顶点数据
                     glEnableVertexAttribArray(m_vertexBufferIndex);
                     glVertexAttribPointer(m_vertexBufferIndex, count, ShaderDataTypeToOpenGLBaseType(element.type),
                                           element.normalized ? GL_TRUE : GL_FALSE, layout.GetStride(),

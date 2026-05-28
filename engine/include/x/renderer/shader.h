@@ -14,24 +14,23 @@
  * 为了让OpenGL能够用shader的代码 要在运行时动态地编译glsl源码
  * OpenGL创建个shader object然后分配个id引用它
  */
-class Shader
-{
+class Shader {
 public:
     virtual ~Shader() = default;
 
     virtual const std::string& get_name() const = 0;
 
-    virtual void Bind() const   = 0;
+    virtual void Bind() const = 0;
     virtual void Unbind() const = 0;
 
     // --- uniform variable ---
-    virtual void SetInt(const std::string& name, int value)                   = 0;
+    virtual void SetInt(const std::string& name, int value) = 0;
     virtual void SetIntArray(const std::string& name, int* values, int count) = 0;
-    virtual void SetFloat(const std::string& name, float value)               = 0;
-    virtual void SetFloat2(const std::string& name, const glm::vec2& value)   = 0;
-    virtual void SetFloat3(const std::string& name, const glm::vec3& value)   = 0;
-    virtual void SetFloat4(const std::string& name, const glm::vec4& value)   = 0;
-    virtual void SetMat4(const std::string& name, const glm::mat4& value)     = 0;
+    virtual void SetFloat(const std::string& name, float value) = 0;
+    virtual void SetFloat2(const std::string& name, const glm::vec2& value) = 0;
+    virtual void SetFloat3(const std::string& name, const glm::vec3& value) = 0;
+    virtual void SetFloat4(const std::string& name, const glm::vec4& value) = 0;
+    virtual void SetMat4(const std::string& name, const glm::mat4& value) = 0;
     // --- uniform variable ---
 
     /**
@@ -52,15 +51,14 @@ protected:
     Shader() = default;
 };
 
-class ShaderLib
-{
+class ShaderLib {
 public:
-    void           Add(const std::string& name, const X::Ref<Shader>& shader);
-    void           Add(const X::Ref<Shader>& shader);
+    void Add(const std::string& name, const X::Ref<Shader>& shader);
+    void Add(const X::Ref<Shader>& shader);
     X::Ref<Shader> Load(const std::string& filepath);
     X::Ref<Shader> Load(const std::string& name, const std::string& filepath);
     X::Ref<Shader> Get(const std::string& name);
-    bool           Exists(const std::string& name) const;
+    bool Exists(const std::string& name) const;
 
 private:
     std::unordered_map<std::string, X::Ref<Shader>> m_shaders;
