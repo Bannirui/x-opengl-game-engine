@@ -1,0 +1,29 @@
+Xlnut/src/XInutApp.cpp
+  s_6a305405efa02a::t_0f60f24b97aac8 14
+sandbox/src/sandbox_application.cpp
+  s_6a305405efa02a::t_0f60f24b97aac8 15-16
+engine/include/x/core/x_application.h
+  s_6a305405efa02a::t_0f60f24b97aac8 48-49
+engine/src/core/x_application.cpp
+  s_6a305405efa02a::t_0f60f24b97aac8 34-36,39,82,85,88,90-91,94,98,100,105,107,109,112,119
+engine/include/x/layer_stack.h
+  s_6a305405efa02a::t_0f60f24b97aac8 32,37,51,54-55
+engine/src/layer_stack.cpp
+  s_6a305405efa02a::t_0f60f24b97aac8 12,17-18,22-23,26-30,37-41
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.1",
+  "base_commit_sha": "511fb62da88d20a1055a9e1d38a1d4ad6805b786",
+  "prompts": {},
+  "sessions": {
+    "s_6a305405efa02a": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_19381092cffeiByBWk79DG4uh1",
+        "model": "deepseek-v4-pro"
+      },
+      "human_author": "dingrui <Bannirui@outlook.com>"
+    }
+  }
+}
