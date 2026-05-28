@@ -24,6 +24,7 @@ XApplication::XApplication(const ApplicationSpecification& specification) : m_sp
     {
         std::filesystem::current_path(m_specification.WorkingDirectory);
     }
+    // 窗体
     m_window = Window::Create(WindowProps(m_specification.Name));
     m_window->SetEventCallback([this](Event& e) {
         // 窗口事件丢给引擎 引擎不会立即处理 先缓存到队列里面 延迟批量一起处理

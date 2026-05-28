@@ -24,6 +24,7 @@ OpenGLContext::~OpenGLContext() {}
 void OpenGLContext::Init() {
     X_PROFILE_FUNCTION();
     glfwMakeContextCurrent(m_windowHandle);
+    // OpenGL的函数实现一部分由系统提供 一部分由显卡驱动提供 glfw把平台差异性封装好 揉在一起告诉glad这些OpenGL的函数实现在哪儿
     int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     X_CORE_ASSERT(status, "Could not load GLAD function");
     X_CORE_INFO("OpenGL Info:");

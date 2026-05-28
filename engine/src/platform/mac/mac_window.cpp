@@ -81,6 +81,7 @@ void MacWindow::init(const WindowProps& props)
     glfwMakeContextCurrent(m_window);
 
     m_context = GraphicsContext::Create(m_window);
+    // 把OpenGL的函数实现地址告诉glad
     m_context->Init();
 
     glfwSetWindowUserPointer(m_window, this);
