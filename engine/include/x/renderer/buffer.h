@@ -286,7 +286,15 @@ public:
     static X::Ref<VertexBuffer> Create(uint32_t size);
 };
 
-// EBO
+/**
+ * 封装EBO
+ * EBO本质也是让OpenGL在显存上开辟一块空间buffer 这块空间放的就是VBO顶点的索引值
+ * VBO里面的顶点首先会有多个attribute 每个attribute还有对应的值
+ * 如果每需要一个顶点都要定义占用的内存 显存 以及内存往显存拷贝 都是开销
+ * 为了利用重复的顶点信息 就有了这样一个机制
+ *   - 用VBO告诉OpenGL有哪些顶点 对应的数据在显存哪儿
+ *   - 用EBO告诉OpenGL怎么组合这些顶点
+ */
 class IndexBuffer {
 public:
     virtual ~IndexBuffer() = default;
@@ -298,8 +306,9 @@ public:
     virtual uint32_t GetCount() const = 0;
 
     /**
-     * @param indices VAO数据
-     * @param count EBO里面多少个顶点
+     * 创建EBO
+     * @param indices EBO里面要放的数据 这些数据在内存上的位置 内存地址 把这些内存上数据复制到显存上
+     * @param count 要往显存上发送多少个索引顶点 每个索引是一个整数 很容易计算出来内存要复制多少个字节到显存
      */
     static X::Ref<IndexBuffer> Create(uint32_t* indices, uint32_t count);
 };
