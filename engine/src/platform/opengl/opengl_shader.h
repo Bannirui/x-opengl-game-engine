@@ -13,6 +13,13 @@
 class OpenGLShader : public Shader {
 public:
     /**
+     * shader源码里面
+     * #type vertex 标识vertex程序
+     * #type fragment 标识frag程序
+     * 这个源码路径是{name}.glsl 拿到这个路径并不是直接就用它的源码了
+     *   - 1 先拼接上运行时的OpenGL版本成为类似{name}.{version}.glsl路径
+     *   - 2 要是找不到{name}.{version}.glsl 再用{name}.glsl
+     * 达到了根据运行时OpenGL版本动态shader程序的效果
      * @param filepath glsl源码路径 vertex跟frag在同一个文件 用type区分
      */
     OpenGLShader(const std::string& filepath);
@@ -54,21 +61,22 @@ private:
     void uploadUniformMat4(const std::string& name, const glm::mat4& matrix);
 
 private:
-    // 从文件读源码
-    std::string readFile(const std::string& filepath);
-    // 源码区分vertex和frag
-    std::unordered_map<GLenum, std::string> preProcess(const std::string& glslSrc);
+    /**
+     * 要是系统用的OpenGL版本高 就支持spirv 那么就用shaderc编译成spirv字节码
+     * @param shaderSources vertex和frag源码 key是vertex和frag类型枚举 value是对应的源码
+     */
     void compileOrGetBinaries(const std::unordered_map<GLenum, std::string>& shaderSources);
     void creatProgram();
     void reflect(GLenum stage, const std::vector<uint32_t>& shaderData);
 
 private:
+    // OpenGL创建的shader object 用id引用到它
     uint32_t m_rendererId{0};
     /**
-     * 创建Shader程序时候传捡来的路径可能是x.glsl
+     * 创建Shader程序时候传捡来的路径可能是{name}.glsl
      * 拿到这个路径并不是直接就用它的源码了
-     *   - 1 先拼接上运行时的OpenGL版本成为类似x.330.glsl路径
-     *   - 2 找不到带版本的源码再用找传进来的路径
+     *   - 1 先拼接上运行时的OpenGL版本成为{name}.{version}.glsl路径
+     *   - 2 能找到{name}.{version}.glsl就用这个 找不到才用{name}.glsl
      * 达到了根据运行时OpenGL版本动态适配GLSL语法的效果
      */
     std::string m_filePath;

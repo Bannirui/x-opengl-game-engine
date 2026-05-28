@@ -10,7 +10,10 @@
 
 #include <unordered_map>
 
-// interface
+/**
+ * 为了让OpenGL能够用shader的代码 要在运行时动态地编译glsl源码
+ * OpenGL创建个shader object然后分配个id引用它
+ */
 class Shader
 {
 public:
@@ -32,6 +35,9 @@ public:
     // --- uniform variable ---
 
     /**
+     * shader源码里面
+     * #type vertex 标识vertex程序
+     * #type fragment 标识frag程序
      * @param filepath glsl源码路径 vertex跟frag在同一个文件 用type区分
      */
     static X::Ref<Shader> Create(const std::string& filepath);
