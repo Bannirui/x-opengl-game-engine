@@ -66,8 +66,9 @@ void MacWindow::init(const WindowProps& props)
         X_CORE_ASSERT(succ, "Could not init GLFW");
         glfwSetErrorCallback(glfwErrorCallback);
     }
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    // 告诉glfw我要用的OpenGL版本是 让它在创建OpenGL上下文的时候能正确创建对应的版本
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     {
         X_PROFILE_SCOPE("glfwCreateWindow");
