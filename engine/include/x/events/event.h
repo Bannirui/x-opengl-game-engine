@@ -6,10 +6,7 @@
 
 #include "x/core/base.h"
 
-#include <fmt/format.h>
-
 #include <memory>
-#include <ostream>
 #include <string>
 #include <type_traits>
 
@@ -101,6 +98,7 @@ public:
      */
     virtual std::unique_ptr<Event> Clone() const = 0;
 
+    // 这个函数的
     virtual std::string ToString() const {
         return GetName();
     }
@@ -172,16 +170,4 @@ public:
 
 private:
     Event& m_event;
-};
-
-inline std::ostream& operator<<(std::ostream& os, const Event& e) {
-    return os << e.ToString();
-}
-
-// 整合spdlog的格式化输出 支持Event的所有派生类
-template <typename T>
-struct fmt::formatter<T, std::enable_if_t<std::is_base_of<Event, T>::value, char>> : fmt::formatter<std::string> {
-    auto format(const Event& e, format_context& ctx) const {
-        return fmt::formatter<std::string>::format(e.ToString(), ctx);
-    }
 };

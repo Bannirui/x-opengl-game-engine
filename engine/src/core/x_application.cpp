@@ -49,7 +49,7 @@ void XApplication::OnEvent(Event& e) {
 void XApplication::ProcessEvents() {
     // 把攒着的事件一次性处理掉
     while (!m_eventQueue.empty()) {
-        auto& e = *m_eventQueue.front();
+        Event& e = *m_eventQueue.front();
 
         switch (e.GetEventType()) {
             case EventType::kWindowClose:
