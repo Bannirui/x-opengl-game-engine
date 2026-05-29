@@ -11,6 +11,10 @@
 
 #include <stb_image.h>
 
+/**
+ * 创建纹理对象
+ * @param path 图片路径
+ */
 OpenGLTexture2D::OpenGLTexture2D(const std::string& path) : m_path(path) {
     X_PROFILE_FUNCTION();
     int width, height, channels;
@@ -35,17 +39,25 @@ OpenGLTexture2D::OpenGLTexture2D(const std::string& path) : m_path(path) {
     }
     // 生成纹理对象
     glGenTextures(1, &m_rendererId);
-    // 激活纹理对象
-    glActiveTexture(GL_TEXTURE0);
+    // 绑定纹理对象 类型是2d
     glBindTexture(GL_TEXTURE_2D, m_rendererId);
 
     // 分配cpu内存
     m_internalFormat = internalFormat;
     m_dataFormat = dataFormat;
     X_CORE_ASSERT(internalFormat & dataFormat, "Format not supported!");
-
-    glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_width, m_height, 0, dataFormat, GL_UNSIGNED_BYTE, data);
-
+    // 用图片生成一个纹理对象贴图 mipmap level设置0代表的是没有给纹理对象设置mipmap 可以在生成纹理对象后再给它设置mipmap
+    glTexImage2D(GL_TEXTURE_2D,   // 纹理对象在上面已经绑定了OpenGL的2d插槽 现在要配置2d插槽就是在配置纹理对象
+                 0,               // mipmap的level 不用mipmap就设置0
+                 internalFormat,  // 告诉OpenGL图片的格式
+                 m_width,         // 图片宽度
+                 m_height,        // 图片高度
+                 0,               // 为了兼容早期设计导致的 直接设置成0就行
+                 dataFormat,      // 图片数据格式
+                 GL_UNSIGNED_BYTE,
+                 data  // 实际的图片
+    );
+    // 最佳的工程实践 在创建好了纹理对象也设置好了mipmap后就把图片的空间释放掉
     stbi_image_free(data);
 
     // 设置纹理对象参数
