@@ -290,44 +290,45 @@ void OpenGLShader::SetMat4(const std::string& name, const glm::mat4& value) {
     uploadUniformMat4(name, value);
 }
 
-void OpenGLShader::uploadUniformInt(const std::string& name, int value) {
+void OpenGLShader::uploadUniformInt(const std::string& name, int value) const {
     // 先拿到shader程序里面uniform变量对应的location
     GLint location = glGetUniformLocation(m_rendererId, name.c_str());
-    // 通过location给uniform变量传值 uniform变量的命名空间是每个shader的也就是说明这个变量只能当前shader用 UBO是OpenGL在显存开辟的常量内存可以给所有的shader共享
+    // 通过location给uniform变量传值 uniform变量的命名空间是每个shader的也就是说明这个变量只能当前shader用
+    // UBO是OpenGL在显存开辟的常量内存可以给所有的shader共享
     glUniform1i(location, value);
 }
 
-void OpenGLShader::uploadUniformIntArray(const std::string& name, int* values, uint32_t count) {
+void OpenGLShader::uploadUniformIntArray(const std::string& name, int* values, uint32_t count) const {
     GLint location = glGetUniformLocation(m_rendererId, name.c_str());
     glUniform1iv(location, count, values);
 }
 
-void OpenGLShader::uploadUniformFloat(const std::string& name, float value) {
+void OpenGLShader::uploadUniformFloat(const std::string& name, float value) const {
     GLint location = glGetUniformLocation(m_rendererId, name.c_str());
     glUniform1f(location, value);
 }
 
-void OpenGLShader::uploadUniformFloat2(const std::string& name, const glm::vec2& value) {
+void OpenGLShader::uploadUniformFloat2(const std::string& name, const glm::vec2& value) const {
     GLint location = glGetUniformLocation(m_rendererId, name.c_str());
     glUniform2f(location, value.x, value.y);
 }
 
-void OpenGLShader::uploadUniformFloat3(const std::string& name, const glm::vec3& value) {
+void OpenGLShader::uploadUniformFloat3(const std::string& name, const glm::vec3& value) const {
     GLint location = glGetUniformLocation(m_rendererId, name.c_str());
     glUniform3f(location, value.x, value.y, value.z);
 }
 
-void OpenGLShader::uploadUniformFloat4(const std::string& name, const glm::vec4& value) {
+void OpenGLShader::uploadUniformFloat4(const std::string& name, const glm::vec4& value) const {
     GLint location = glGetUniformLocation(m_rendererId, name.c_str());
     glUniform4f(location, value.x, value.y, value.z, value.w);
 }
 
-void OpenGLShader::uploadUniformMat3(const std::string& name, const glm::mat3& matrix) {
+void OpenGLShader::uploadUniformMat3(const std::string& name, const glm::mat3& matrix) const {
     GLint location = glGetUniformLocation(m_rendererId, name.c_str());
     glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
-void OpenGLShader::uploadUniformMat4(const std::string& name, const glm::mat4& matrix) {
+void OpenGLShader::uploadUniformMat4(const std::string& name, const glm::mat4& matrix) const {
     GLint location = glGetUniformLocation(m_rendererId, name.c_str());
     glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 }

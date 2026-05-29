@@ -41,6 +41,10 @@ public:
     void Unbind() const override;
 
     // --- 开放的接口 传递uniform变量---
+    /**
+     * @param name shader里面uniform变量名
+     * @param value 要传的变量的值
+     */
     void SetInt(const std::string& name, int value) override;
     void SetIntArray(const std::string& name, int* values, int count) override;
     void SetFloat(const std::string& name, float value) override;
@@ -51,14 +55,18 @@ public:
     // --- 开放的接口 传递uniform变量---
 
 private:
-    void uploadUniformInt(const std::string& name, int value);
-    void uploadUniformIntArray(const std::string& name, int* values, uint32_t count);
-    void uploadUniformFloat(const std::string& name, float value);
-    void uploadUniformFloat2(const std::string& name, const glm::vec2& value);
-    void uploadUniformFloat3(const std::string& name, const glm::vec3& value);
-    void uploadUniformFloat4(const std::string& name, const glm::vec4& value);
-    void uploadUniformMat3(const std::string& name, const glm::mat3& matrix);
-    void uploadUniformMat4(const std::string& name, const glm::mat4& matrix);
+    /**
+     * @param name shader里面uniform变量名
+     * @param value 要传的变量值
+     */
+    void uploadUniformInt(const std::string& name, int value) const;
+    void uploadUniformIntArray(const std::string& name, int* values, uint32_t count) const;
+    void uploadUniformFloat(const std::string& name, float value) const;
+    void uploadUniformFloat2(const std::string& name, const glm::vec2& value) const;
+    void uploadUniformFloat3(const std::string& name, const glm::vec3& value) const;
+    void uploadUniformFloat4(const std::string& name, const glm::vec4& value) const;
+    void uploadUniformMat3(const std::string& name, const glm::mat3& matrix) const;
+    void uploadUniformMat4(const std::string& name, const glm::mat4& matrix) const;
 
 private:
     /**
@@ -70,7 +78,8 @@ private:
     void reflect(GLenum stage, const std::vector<uint32_t>& shaderData);
 
 private:
-    // OpenGL创建的program object OpenGL会分配唯一的id引用它 以后渲染就是用这个program object 只要先激活它就可以进行渲染了
+    // OpenGL创建的program object OpenGL会分配唯一的id引用它 以后渲染就是用这个program object
+    // 只要先激活它就可以进行渲染了
     uint32_t m_rendererId{0};
     /**
      * 创建Shader程序时候传捡来的路径可能是{name}.glsl
