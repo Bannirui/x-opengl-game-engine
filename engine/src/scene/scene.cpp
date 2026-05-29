@@ -260,7 +260,7 @@ Entity Scene::GetPrimaryCameraEntity() {
 
 template <typename T>
 void Scene::onComponentAdded(Entity /* entity */, T& /* component */) {
-    X_ASSERT(sizeof(T) == 0);
+    X_CORE_ASSERT(sizeof(T) == 0);
 }
 
 // 模板特化

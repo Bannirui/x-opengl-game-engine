@@ -464,13 +464,11 @@ void OpenGLShader::creatProgram() {
         glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
         std::vector<GLchar> infoLog(maxLength);
         glGetProgramInfoLog(program, maxLength, &maxLength, infoLog.data());
-        X_CORE_ERROR("Shader linking failed ({}):\n{}", m_filePath, infoLog.data());
         glDeleteProgram(program);
         for (auto id : shaderIDs) {
             glDeleteShader(id);
         }
-        X_CORE_ASSERT(false, "Shader link fail");
-        return;
+        X_CORE_ASSERT(false, "Shader linking failed ({}):\n{}", m_filePath, infoLog.data());
     }
     for (auto id : shaderIDs) {
         glDetachShader(program, id);

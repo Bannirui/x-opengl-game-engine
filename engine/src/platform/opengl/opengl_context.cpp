@@ -3,6 +3,7 @@
 //
 
 #include "platform/opengl/opengl_context.h"
+
 #include "x/core/base.h"
 #include "x/core/x_log.h"
 
@@ -24,7 +25,8 @@ OpenGLContext::~OpenGLContext() {}
 void OpenGLContext::Init() {
     X_PROFILE_FUNCTION();
     glfwMakeContextCurrent(m_windowHandle);
-    // OpenGL的函数实现一部分由系统提供 一部分由显卡驱动提供 glfw把平台差异性封装好 揉在一起告诉glad这些OpenGL的函数实现在哪儿
+    // OpenGL的函数实现一部分由系统提供 一部分由显卡驱动提供 glfw把平台差异性封装好
+    // 揉在一起告诉glad这些OpenGL的函数实现在哪儿
     int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     X_CORE_ASSERT(status, "Could not load GLAD function");
     X_CORE_INFO("OpenGL Info:");
@@ -38,7 +40,7 @@ void OpenGLContext::Init() {
     glGetIntegerv(GL_MINOR_VERSION, &versionMinor);
 
     X_CORE_ASSERT(versionMajor > 3 || (versionMajor == 3 && versionMinor >= 3),
-                  "requires at least OpenGL version 3.3!");
+                  "Requires at least OpenGL version 3.3, not support {}.{}", versionMajor, versionMinor);
 
     // 拿到运行时的OpenGL版本缓存起来
     auto& info = X::GLRendererInfo::Get();

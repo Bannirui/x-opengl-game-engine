@@ -215,6 +215,6 @@ void OpenGLFramebuffer::ClearAttachment(uint32_t attachmentIndex, int value) {
 }
 
 uint32_t OpenGLFramebuffer::GetColorAttachmentRendererID(uint32_t index) const {
-    X_CORE_ASSERT(index < m_colorAttachments.size(), "Out of bounds access");
+    X_CORE_ASSERT(index < m_colorAttachments.size(), "Index[{}] out of bounds[{}]", index, m_colorAttachments.size());
     return m_colorAttachments[index];
 }
