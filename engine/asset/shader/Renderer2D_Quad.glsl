@@ -56,6 +56,7 @@ layout(location = 1) out int o_EntityID;
 
 // 用glUniform1iv把sampler数据传了进来
 // 简单情况下在渲染之前调用一次shader的bind OpenGL就会自动地把2D插槽上的texture发送给frag着色器 所以只要uniform sampler2D xxx就拿到了
+// 默认情况是纹理单元0号的那个纹理对象
 // 现在引擎内部的做法是在初始化texture的时候定义了一个16个大小的texutre缓冲区 在渲染前会变量都bind到插槽上
 // 然后手动传uniform数组到shader方式把纹理对象和纹理单元的映射关系传过来 相当于segment会收到16个采样器
 // 因此vertex attribute会传进来texture index说明用哪个采样器 两个组合起来 segment就知道用哪个采样器了

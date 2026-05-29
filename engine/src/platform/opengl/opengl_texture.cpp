@@ -18,7 +18,8 @@
 OpenGLTexture2D::OpenGLTexture2D(const std::string& path) : m_path(path) {
     X_PROFILE_FUNCTION();
     int width, height, channels;
-    stbi_set_flip_vertically_on_load(1);
+    // OpenGL的y坐标和stb的y坐标定义方向不一样 OpenGL的0在底部 图片的0在顶部 所以要让stb翻转一下 让OpenGL拿到正确方向
+    stbi_set_flip_vertically_on_load(true);
     stbi_uc* data{nullptr};
     {
         X_PROFILE_SCOPE("stbi_load - OpenGLTexture2D::OpenGLTexture2D(const std::string&)");
@@ -39,6 +40,8 @@ OpenGLTexture2D::OpenGLTexture2D(const std::string& path) : m_path(path) {
     }
     // 生成纹理对象
     glGenTextures(1, &m_rendererId);
+    // 激活纹理对象 也可以不用显式激活纹理单元 因为下面的BindTexture这个API会默认自动激活纹理单元0号
+    glActiveTexture(GL_TEXTURE0);
     // 绑定纹理对象 类型是2d
     glBindTexture(GL_TEXTURE_2D, m_rendererId);
 
