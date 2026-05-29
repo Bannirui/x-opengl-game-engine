@@ -2,7 +2,7 @@
 // Created by dingrui on 5/26/26.
 //
 
-#include "renderer/renderer_2D_internal.h"
+#include "renderer/2d/renderer_2D_internal.h"
 #include "x/renderer/renderer_2D.h"
 #include "x/scene/component.h"
 

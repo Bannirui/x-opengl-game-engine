@@ -1,6 +1,8 @@
 #type vertex
 #version 450 core
 
+// vertex的入参 顶点属性vertex attribute OpenGL规范最少16个 实际多少由每个平台硬件决定
+// 入参attribute和uniform的区别在于 每个顶点的attribute都不一样 uniform是整个shader公用的
 layout(location = 0) in vec3 a_Position;
 layout(location = 1) in vec4 a_Color;
 layout(location = 2) in vec2 a_TexCoord;

@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "renderer/batch_group.h"
+#include "renderer/buffer/batch_group.h"
 #include "x/renderer/renderer_2D.h"
 #include "x/renderer/shader.h"
 #include "x/renderer/texture.h"
@@ -13,6 +13,7 @@
 
 #include <glm/glm.hpp>
 
+// 矩形顶点的attribute
 struct QuadVertex {
     glm::vec3 position;
     glm::vec4 color;
@@ -22,6 +23,7 @@ struct QuadVertex {
     int entityID;
 };
 
+// 圆形顶点的attribute
 struct CircleVertex {
     glm::vec3 WorldPosition;
     glm::vec3 LocalPosition;
@@ -31,6 +33,7 @@ struct CircleVertex {
     int EntityID;
 };
 
+// 线段顶点的attribute
 struct LineVertex {
     glm::vec3 Position;
     glm::vec4 Color;

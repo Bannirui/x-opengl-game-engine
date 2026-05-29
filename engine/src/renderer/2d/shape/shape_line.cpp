@@ -2,7 +2,7 @@
 // Created by dingrui on 5/26/26.
 //
 
-#include "renderer/renderer_2D_internal.h"
+#include "renderer/2d/renderer_2D_internal.h"
 #include "x/renderer/renderer_2D.h"
 
 void Renderer2D::DrawLine(const glm::vec3& p0, glm::vec3& p1, const glm::vec4& color, int entityID) {

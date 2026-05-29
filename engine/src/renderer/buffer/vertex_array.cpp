@@ -4,22 +4,18 @@
 
 #include "x/renderer/vertex_array.h"
 
-#include "x/renderer/renderer_api.h"
 #include "platform/opengl/opengl_vertex_array.h"
-#include "x/renderer/renderer.h"
 #include "x/core/x_log.h"
+#include "x/renderer/renderer.h"
+#include "x/renderer/renderer_api.h"
 
-X::Ref<VertexArray> VertexArray::Create()
-{
-    switch (Renderer::GetAPI())
-    {
-        case RendererAPI::API::kNone:
-        {
+X::Ref<VertexArray> VertexArray::Create() {
+    switch (Renderer::GetAPI()) {
+        case RendererAPI::API::kNone: {
             X_CORE_ASSERT(false, "RendererAPI::kNone is currently not supported!");
             return nullptr;
         }
-        case RendererAPI::API::kOpenGL:
-        {
+        case RendererAPI::API::kOpenGL: {
             return X::CreateRef<OpenGLVertexArray>();
         }
     }

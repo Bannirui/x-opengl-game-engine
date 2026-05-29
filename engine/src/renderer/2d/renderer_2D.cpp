@@ -4,8 +4,7 @@
 
 #include "x/renderer/renderer_2D.h"
 
-#include "renderer/renderer_2D_internal.h"
-#include "x/core/base.h"
+#include "renderer_2D_internal.h"
 #include "x/renderer/camera.h"
 #include "x/renderer/editor_camera.h"
 #include "x/renderer/render_command.h"
