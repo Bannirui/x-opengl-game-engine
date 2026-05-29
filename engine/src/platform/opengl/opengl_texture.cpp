@@ -49,6 +49,17 @@ OpenGLTexture2D::OpenGLTexture2D(const std::string& path) : m_path(path) {
     stbi_image_free(data);
 
     // 设置纹理对象参数
+    /**
+     * 电脑屏幕的像素和纹理像素的映射问题 它们几乎不会严格完整映射
+     *   - 图片放大时 一个texel要覆盖很多pixel GPU面临的问题是中间色怎么办
+     *     如果不用filtering GPU会直接复制最近的texel会导致马赛克
+     *   - 图片缩小时 一个pixel对应成千上万个texel 这个时候GPU面临的问题更大 选哪个texel显示
+     *     如果随便取就近的一个texel 会导致严重的走样
+     *       - 闪烁
+     *       - 摩尔纹
+     *       - 抖动
+     *       - 远处噪声
+     */
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     /**
