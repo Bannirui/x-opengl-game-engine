@@ -10,6 +10,10 @@
 class OpenGLTexture2D : public Texture2D
 {
 public:
+    /**
+     * 创建贴图 用的磁盘上现有的图片
+     * @param path 图片路径
+     */
     OpenGLTexture2D(const std::string& path);
     OpenGLTexture2D(uint32_t width, uint32_t height);
     ~OpenGLTexture2D() override;

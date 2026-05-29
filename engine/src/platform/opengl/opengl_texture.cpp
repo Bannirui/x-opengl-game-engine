@@ -51,7 +51,20 @@ OpenGLTexture2D::OpenGLTexture2D(const std::string& path) : m_path(path) {
     // 设置纹理对象参数
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
+    /**
+     * 纹理的坐标是0到1 起点是左下方的xy坐标系
+     * 指定的贴图坐标是(0,0)到(1,1) 要是超出了这个约定范围怎么办
+     *   - S对应U x横向
+     *   - T对应V y纵向
+     * 默认的策略是repeat
+     * OpenGL的策略
+     *   - repeat 循环
+     *   - mirror repeat 镜像循环
+     *   - clamp to edge 超出后用边缘的像素
+     *     - <0 用最左边的像素
+     *     - >1 用最右边的像素
+     *   - clamp to border 越界后不采样纹理 直接用borderColor 就是要先给shader设置一个borderColor一旦越界就用它
+     */
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
