@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include <string>
-
 #include "x/core/timestep.h"
+
+#include <string>
 
 class Event;
 
@@ -19,34 +19,37 @@ class Event;
  *   - 物理
  *   - UI
  */
-class Layer
-{
+class Layer {
 public:
-    Layer(const std::string &name = "Layer");
+    Layer(const std::string& name = "Layer");
     virtual ~Layer() = default;
 
     /**
      * 不同的模块组合进系统
      */
     virtual void OnAttach() {}
+
     /**
      * 从系统中移除模块
      */
     virtual void OnDetach() {}
+
     /**
      * 系统向各模块发布渲染
      */
-    virtual void OnUpdate(Timestep ts) {}
+    virtual void OnUpdate(Timestep /* ts */) {}
+
     /**
      * 每帧都要绘制Imgui的调试面板 各层怎么绘制各个模块自己决定这个函数的实现
      * Imgui的渲染独立于OnUpdate的绘制 确保先更新Imgui再更新UI逻辑
      */
     virtual void OnImguiRender() {}
+
     /**
      * 系统向各模块发布事件
      * @param e 系统发布的是什么事件
      */
-    virtual void OnEvent(Event &e) {}
+    virtual void OnEvent(Event& /* e */) {}
 
     /**
      * 用事件掩码看看是不是自己感兴趣的事件
@@ -54,7 +57,9 @@ public:
      */
     bool IsInterestedIn(const Event& e) const;
 
-    const std::string &get_name() const { return m_debugName; }
+    const std::string& get_name() const {
+        return m_debugName;
+    }
 
 protected:
     std::string m_debugName;

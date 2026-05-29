@@ -6,34 +6,36 @@
 
 #include "x/core/base.h"
 
-#include <fmt/format.h>
-
 #include <memory>
-#include <ostream>
 #include <string>
 #include <type_traits>
 
-// 事件枚举
+// 用宏定义事件 在EventTypeName函数里面就不用再手写了
+#define EVENT_TYPE_LIST(X) \
+    X(None, = 0)           \
+    X(WindowClose)         \
+    X(WindowResize)        \
+    X(WindowFocus)         \
+    X(WindowLostFocus)     \
+    X(WindowMoved)         \
+    X(AppTick)             \
+    X(AppUpdate)           \
+    X(AppRender)           \
+    X(KeyPressed)          \
+    X(KeyReleased)         \
+    X(KeyTyped)            \
+    X(MouseButtonPressed)  \
+    X(MouseButtonReleased) \
+    X(MouseMoved)          \
+    X(MouseScrolled)
+
 enum class EventType {
-    kNone = 0,
-    kWindowClose,
-    kWindowResize,
-    kWindowFocus,
-    kWindowLostFocus,
-    kWindowMoved,
-    kAppTick,
-    kAppUpdate,
-    kAppRender,
-    kKeyPressed,
-    kKeyReleased,
-    kKeyTyped,
-    kMouseButtonPressed,
-    kMouseButtonReleased,
-    kMouseMoved,
-    kMouseScrolled,
+#define ENUM_VALUE(name, ...) k##name __VA_ARGS__,
+    EVENT_TYPE_LIST(ENUM_VALUE)
+#undef ENUM_VALUE
 };
 
-// 事件类别枚举 层看自己感不感兴趣就看标识里面有没有这个类型
+// 事件类别枚举 层看自己感不感兴趣就看标识里面有没有这个类型 C风格枚举原生支持运算
 enum EventCategory {
     kNone = 0,
     kEventCategoryApplication = BIT(0),
@@ -43,44 +45,19 @@ enum EventCategory {
     kEventCategoryMouseButton = BIT(4),
 };
 
-// 每个事件的名称 用来给事件本身去获取 比如打印在日志里面
+// 每个事件的名称 用来给事件本身去获取 比如打印在日志里面 kWindowClose事件的名称就是WindowClose
 constexpr const char* EventTypeName(EventType type) {
     switch (type) {
-        case EventType::kNone:
-            return "None";
-        case EventType::kWindowClose:
-            return "WindowClose";
-        case EventType::kWindowResize:
-            return "WindowResize";
-        case EventType::kWindowFocus:
-            return "WindowFocus";
-        case EventType::kWindowLostFocus:
-            return "WindowLostFocus";
-        case EventType::kWindowMoved:
-            return "WindowMoved";
-        case EventType::kAppTick:
-            return "AppTick";
-        case EventType::kAppUpdate:
-            return "AppUpdate";
-        case EventType::kAppRender:
-            return "AppRender";
-        case EventType::kKeyPressed:
-            return "KeyPressed";
-        case EventType::kKeyReleased:
-            return "KeyReleased";
-        case EventType::kKeyTyped:
-            return "KeyTyped";
-        case EventType::kMouseButtonPressed:
-            return "MouseButtonPressed";
-        case EventType::kMouseButtonReleased:
-            return "MouseButtonReleased";
-        case EventType::kMouseMoved:
-            return "MouseMoved";
-        case EventType::kMouseScrolled:
-            return "MouseScrolled";
+#define ENUM_NAME(name, ...) \
+    case EventType::k##name: \
+        return #name;
+        EVENT_TYPE_LIST(ENUM_NAME)
+#undef ENUM_NAME
     }
     return "Unknown";
 }
+
+#undef EVENT_TYPE_LIST
 
 // 事件的基类
 class Event {
@@ -101,6 +78,7 @@ public:
      */
     virtual std::unique_ptr<Event> Clone() const = 0;
 
+    // 这个函数的
     virtual std::string ToString() const {
         return GetName();
     }
@@ -125,7 +103,7 @@ public:
  *
  * @tparam Derived   具体事件类型 比如KeyPressEvent
  * @tparam eType     事件类型枚举值
- * @tparam eCategory 事件类别位掩码
+ * @tparam eCategory 事件类别枚举 这个枚举是C风格
  * @tparam Base      中间基类 如KeyEvent提供m_keyCode 默认直接继承Event
  */
 template <typename Derived, EventType eType, int eCategory, typename Base = Event>
@@ -172,16 +150,4 @@ public:
 
 private:
     Event& m_event;
-};
-
-inline std::ostream& operator<<(std::ostream& os, const Event& e) {
-    return os << e.ToString();
-}
-
-// 整合spdlog的格式化输出 支持Event的所有派生类
-template <typename T>
-struct fmt::formatter<T, std::enable_if_t<std::is_base_of<Event, T>::value, char>> : fmt::formatter<std::string> {
-    auto format(const Event& e, format_context& ctx) const {
-        return fmt::formatter<std::string>::format(e.ToString(), ctx);
-    }
 };

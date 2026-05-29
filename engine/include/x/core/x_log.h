@@ -1,41 +1,46 @@
 #pragma once
 
+#include <fmt/format.h>
 #include <glm/gtx/string_cast.hpp>
 #include <spdlog/spdlog.h>
 
-#include "x/core/base.h"
-
-class XLog
-{
+class XLog {
 public:
     static void Init();
 
-    static X::Ref<spdlog::logger>& get_coreLogger() { return s_coreLogger; }
+    static X::Ref<spdlog::logger>& get_coreLogger() {
+        return s_coreLogger;
+    }
 
-    static X::Ref<spdlog::logger>& get_clientLogger() { return s_clientLogger; }
+    static X::Ref<spdlog::logger>& get_clientLogger() {
+        return s_clientLogger;
+    }
 
 private:
     static X::Ref<spdlog::logger> s_coreLogger;
     static X::Ref<spdlog::logger> s_clientLogger;
 };
 
-template <typename OStream, glm::length_t L, typename T, glm::qualifier Q>
-inline OStream& operator<<(OStream& os, const glm::vec<L, T, Q>& vector)
-{
-    return os << glm::to_string(vector);
-}
+template <glm::length_t L, typename T, glm::qualifier Q>
+struct fmt::formatter<glm::vec<L, T, Q>> : fmt::formatter<std::string> {
+    auto format(const glm::vec<L, T, Q>& v, fmt::format_context& ctx) const {
+        return fmt::formatter<std::string>::format(glm::to_string(v), ctx);
+    }
+};
 
-template <typename OStream, glm::length_t C, glm::length_t R, typename T, glm::qualifier Q>
-inline OStream& operator<<(OStream& os, const glm::mat<C, R, T, Q>& matrix)
-{
-    return os << glm::to_string(matrix);
-}
+template <glm::length_t C, glm::length_t R, typename T, glm::qualifier Q>
+struct fmt::formatter<glm::mat<C, R, T, Q>> : fmt::formatter<std::string> {
+    auto format(const glm::mat<C, R, T, Q>& m, fmt::format_context& ctx) const {
+        return fmt::formatter<std::string>::format(glm::to_string(m), ctx);
+    }
+};
 
-template <typename OStream, typename T, glm::qualifier Q>
-inline OStream& operator<<(OStream& os, const glm::qua<T, Q>& quaternion)
-{
-    return os << glm::to_string(quaternion);
-}
+template <typename T, glm::qualifier Q>
+struct fmt::formatter<glm::qua<T, Q>> : fmt::formatter<std::string> {
+    auto format(const glm::qua<T, Q>& q, fmt::format_context& ctx) const {
+        return fmt::formatter<std::string>::format(glm::to_string(q), ctx);
+    }
+};
 
 // Core log macros
 #define X_CORE_TRACE(...) ::XLog::get_coreLogger()->trace(__VA_ARGS__)

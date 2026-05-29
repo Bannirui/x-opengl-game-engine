@@ -18,9 +18,6 @@ class Texture2D;
  * CPU层面 [Base...Ptr)堆内存表示实际放的顶点数据 flush的时候数据灌给GPU
  */
 class Renderer2D {
-private:
-    static void Flush();
-
 public:
     static void Init();
     static void Shutdown();
@@ -94,8 +91,11 @@ public:
         }
     };
 
-    static void ResetStats();
     static Statistics GetStats();
+    static void ResetStats();
+
+private:
+    static void Flush();
 
 private:
     static void startBatch();
