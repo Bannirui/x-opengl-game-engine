@@ -20,7 +20,7 @@ void Renderer2D::Init() {
         {ShaderDataType::kFloat3, "a_Position"},     // 对应shader的location=0 glsl里面的变量是a_Position
         {ShaderDataType::kFloat4, "a_Color"},        // 对应shader的location=1 glsl里面的变量是a_Color
         {ShaderDataType::kFloat2, "a_TexCoord"},     // 对应shader的location=2 glsl里面的变量是a_TexCoord
-        {ShaderDataType::kFloat, "a_TexIndex"},      // 对应shader的location=3 glsl里面的变量是a_TexIndex
+        {ShaderDataType::kInt, "a_TexIndex"},        // 对应shader的location=3 glsl里面的变量是a_TexIndex 用哪个贴图
         {ShaderDataType::kFloat, "a_TilingFactor"},  // 对应shader的location=4 glsl里面的变量是a_TilingFactor
         {ShaderDataType::kInt, "a_EntityID"},        // 对应shader的location=5 glsl里面的变量是a_EntityID
     });
@@ -45,9 +45,19 @@ void Renderer2D::Init() {
     s_data.WhiteTexture->SetData(&whiteTextureData, sizeof(uint32_t));
 
     s_data.QuadShader = Shader::Create("asset/shader/Renderer2D_Quad.glsl");
+    s_data.QuadShader->Bind();
+    {
+        // 用uniform变量形式告诉shader采样器和纹理单元号的映射关系
+        // 因为vertex attribute只会告诉shader纹理单元编号 纹理单元跟采样器一一映射 shader就知道用哪个贴图采样器了
+        int samplers[Renderer2DData::MaxTextureSlots];
+        for (int i = 0; i < Renderer2DData::MaxTextureSlots; i++) {
+            samplers[i] = i;
+        }
+        s_data.QuadShader->SetIntArray("u_Textures", samplers, Renderer2DData::MaxTextureSlots);
+    }
     s_data.CircleShader = Shader::Create("asset/shader/Renderer2D_Circle.glsl");
     s_data.LineShader = Shader::Create("asset/shader/Renderer2D_Line.glsl");
-
+    // 贴图缓存区放引擎默认的贴图
     s_data.TextureSlots[0] = s_data.WhiteTexture;
 
     s_data.QuadVertexPositions[0] = {-0.5f, -0.5f, 0.0f, 1.0f};
@@ -105,6 +115,7 @@ void Renderer2D::Flush() {
         // 把顶点数据灌给GPU的显存
         s_data.Quad.VBO->SetData(s_data.Quad.Base, s_data.Quad.GetDataSize());
         for (uint32_t i = 0; i < s_data.TextureSlotIndex; i++) {
+            // 把贴图缓冲区里面的贴图纹理单元都激活 shader程序真正用哪个会用vertex attribute的方式传进去贴图缓冲区的脚标
             s_data.TextureSlots[i]->Bind(i);
         }
         s_data.QuadShader->Bind();

@@ -16,6 +16,7 @@ Sandbox2D::~Sandbox2D() {}
 void Sandbox2D::OnAttach() {
     X_PROFILE_FUNCTION();
     m_checkerboardTexture = Texture2D::Create("asset/texture/Checkerboard.png");
+    m_cppTexture = Texture2D::Create("asset/texture/CPPLogo.png");
 }
 
 void Sandbox2D::OnDetach() {
@@ -47,18 +48,18 @@ void Sandbox2D::OnUpdate(Timestep ts) {
         // 纹理矩形
         Renderer2D::DrawQuad({0.0f, -0.5f}, {1.0f, 1.0f}, m_checkerboardTexture);
         // 旋转矩形
-        Renderer2D::DrawRotatedQuad({1.5f, -0.5f}, {1.0f, 1.0f}, rotation, m_checkerboardTexture, 10.0f);
+        Renderer2D::DrawRotatedQuad({1.5f, -0.5f}, {1.0f, 1.0f}, rotation, m_cppTexture, 10.0f);
         // 圆形
         {
-            glm::mat4 transform = glm::translate(glm::mat4(1.0f), {-1.5f, 1.5f, 0.0f}) *
-                                  glm::scale(glm::mat4(1.0f), {1.0f, 1.0f, 1.0f});
+            glm::mat4 transform =
+                glm::translate(glm::mat4(1.0f), {-1.5f, 1.5f, 0.0f}) * glm::scale(glm::mat4(1.0f), {1.0f, 1.0f, 1.0f});
             Renderer2D::DrawCircle(transform, {0.8f, 0.2f, 0.3f, 1.0f}, 1.0f, 0.01f);
         }
         // 矩形框
         Renderer2D::DrawRect({0.0f, 1.5f, 0.0f}, {1.0f, 1.0f}, {0.2f, 0.8f, 0.2f, 1.0f});
         // 旋转的线
         glm::vec3 p0 = {1.5f, 1.0f, 0.0f};
-        float     r  = glm::radians(rotation);
+        float r = glm::radians(rotation);
         glm::vec3 p1 = {1.5f + cos(r) * 0.5f, 1.0f + sin(r) * 0.5f, 0.0f};
         Renderer2D::DrawLine(p0, p1, {0.8f, 0.8f, 0.2f, 1.0f});
         // 所有图形的VBO数据一起提交给GPU

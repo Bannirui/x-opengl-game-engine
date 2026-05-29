@@ -278,7 +278,7 @@ void SceneSerializer::Serialize(const std::string& filepath)
     fout << out.c_str();
 }
 
-void SceneSerializer::SerializeRuntime(const std::string& filepath)
+void SceneSerializer::SerializeRuntime(const std::string& /* filepath */)
 {
     X_CORE_ASSERT(false);
 }
@@ -395,7 +395,7 @@ bool SceneSerializer::Deserialize(const std::string& filepath)
     return true;
 }
 
-bool SceneSerializer::DeserializeRuntime(const std::string& filepath)
+bool SceneSerializer::DeserializeRuntime(const std::string& /* filepath */)
 {
     X_CORE_ASSERT(false);
     return false;

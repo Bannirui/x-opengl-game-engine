@@ -33,20 +33,24 @@ void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, cons
     DrawQuad(transform, texture, tilingFactor, tintColor);
 }
 
+/**
+ * 没有指定贴图 就用引擎里面自带的 贴图缓冲区0号位上的贴图
+ */
 void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color, int entityID) {
     X_PROFILE_FUNCTION();
 
-    const float textureIndex = 0.0f;
     constexpr glm::vec2 textureCoords[] = {{0.0f, 0.0f}, {1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f}};
     const float tilingFactor = 1.0f;
     if (s_data.Quad.IsFull()) {
         nextBatch();
     }
+    // 内存缓冲区[Base...Ptr)放画矩形要的4个顶点
     for (size_t i = 0; i < 4; i++) {
         s_data.Quad.Ptr->position = transform * s_data.QuadVertexPositions[i];
         s_data.Quad.Ptr->color = color;
         s_data.Quad.Ptr->texCoord = textureCoords[i];
-        s_data.Quad.Ptr->texIndex = textureIndex;
+        // 默认用引擎贴图缓冲区里面0号位上的贴图
+        s_data.Quad.Ptr->texIndex = 0;
         s_data.Quad.Ptr->tilingFactor = tilingFactor;
         s_data.Quad.Ptr->entityID = entityID;
         s_data.Quad.Ptr++;
@@ -57,6 +61,14 @@ void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color, in
     s_data.Stats.PrimitiveCount++;
 }
 
+/**
+ *
+ * @param transform
+ * @param texture 指定的贴图贴图
+ * @param tilingFactor
+ * @param tintColor
+ * @param entityID
+ */
 void Renderer2D::DrawQuad(const glm::mat4& transform, const X::Ref<Texture2D>& texture, float tilingFactor,
                           const glm::vec4& tintColor, int entityID) {
     X_PROFILE_FUNCTION();
@@ -65,20 +77,22 @@ void Renderer2D::DrawQuad(const glm::mat4& transform, const X::Ref<Texture2D>& t
     if (s_data.Quad.IsFull()) {
         nextBatch();
     }
-
-    float textureIndex = 0.0f;
+    // 看看要用的贴图是不是已经在缓存区了
+    uint32_t textureIndex = 0;
     for (uint32_t i = 1; i < s_data.TextureSlotIndex; i++) {
         if (*s_data.TextureSlots[i] == *texture) {
-            textureIndex = (float)i;
+            textureIndex = i;
             break;
         }
     }
-    if (textureIndex == 0.0f) {
+    // 不是0说明在缓存区已经有了相同的贴图 就不用重复添加到缓冲区了
+    if (textureIndex == 0) {
         if (s_data.TextureSlotIndex >= Renderer2DData::MaxTextureSlots) {
             nextBatch();
         }
-        textureIndex = (float)s_data.TextureSlotIndex;
+        // 把贴图放到缓冲区缓存起来
         s_data.TextureSlots[s_data.TextureSlotIndex] = texture;
+        textureIndex = s_data.TextureSlotIndex;
         s_data.TextureSlotIndex++;
     }
     // 在CPU侧缓存[Base...Ptr)上放4个顶点
@@ -86,7 +100,8 @@ void Renderer2D::DrawQuad(const glm::mat4& transform, const X::Ref<Texture2D>& t
         s_data.Quad.Ptr->position = transform * s_data.QuadVertexPositions[i];
         s_data.Quad.Ptr->color = tintColor;
         s_data.Quad.Ptr->texCoord = textureCoords[i];
-        s_data.Quad.Ptr->texIndex = textureIndex;
+        // shader的采样器用贴图缓冲区的哪个贴图 用vertex attribute的方式告诉shader
+        s_data.Quad.Ptr->texIndex = static_cast<int>(textureIndex);
         s_data.Quad.Ptr->tilingFactor = tilingFactor;
         s_data.Quad.Ptr->entityID = entityID;
         s_data.Quad.Ptr++;

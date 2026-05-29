@@ -18,7 +18,8 @@ struct QuadVertex {
     glm::vec3 position;
     glm::vec4 color;
     glm::vec2 texCoord;
-    float texIndex;
+    // shader采样器用贴图缓冲区的哪个贴图
+    int texIndex;
     float tilingFactor;
     int entityID;
 };
@@ -41,7 +42,7 @@ struct LineVertex {
 };
 
 struct Renderer2DData {
-    static const uint32_t MaxTextureSlots = 16;
+    constexpr static int MaxTextureSlots = 16;
 
     // 矩形用glDrawElements的方式画 每个矩形4个顶点 画2个三角形
     BatchGroup<QuadVertex, 4> Quad;
@@ -54,8 +55,16 @@ struct Renderer2DData {
     BatchGroup<LineVertex, 2, false> Line;
     X::Ref<Shader> LineShader;
     float LineWidth{2.0f};
-
+    /**
+     * 贴图缓冲区
+     *   - 不重复添加 要用的贴图都缓存在这
+     *   - 0号位是引擎的默认贴图
+     *   - [1...i)是客户端添加给引擎的
+     * 渲染的时候之前会把缓存区所有贴图都绑定到OpenGL的纹理单元
+     * 渲染的时候会通过vertex attribute方式把用哪个贴图 对应的脚标告诉shader 然后shader用采样器处理它就行
+     */
     std::array<X::Ref<Texture2D>, MaxTextureSlots> TextureSlots;
+    // [0...i)都是贴图 0号位上是引擎给的默认贴图 [1...i)是客户端给的贴图
     uint32_t TextureSlotIndex = 1;
 
     glm::vec4 QuadVertexPositions[4];
