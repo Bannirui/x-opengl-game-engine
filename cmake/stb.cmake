@@ -11,6 +11,9 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(stb)
 # stb本身是纯头文件 创建一个cpp文件引用stb头文件编译成静态库库给自己链接使用
 set(STB_IMAGE_CPP "${CMAKE_CURRENT_BINARY_DIR}/stb_image_impl.cpp")
+# cpp文件只要定义一个宏就行 这是单文件库典型的做法 用宏控制是否生成实现
+# define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 file(WRITE ${STB_IMAGE_CPP}
         "#define STB_IMAGE_IMPLEMENTATION\n#include \"stb_image.h\"\n")
 add_library(stb STATIC ${STB_IMAGE_CPP})
