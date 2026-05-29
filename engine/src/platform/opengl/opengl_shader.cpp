@@ -300,7 +300,18 @@ void OpenGLShader::uploadUniformInt(const std::string& name, int value) const {
 
 void OpenGLShader::uploadUniformIntArray(const std::string& name, int* values, uint32_t count) const {
     GLint location = glGetUniformLocation(m_rendererId, name.c_str());
-    glUniform1iv(location, count, values);
+    if (location != -1) {
+        glUniform1iv(location, count, values);
+        return;
+    }
+    // SPIR-V驱动可能不支持按数组名查询location 逐个元素尝试
+    for (uint32_t i = 0; i < count; i++) {
+        std::string elemName = name + "[" + std::to_string(i) + "]";
+        GLint elemLoc = glGetUniformLocation(m_rendererId, elemName.c_str());
+        if (elemLoc != -1) {
+            glUniform1i(elemLoc, values[i]);
+        }
+    }
 }
 
 void OpenGLShader::uploadUniformFloat(const std::string& name, float value) const {
@@ -342,6 +353,12 @@ void OpenGLShader::compileBinariesIfSupportSpirv(const std::unordered_map<GLenum
         shaderc::CompileOptions options;
         options.SetTargetEnvironment(shaderc_target_env_opengl, shaderc_env_version_opengl_4_5);
         options.SetOptimizationLevel(shaderc_optimization_level_performance);
+        // 让glsl在生成的SPIR-V字节码中保留OpName/OpLine等调试符号
+        // 不加这一行时shaderc_optimization_level_performance优化级别会剥离这些调试信息
+        // OpenGL驱动需要OpName指令才能通过glGetUniformLocation按名称查找uniform变量
+        // 没有OpName glGetUniformLocation("u_Textures")返回-1
+        // 后续的glUniform1iv就是空操作 所有sampler保持默认值0 指向白色纹理 导致贴图显示纯白
+        options.SetGenerateDebugInfo();
 
         std::filesystem::path cacheDirectory = Util::GetCacheDirectory();
         bool useCache = !m_filePath.empty();
@@ -452,6 +469,8 @@ void OpenGLShader::creatProgram() {
         for (auto id : shaderIDs) {
             glDeleteShader(id);
         }
+        X_CORE_ASSERT(false, "Shader link fail");
+        return;
     }
     for (auto id : shaderIDs) {
         glDetachShader(program, id);

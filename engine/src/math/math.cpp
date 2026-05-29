@@ -4,8 +4,6 @@
 
 #include "x/math/math.h"
 
-#include "pch.h"
-
 // #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/matrix_decompose.hpp>
 

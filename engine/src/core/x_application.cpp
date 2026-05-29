@@ -4,7 +4,6 @@
 
 #include "x/core/x_application.h"
 
-#include "pch.h"
 #include "x/core/layer.h"
 #include "x/core/timestep.h"
 #include "x/events/application_event.h"
