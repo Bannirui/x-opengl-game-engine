@@ -291,7 +291,9 @@ void OpenGLShader::SetMat4(const std::string& name, const glm::mat4& value) {
 }
 
 void OpenGLShader::uploadUniformInt(const std::string& name, int value) {
+    // 先拿到shader程序里面uniform变量对应的location
     GLint location = glGetUniformLocation(m_rendererId, name.c_str());
+    // 通过location给uniform变量传值 uniform变量的命名空间是每个shader的也就是说明这个变量只能当前shader用 UBO是OpenGL在显存开辟的常量内存可以给所有的shader共享
     glUniform1i(location, value);
 }
 
