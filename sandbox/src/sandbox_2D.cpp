@@ -48,11 +48,17 @@ void Sandbox2D::OnUpdate(Timestep ts) {
         // 纹理矩形
         Renderer2D::DrawQuad({0.0f, -0.5f}, {1.0f, 1.0f}, m_checkerboardTexture);
         // 旋转矩形
-        Renderer2D::DrawRotatedQuad({1.5f, -0.5f}, {1.0f, 1.0f}, rotation, m_cppTexture, 10.0f);
+        Renderer2D::DrawRotatedQuad({2.5f, -1.0f}, /*右移2.5 下移0.5*/
+            {2.0f, 0.5f},/*长2倍 宽一半*/
+            rotation,/*旋转*/
+            m_cppTexture,/*贴图*/
+            10.0f/*亮度调节*/
+            );
         // 圆形
         {
-            glm::mat4 transform =
-                glm::translate(glm::mat4(1.0f), {-1.5f, 1.5f, 0.0f}) * glm::scale(glm::mat4(1.0f), {1.0f, 1.0f, 1.0f});
+            // 变换矩阵
+            glm::mat4 transform = glm::translate(glm::mat4(1.0f), {-1.5f, 1.5f, 0.0f}) * /*再平移*/
+                                  glm::scale(glm::mat4(1.0f), {1.0f, 1.0f, 1.0f});       /*先缩放*/
             Renderer2D::DrawCircle(transform, {0.8f, 0.2f, 0.3f, 1.0f}, 1.0f, 0.01f);
         }
         // 矩形框

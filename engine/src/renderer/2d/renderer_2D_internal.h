@@ -15,11 +15,15 @@
 
 // 矩形顶点的attribute
 struct QuadVertex {
+    // 顶点要平移多少
     glm::vec3 position;
+    // 颜色
     glm::vec4 color;
+    // 贴图uv坐标
     glm::vec2 texCoord;
     // shader采样器用贴图缓冲区的哪个贴图
     int texIndex;
+    // 贴图因子 uv坐标值区间[0...1] 假设因子是n 那么现在uv区间就是[0...n] 当uv超出1后触发OpenGL策略 现在设置的是repeat 就会重复n个贴图
     float tilingFactor;
     int entityID;
 };

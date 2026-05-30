@@ -59,7 +59,7 @@ void Renderer2D::Init() {
     s_data.LineShader = Shader::Create("asset/shader/Renderer2D_Line.glsl");
     // 贴图缓存区放引擎默认的贴图
     s_data.TextureSlots[0] = s_data.WhiteTexture;
-
+    //  矩形长1
     s_data.QuadVertexPositions[0] = {-0.5f, -0.5f, 0.0f, 1.0f};
     s_data.QuadVertexPositions[1] = {0.5f, -0.5f, 0.0f, 1.0f};
     s_data.QuadVertexPositions[2] = {0.5f, 0.5f, 0.0f, 1.0f};
