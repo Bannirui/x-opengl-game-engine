@@ -52,8 +52,8 @@ void Sandbox2D::OnUpdate(Timestep ts) {
             {2.0f, 0.5f},/*长2倍 宽一半*/
             rotation,/*旋转*/
             m_cppTexture,/*贴图*/
-            10.0f/*亮度调节*/
-            );
+            10.0f/*贴图的平铺效果*/
+        );
         // 圆形
         {
             // 变换矩阵
