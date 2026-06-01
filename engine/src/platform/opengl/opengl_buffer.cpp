@@ -12,7 +12,7 @@
 /**
  * 创建VBO(vertex buffer object)
  * GPU显存上开辟连续的空间用来放顶点数据
- * @param vertices 顶点数据
+ * @param vertices VBO要放的顶点数据 在内存上的地址
  * @param size 要在显存上开辟多大空间 多少个字节
  */
 OpenGLVertexBuffer::OpenGLVertexBuffer(float *vertices, uint32_t size)

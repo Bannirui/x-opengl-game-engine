@@ -9,10 +9,6 @@
 // VBO
 class OpenGLVertexBuffer : public VertexBuffer {
 public:
-    /**
-     * @param vertices VBO要放的顶点数据 在内存上的地址
-     * @param size 这些数据最终要放在显存 也就是需要要显存上开辟多大空间 多少个字节
-     */
     OpenGLVertexBuffer(float* vertices, uint32_t size);
     /**
      * 空VBO 先不放数据 后面再放

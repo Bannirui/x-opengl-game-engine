@@ -87,7 +87,7 @@ static uint32_t ShaderDataTypeSize(ShaderDataType type) {
  *   - normal
  *   - ...
  * 这么多个分量是什么顺序 每个分量多少个数字 每个数字是什么类型
- * BufferElement就表达一个分量
+ * BufferElement就表达一个分量也就是对应shader里面的attribute
  */
 struct BufferElement {
     /**
@@ -181,7 +181,7 @@ struct BufferElement {
 };
 
 /**
- * VBO的布局情况
+ * VBO的多个attribute布局情况
  * VBO里面就是1个或多个顶点
  * 每个顶点由1个或多个分量组成
  *   - pos
