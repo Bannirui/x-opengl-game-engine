@@ -32,20 +32,20 @@ public:
     /**
      * 调用底层绘制API DrawElements
      * 用索引方式告诉GPU怎么选取这些顶点
-     * @param vertexArray VAO数据在CPU侧内存什么位置
-     * @param count VAO管理了多少个顶点VBO
+     * @param vao VAO数据在CPU侧内存什么位置 内存地址
+     * @param count 多少个顶点的索引
      */
-    static void DrawIndexed(const X::Ref<VertexArray>& vertexArray, uint32_t count = 0) {
-        s_rendererAPI->DrawIndexed(vertexArray, count);
+    static void DrawIndexed(const X::Ref<VertexArray>& vao, uint32_t count = 0) {
+        s_rendererAPI->DrawIndexed(vao, count);
     }
 
     /**
      * 底层绘制线段API DrawArrays
-     * @param vertexArray VBO数据在哪儿
+     * @param vao VAO数据在内存的什么位置 内存地址
      * @param vertexCount 要画多少个顶点
      */
-    static void DrawLines(const X::Ref<VertexArray>& vertexArray, uint32_t vertexCount) {
-        s_rendererAPI->DrawLines(vertexArray, vertexCount);
+    static void DrawLines(const X::Ref<VertexArray>& vao, uint32_t vertexCount) {
+        s_rendererAPI->DrawLines(vao, vertexCount);
     }
 
     static void SetLineWidth(float width) {

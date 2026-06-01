@@ -37,6 +37,10 @@ public:
         return m_name;
     }
 
+    uint32_t GetRendererID() const override {
+        return m_rendererId;
+    }
+
     void Bind() const override;
     void Unbind() const override;
 

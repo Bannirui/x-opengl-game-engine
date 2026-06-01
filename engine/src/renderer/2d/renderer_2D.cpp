@@ -82,6 +82,7 @@ void Renderer2D::Shutdown() {
 
 void Renderer2D::BeginScene(const OrthographicCamera& camera) {
     X_PROFILE_FUNCTION();
+    s_data.CameraUniformBuffer->Bind();
     s_data.CameraBuffer.ViewProjection = camera.get_viewProjectionMatrix();
     s_data.CameraUniformBuffer->SetData(&s_data.CameraBuffer, sizeof(Renderer2DData::CameraData));
     startBatch();
@@ -89,6 +90,7 @@ void Renderer2D::BeginScene(const OrthographicCamera& camera) {
 
 void Renderer2D::BeginScene(const Camera& camera, const glm::mat4& transform) {
     X_PROFILE_FUNCTION();
+    s_data.CameraUniformBuffer->Bind();
     s_data.CameraBuffer.ViewProjection = camera.get_projection() * glm::inverse(transform);
     s_data.CameraUniformBuffer->SetData(&s_data.CameraBuffer, sizeof(Renderer2DData::CameraData));
     startBatch();
@@ -96,6 +98,7 @@ void Renderer2D::BeginScene(const Camera& camera, const glm::mat4& transform) {
 
 void Renderer2D::BeginScene(const EditorCamera& camera) {
     X_PROFILE_FUNCTION();
+    s_data.CameraUniformBuffer->Bind();
     s_data.CameraBuffer.ViewProjection = camera.GetViewProjection();
     s_data.CameraUniformBuffer->SetData(&s_data.CameraBuffer, sizeof(Renderer2DData::CameraData));
     startBatch();

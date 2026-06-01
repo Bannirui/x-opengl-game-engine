@@ -23,7 +23,9 @@ public:
     OpenGLUniformBuffer(uint32_t size, uint32_t binding);
     ~OpenGLUniformBuffer() override;
     void SetData(const void* data, uint32_t size, uint32_t offset = 0) override;
+    void Bind() const override;
 
 private:
     uint32_t m_rendererID{0};
+    uint32_t m_binding{0};
 };

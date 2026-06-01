@@ -7,20 +7,12 @@
 #include <glad/glad.h>
 
 OpenGLUniformBuffer::OpenGLUniformBuffer(uint32_t size, uint32_t binding)
+    : m_binding(binding)
 {
-    // 生成GPU Buffer对象
     glGenBuffers(1, &m_rendererID);
-    // 绑定Buffer类型 UBO类型
     glBindBuffer(GL_UNIFORM_BUFFER, m_rendererID);
-    // 分配GPU显存 只是先分配空内存 暂时没有CPU内存的数据传过去
     glBufferData(GL_UNIFORM_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
-    /**
-     * UBO的关键 绑定到binding port 跟shader对应
-     *   - 这里binding=0 -> GPU会自动slot=0 -> Camera uniform -> shader渲染
-     *   - 这里binding=1 -> GPU会自动slot=1 -> Lights uniform -> shader渲染
-     */
     glBindBufferBase(GL_UNIFORM_BUFFER, binding, m_rendererID);
-    // 解绑OpenGL状态机 防止后面误操作
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
@@ -42,10 +34,12 @@ OpenGLUniformBuffer::~OpenGLUniformBuffer()
  */
 void OpenGLUniformBuffer::SetData(const void* data, uint32_t size, uint32_t offset)
 {
-    // 准备给GPU显存的EBO灌数据 先告诉OpenGL状态机槽位绑定到这个UBO
     glBindBuffer(GL_UNIFORM_BUFFER, m_rendererID);
-    // 把内存地址data偏移offset的位置 size个字节数据灌给显存
     glBufferSubData(GL_UNIFORM_BUFFER, offset, size, data);
-    // 操作完UBO让OpenGL状态机槽位解绑 防止后面其他人误操作
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
+}
+
+void OpenGLUniformBuffer::Bind() const
+{
+    glBindBufferBase(GL_UNIFORM_BUFFER, m_binding, m_rendererID);
 }

@@ -17,6 +17,10 @@
 #include <spirv_cross.hpp>
 
 namespace Util {
+    /**
+     * 在glsl源码里面会首先声明类型 在#version之前先声明类型
+     * @param type shader类型是vertex还是fragment
+     */
     static GLenum shaderTypeFromString(const std::string& type) {
         if (type == "vertex") {
             return GL_VERTEX_SHADER;

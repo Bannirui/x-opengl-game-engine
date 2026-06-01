@@ -161,7 +161,9 @@ void OpenGLVertexArray::AddVertexBuffer(const X::Ref<VertexBuffer>& vertexBuffer
 
 void OpenGLVertexArray::SetIndexBuffer(const X::Ref<IndexBuffer>& indexBuffer) {
     X_PROFILE_FUNCTION();
+    // 激活VAO在OpenGL的插槽
     glBindVertexArray(m_rendererID);
+    // 激活EBO在OpenGL的插槽
     indexBuffer->Bind();
     m_indexBuffer = indexBuffer;
 }

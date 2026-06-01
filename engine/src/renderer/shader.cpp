@@ -55,6 +55,7 @@ X::Ref<Shader> ShaderLib::Load(const std::string& filepath) {
 
 X::Ref<Shader> ShaderLib::Load(const std::string& name, const std::string& filepath) {
     auto shader = Shader::Create(filepath);
+    // 缓存起来
     Add(name, shader);
     return shader;
 }
