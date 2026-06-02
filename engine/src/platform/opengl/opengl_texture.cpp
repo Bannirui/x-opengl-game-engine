@@ -94,7 +94,7 @@ OpenGLTexture2D::OpenGLTexture2D(const std::string& path) : m_path(path) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-    // 解绑纹理对象
+    // 让OpenGL状态机上的2D纹理插槽撤掉当前纹理对象 防止后面误操作当前的纹理对象
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
@@ -121,6 +121,7 @@ OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height) : m_width(widt
 OpenGLTexture2D::~OpenGLTexture2D() {
     if (m_rendererId) {
         glDeleteTextures(1, &m_rendererId);
+        m_rendererId = 0;
     }
 }
 

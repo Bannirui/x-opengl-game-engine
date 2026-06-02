@@ -47,7 +47,7 @@ public:
 
 private:
     // 跟VBO VAO这些object一样 texture也用分配的唯一id引用
-    uint32_t m_rendererId;
+    uint32_t m_rendererId{0};
     // 纹理对象用的贴图 图片路径
     std::string m_path;
     // 纹理对象图片的宽度
