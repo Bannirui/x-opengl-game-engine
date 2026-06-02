@@ -19,6 +19,7 @@ public:
     virtual ~Shader() = default;
 
     virtual const std::string& get_name() const = 0;
+    virtual uint32_t GetRendererID() const = 0;
 
     virtual void Bind() const = 0;
     virtual void Unbind() const = 0;
@@ -61,5 +62,6 @@ public:
     bool Exists(const std::string& name) const;
 
 private:
+    // shader缓存在这
     std::unordered_map<std::string, X::Ref<Shader>> m_shaders;
 };

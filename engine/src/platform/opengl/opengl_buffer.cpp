@@ -12,7 +12,7 @@
 /**
  * 创建VBO(vertex buffer object)
  * GPU显存上开辟连续的空间用来放顶点数据
- * @param vertices 顶点数据
+ * @param vertices VBO要放的顶点数据 在内存上的地址
  * @param size 要在显存上开辟多大空间 多少个字节
  */
 OpenGLVertexBuffer::OpenGLVertexBuffer(float *vertices, uint32_t size)
@@ -73,6 +73,12 @@ void OpenGLVertexBuffer::SetData(const void *data, uint32_t size)
 /////////////////////////////////////////////////////////////////////////////
 // IndexBuffer //////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
+/**
+ * 在显存上开辟上buffer空间 OpenGL分配个唯一id引用它
+ * 把内存上的EBO索引数组拷贝到显存上
+ * @param indices VBO的顶点索引数组在内存的什么位置 内存地址
+ * @param count 多少个顶点索引值
+ */
 OpenGLIndexBuffer::OpenGLIndexBuffer(uint32_t *indices, uint32_t count) : m_count(count)
 {
     X_PROFILE_FUNCTION();

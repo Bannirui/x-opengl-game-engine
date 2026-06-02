@@ -6,8 +6,11 @@
 
 #include "x/core/timestep.h"
 #include "x/renderer/renderer_2D.h"
+#include "x/renderer/renderer_3D.h"
 #include "x/scene/component.h"
 #include "x/scene/entity.h"
+
+#include <glad/glad.h>
 
 #include <glm/glm.hpp>
 
@@ -180,6 +183,33 @@ void Scene::OnUpdateRuntime(Timestep ts) {
         }
     }
     if (mainCamera) {
+        // Update animators
+        {
+            auto view = m_registry.view<AnimatorComponent>();
+            for (auto entity : view) {
+                auto& anim = view.get<AnimatorComponent>(entity);
+                if (anim.AnimatorInstance) {
+                    anim.AnimatorInstance->Update(ts);
+                }
+            }
+        }
+
+        // 3D pass
+        glEnable(GL_DEPTH_TEST);
+        Renderer3D::BeginScene(*mainCamera, cameraTransform);
+        {
+            auto group = m_registry.group<TransformComponent>(entt::get<MeshComponent, MaterialComponent>);
+            for (auto entity : group) {
+                auto [transform, mesh, material] =
+                    group.get<TransformComponent, MeshComponent, MaterialComponent>(entity);
+                Renderer3D::DrawMesh(mesh.MeshHandle, material.MaterialHandle, transform.GetTransform(),
+                                     static_cast<int>(entity));
+            }
+        }
+        Renderer3D::EndScene();
+        glDisable(GL_DEPTH_TEST);
+
+        // 2D pass
         Renderer2D::BeginScene(*mainCamera, cameraTransform);
         // Draw sprite
         {
@@ -296,7 +326,17 @@ template <>
 void Scene::onComponentAdded<BoxCollider2DComponent>(Entity /* entity */, BoxCollider2DComponent& /* component */) {}
 
 template <>
-void Scene::onComponentAdded<CircleCollider2DComponent>(Entity /* entity */, CircleCollider2DComponent& /* component */) {}
+void Scene::onComponentAdded<CircleCollider2DComponent>(Entity /* entity */,
+                                                        CircleCollider2DComponent& /* component */) {}
+
+template <>
+void Scene::onComponentAdded<MeshComponent>(Entity /* entity */, MeshComponent& /* component */) {}
+
+template <>
+void Scene::onComponentAdded<MaterialComponent>(Entity /* entity */, MaterialComponent& /* component */) {}
+
+template <>
+void Scene::onComponentAdded<AnimatorComponent>(Entity /* entity */, AnimatorComponent& /* component */) {}
 
 void Scene::onPhysics2DStart() {
     m_physicsWorld = new b2World({0.0f, -9.8f});
@@ -353,6 +393,21 @@ void Scene::onPhysics2DStop() {
 }
 
 void Scene::renderScene(EditorCamera& camera) {
+    // 3D pass
+    glEnable(GL_DEPTH_TEST);
+    Renderer3D::BeginScene(camera);
+    {
+        auto group = m_registry.group<TransformComponent>(entt::get<MeshComponent, MaterialComponent>);
+        for (auto entity : group) {
+            auto [transform, mesh, material] = group.get<TransformComponent, MeshComponent, MaterialComponent>(entity);
+            Renderer3D::DrawMesh(mesh.MeshHandle, material.MaterialHandle, transform.GetTransform(),
+                                 static_cast<int>(entity));
+        }
+    }
+    Renderer3D::EndScene();
+    glDisable(GL_DEPTH_TEST);
+
+    // 2D pass
     Renderer2D::BeginScene(camera);
     // Draw sprites
     {

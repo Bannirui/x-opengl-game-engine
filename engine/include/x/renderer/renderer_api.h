@@ -31,11 +31,11 @@ public:
     virtual void Clear() = 0;
 
     /**
-     * @param vertexArray VAO在内存的什么位置
+     * @param vao VAO在内存的什么位置
      * @param indexCount VAO管理了多少个VBO顶点
      */
-    virtual void DrawIndexed(const X::Ref<VertexArray>& vertexArray, uint32_t indexCount) = 0;
-    virtual void DrawLines(const X::Ref<VertexArray>& vertexArray, uint32_t vertexCount) = 0;
+    virtual void DrawIndexed(const X::Ref<VertexArray>& vao, uint32_t indexCount) = 0;
+    virtual void DrawLines(const X::Ref<VertexArray>& vao, uint32_t vertexCount) = 0;
 
     virtual void SetLineWidth(float width) = 0;
 

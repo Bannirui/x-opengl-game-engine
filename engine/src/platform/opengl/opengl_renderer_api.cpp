@@ -4,6 +4,8 @@
 
 #include "platform/opengl/opengl_renderer_api.h"
 
+#include <glad/glad.h>
+
 #include "x/renderer/buffer.h"
 #include "x/renderer/vertex_array.h"
 
@@ -31,9 +33,17 @@ void OpenGLRendererAPI::Clear() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void OpenGLRendererAPI::DrawIndexed(const X::Ref<VertexArray>& vertexArray, uint32_t indexCount) {
-    vertexArray->Bind();
-    uint32_t count = indexCount ? indexCount : vertexArray->GetIndexBuffer()->GetCount();
+/**
+ * 调用底层绘制API DrawElements
+ * 用索引方式告诉GPU怎么选取这些顶点
+ * @param vao VAO数据在CPU侧内存什么位置 内存地址
+ * @param indexCount 多少个顶点的索引 默认值是0 调用的时候可能不传这个参数 没传的话就用VAO里面维护的顶点索引数量
+ */
+void OpenGLRendererAPI::DrawIndexed(const X::Ref<VertexArray>& vao, uint32_t indexCount) {
+    // 激活OpenGL的VAO插槽
+    vao->Bind();
+    // 多少个索引点
+    uint32_t count = indexCount ? indexCount : vao->GetIndexBuffer()->GetCount();
     glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
 }
 
@@ -42,8 +52,8 @@ void OpenGLRendererAPI::DrawIndexed(const X::Ref<VertexArray>& vertexArray, uint
  * @param vertexArray VAO 用DrawArrays并用不到VAO
  * @param vertexCount 用VBO里面多少个顶点绘制
  */
-void OpenGLRendererAPI::DrawLines(const X::Ref<VertexArray>& vertexArray, uint32_t vertexCount) {
-    vertexArray->Bind();
+void OpenGLRendererAPI::DrawLines(const X::Ref<VertexArray>& vao, uint32_t vertexCount) {
+    vao->Bind();
     /**
      * 真正让GPU开始渲染
      * - 每两个点组成1个线段

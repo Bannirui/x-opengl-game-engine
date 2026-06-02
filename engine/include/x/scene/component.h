@@ -6,12 +6,16 @@
 
 #include "x/core/base.h"
 #include "x/core/uuid.h"
+#include "x/animation/animator.h"
 #include "x/scene/scene_camera.h"
 
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+class Animator;
+class Material;
+class Mesh;
 class ScriptableEntity;
 class Texture2D;
 
@@ -67,6 +71,20 @@ struct CircleRendererComponent {
 
     CircleRendererComponent() = default;
     CircleRendererComponent(const CircleRendererComponent&) = default;
+};
+
+struct MeshComponent {
+    X::Ref<Mesh> MeshHandle;
+
+    MeshComponent() = default;
+    MeshComponent(const MeshComponent&) = default;
+};
+
+struct MaterialComponent {
+    X::Ref<Material> MaterialHandle;
+
+    MaterialComponent() = default;
+    MaterialComponent(const MaterialComponent&) = default;
 };
 
 struct CameraComponent {
@@ -154,9 +172,20 @@ struct CircleCollider2DComponent {
     CircleCollider2DComponent(const CircleCollider2DComponent&) = default;
 };
 
+struct AnimatorComponent {
+    X::Scope<Animator> AnimatorInstance;
+
+    AnimatorComponent() = default;
+    AnimatorComponent(const AnimatorComponent&) = delete;
+    AnimatorComponent& operator=(const AnimatorComponent&) = delete;
+    AnimatorComponent(AnimatorComponent&&) = default;
+    AnimatorComponent& operator=(AnimatorComponent&&) = default;
+};
+
 template <typename... Component>
 struct ComponentGroup {};
 
 using AllComponents = ComponentGroup<TransformComponent, SpriteRendererComponent, CircleRendererComponent,
+                                     MeshComponent, MaterialComponent,
                                      CameraComponent, ScriptComponent, NativeScriptComponent, Rigidbody2DComponent,
                                      BoxCollider2DComponent, CircleCollider2DComponent>;

@@ -5,6 +5,7 @@
 #include "x/renderer/renderer.h"
 
 #include "x/renderer/renderer_2D.h"
+#include "x/renderer/renderer_3D.h"
 #include "x/renderer/vertex_array.h"
 #include "x/renderer/render_command.h"
 #include "x/renderer/orthographic_camera.h"
@@ -17,10 +18,13 @@ void Renderer::Init()
     X_PROFILE_FUNCTION();
     RenderCommand::Init();
     Renderer2D::Init();
+    // todo
+    // Renderer3D::Init();
 }
 
 void Renderer::Shutdown()
 {
+    Renderer3D::Shutdown();
     Renderer2D::Shutdown();
 }
 

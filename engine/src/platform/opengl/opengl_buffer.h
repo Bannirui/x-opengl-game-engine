@@ -9,10 +9,6 @@
 // VBO
 class OpenGLVertexBuffer : public VertexBuffer {
 public:
-    /**
-     * @param vertices VBO要放的顶点数据 在内存上的地址
-     * @param size 这些数据最终要放在显存 也就是需要要显存上开辟多大空间 多少个字节
-     */
     OpenGLVertexBuffer(float* vertices, uint32_t size);
     /**
      * 空VBO 先不放数据 后面再放
@@ -45,12 +41,6 @@ private:
 // EBO
 class OpenGLIndexBuffer : public IndexBuffer {
 public:
-    /**
-     * 在显存上开辟上buffer空间 OpenGL分配个唯一id引用它
-     * 把内存上的EBO索引数组拷贝到显存上
-     * @param indices VBO的顶点索引数组在内存的什么位置 内存地址
-     * @param count 多少个顶点索引值
-     */
     OpenGLIndexBuffer(uint32_t* indices, uint32_t count);
     ~OpenGLIndexBuffer() override;
 
