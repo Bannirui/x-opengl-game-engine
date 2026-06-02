@@ -94,8 +94,8 @@ void ShadowMapPass::Execute() {
 
     for (auto& cmd : m_drawCommands) {
         m_shader->SetMat4("u_Model", cmd.Transform);
-        cmd.Mesh->GetVertexArray()->Bind();
-        glDrawElements(GL_TRIANGLES, cmd.Mesh->GetIndexCount(), GL_UNSIGNED_INT, nullptr);
+        cmd.MeshAsset->GetVertexArray()->Bind();
+        glDrawElements(GL_TRIANGLES, cmd.MeshAsset->GetIndexCount(), GL_UNSIGNED_INT, nullptr);
     }
 
     glCullFace(GL_BACK);

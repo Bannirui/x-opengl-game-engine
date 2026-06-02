@@ -17,13 +17,13 @@
 #include <vector>
 
 struct MeshDrawCommand {
-    X::Ref<Mesh> Mesh;
+    X::Ref<Mesh> MeshAsset;
     glm::mat4 Transform;
     int32_t EntityID;
 };
 
 struct MaterialBucket {
-    X::Ref<Material> Material;
+    X::Ref<Material> MaterialAsset;
     std::vector<MeshDrawCommand> Commands;
 };
 

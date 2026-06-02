@@ -180,17 +180,17 @@ void Renderer3D::Flush() {
     }
 
     std::sort(s_data.Buckets.begin(), s_data.Buckets.end(), [](const MaterialBucket& a, const MaterialBucket& b) {
-        return a.Material->GetShader().get() < b.Material->GetShader().get();
+        return a.MaterialAsset->GetShader().get() < b.MaterialAsset->GetShader().get();
     });
 
     for (auto& bucket : s_data.Buckets) {
-        bucket.Material->Bind();
+        bucket.MaterialAsset->Bind();
         for (auto& cmd : bucket.Commands) {
             s_data.ModelUBO->SetData(glm::value_ptr(cmd.Transform), sizeof(glm::mat4));
-            bucket.Material->GetShader()->SetInt("u_EntityID", cmd.EntityID);
+            bucket.MaterialAsset->GetShader()->SetInt("u_EntityID", cmd.EntityID);
 
             // Set IBL sampler uniforms
-            auto& shader = bucket.Material->GetShader();
+            auto& shader = bucket.MaterialAsset->GetShader();
             shader->SetInt("u_IrradianceMap", 4);
             shader->SetInt("u_PrefilterMap", 5);
             shader->SetInt("u_BRDFLUT", 6);
@@ -199,8 +199,8 @@ void Renderer3D::Flush() {
             shader->SetInt("u_ShadowMap2", 9);
             shader->SetInt("u_ShadowMap3", 10);
 
-            auto& vao = cmd.Mesh->GetVertexArray();
-            RenderCommand::DrawIndexed(vao, cmd.Mesh->GetIndexCount());
+            auto& vao = cmd.MeshAsset->GetVertexArray();
+            RenderCommand::DrawIndexed(vao, cmd.MeshAsset->GetIndexCount());
 
             s_data.Stats.DrawCalls++;
         }
@@ -214,14 +214,14 @@ void Renderer3D::DrawMesh(const X::Ref<Mesh>& mesh, const X::Ref<Material>& mate
     if (!mesh || !material) return;
 
     for (auto& bucket : s_data.Buckets) {
-        if (*bucket.Material == *material) {
+        if (*bucket.MaterialAsset == *material) {
             bucket.Commands.push_back({mesh, transform, entityID});
             return;
         }
     }
 
     MaterialBucket newBucket;
-    newBucket.Material = material;
+    newBucket.MaterialAsset = material;
     newBucket.Commands.push_back({mesh, transform, entityID});
     s_data.Buckets.push_back(std::move(newBucket));
 }
