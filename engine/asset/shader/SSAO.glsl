@@ -1,7 +1,7 @@
 #type vertex
 #version 450 core
 layout(location = 0) in vec2 a_Position;
-out vec2 v_TexCoord;
+layout(location = 0) out vec2 v_TexCoord;
 void main() {
     v_TexCoord = a_Position * 0.5 + 0.5;
     gl_Position = vec4(a_Position, 0.0, 1.0);
@@ -9,14 +9,14 @@ void main() {
 
 #type fragment
 #version 450 core
-in vec2 v_TexCoord;
-out float o_SSAO;
+layout(location = 0) in vec2 v_TexCoord;
+layout(location = 0) out float o_SSAO;
 uniform sampler2D u_DepthMap;
 uniform sampler2D u_NormalMap;
-uniform vec3 u_Samples[64];
-uniform mat4 u_Projection;
-uniform float u_Radius;
-uniform float u_Bias;
+layout(location = 3) uniform vec3 u_Samples[64];
+layout(location = 0) uniform mat4 u_Projection;
+layout(location = 1) uniform float u_Radius;
+layout(location = 2) uniform float u_Bias;
 const int KERNEL_SIZE = 64;
 
 void main() {

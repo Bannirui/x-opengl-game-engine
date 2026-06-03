@@ -17,7 +17,6 @@ void Renderer::Init() {
     X_PROFILE_FUNCTION();
     RenderCommand::Init();
     Renderer2D::Init();
-    // todo
     // Renderer3D::Init();
 }
 

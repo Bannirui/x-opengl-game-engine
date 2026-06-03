@@ -57,7 +57,7 @@ void Renderer3D::Init() {
     s_data.CameraUBO = UniformBuffer::Create(sizeof(Renderer3DData::CameraData), 0);
     s_data.ModelUBO = UniformBuffer::Create(sizeof(glm::mat4), 1);
 
-    LightData defaultLight;
+    LightData defaultLight{};
     defaultLight.Direction = glm::vec3(-0.5f, -1.0f, -0.3f);
     defaultLight.Ambient = glm::vec3(0.05f);
     defaultLight.Diffuse = glm::vec3(1.0f);

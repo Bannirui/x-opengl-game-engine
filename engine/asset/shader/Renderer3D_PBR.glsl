@@ -13,12 +13,12 @@ layout(std140, binding = 1) uniform Model {
     mat4 u_Model;
 };
 
-out vec3 v_WorldPos;
-out vec3 v_Normal;
-out vec2 v_TexCoord;
-flat out int v_EntityID;
+layout(location = 0) out vec3 v_WorldPos;
+layout(location = 1) out vec3 v_Normal;
+layout(location = 2) out vec2 v_TexCoord;
+layout(location = 3) flat out int v_EntityID;
 
-uniform int u_EntityID;
+layout(location = 0) uniform int u_EntityID;
 
 void main() {
     vec4 worldPos = u_Model * vec4(a_Position, 1.0);
@@ -32,10 +32,10 @@ void main() {
 #type fragment
 #version 450 core
 
-in vec3 v_WorldPos;
-in vec3 v_Normal;
-in vec2 v_TexCoord;
-flat in int v_EntityID;
+layout(location = 0) in vec3 v_WorldPos;
+layout(location = 1) in vec3 v_Normal;
+layout(location = 2) in vec2 v_TexCoord;
+layout(location = 3) flat in int v_EntityID;
 
 layout(location = 0) out vec4 o_Color;
 layout(location = 1) out int o_EntityID;
@@ -76,15 +76,15 @@ layout(std140, binding = 5) uniform CSMData {
     vec4 u_CascadeSplits;
 };
 
-uniform vec3 u_Albedo;
-uniform float u_Metallic;
-uniform float u_Roughness;
-uniform float u_AO;
-uniform float u_UseAlbedoMap;
-uniform float u_UseNormalMap;
-uniform float u_UseMetallicMap;
-uniform float u_UseRoughnessMap;
-uniform float u_UseAOMap;
+layout(location = 0) uniform vec3 u_Albedo;
+layout(location = 1) uniform float u_Metallic;
+layout(location = 2) uniform float u_Roughness;
+layout(location = 3) uniform float u_AO;
+layout(location = 4) uniform float u_UseAlbedoMap;
+layout(location = 5) uniform float u_UseNormalMap;
+layout(location = 6) uniform float u_UseMetallicMap;
+layout(location = 7) uniform float u_UseRoughnessMap;
+layout(location = 8) uniform float u_UseAOMap;
 
 const float PI = 3.14159265359;
 

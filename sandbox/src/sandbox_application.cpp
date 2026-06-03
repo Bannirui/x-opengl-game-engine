@@ -16,7 +16,9 @@ public:
         // PushLayer(X::CreateScope<Sandbox3D>());
     }
 
-    ~Sandbox() override {}
+    ~Sandbox() override {
+        // todo
+    }
 };
 
 XApplication* CreateApplication(ApplicationCommandLineArgs args) {

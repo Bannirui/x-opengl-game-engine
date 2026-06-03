@@ -13,37 +13,29 @@ layout(std140, binding = 1) uniform Model {
     mat4 u_Model;
 };
 
-struct VertexOutput {
-    vec3 WorldNormal;
-    vec3 WorldPosition;
-    vec2 TexCoord;
-    int EntityID;
-};
+layout(location = 0) out vec3 v_WorldNormal;
+layout(location = 1) out vec3 v_WorldPosition;
+layout(location = 2) out vec2 v_TexCoord;
+layout(location = 3) flat out int v_EntityID;
 
-layout(location = 0) out VertexOutput Output;
-
-uniform int u_EntityID;
+layout(location = 0) uniform int u_EntityID;
 
 void main() {
     vec4 worldPos = u_Model * vec4(a_Position, 1.0);
-    Output.WorldPosition = worldPos.xyz;
-    Output.WorldNormal = mat3(transpose(inverse(u_Model))) * a_Normal;
-    Output.TexCoord = a_TexCoord;
-    Output.EntityID = u_EntityID;
+    v_WorldPosition = worldPos.xyz;
+    v_WorldNormal = mat3(transpose(inverse(u_Model))) * a_Normal;
+    v_TexCoord = a_TexCoord;
+    v_EntityID = u_EntityID;
     gl_Position = u_ViewProjection * worldPos;
 }
 
 #type fragment
 #version 450 core
 
-struct VertexOutput {
-    vec3 WorldNormal;
-    vec3 WorldPosition;
-    vec2 TexCoord;
-    int EntityID;
-};
-
-layout(location = 0) in VertexOutput Input;
+layout(location = 0) in vec3 v_WorldNormal;
+layout(location = 1) in vec3 v_WorldPosition;
+layout(location = 2) in vec2 v_TexCoord;
+layout(location = 3) flat in int v_EntityID;
 
 layout(location = 0) out vec4 o_Color;
 layout(location = 1) out int o_EntityID;
@@ -56,14 +48,14 @@ layout(std140, binding = 2) uniform Light {
 };
 
 uniform sampler2D u_DiffuseMap;
-uniform float u_Shininess;
-uniform vec3 u_MaterialDiffuse;
-uniform vec3 u_MaterialSpecular;
+layout(location = 0) uniform float u_Shininess;
+layout(location = 1) uniform vec3 u_MaterialDiffuse;
+layout(location = 2) uniform vec3 u_MaterialSpecular;
 
 void main() {
-    vec3 normal = normalize(Input.WorldNormal);
+    vec3 normal = normalize(v_WorldNormal);
     vec3 lightDir = normalize(-u_LightDirection);
-    vec3 viewDir = normalize(-Input.WorldPosition);
+    vec3 viewDir = normalize(-v_WorldPosition);
 
     vec3 ambient = u_LightAmbient;
 
@@ -74,9 +66,9 @@ void main() {
     float spec = pow(max(dot(normal, halfwayDir), 0.0), u_Shininess);
     vec3 specular = u_LightSpecular * spec * u_MaterialSpecular;
 
-    vec4 texColor = texture(u_DiffuseMap, Input.TexCoord);
+    vec4 texColor = texture(u_DiffuseMap, v_TexCoord);
 
     vec3 result = (ambient + diffuse) * texColor.rgb * u_MaterialDiffuse + specular;
     o_Color = vec4(result, texColor.a);
-    o_EntityID = Input.EntityID;
+    o_EntityID = v_EntityID;
 }
