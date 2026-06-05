@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "x/renderer/uniform_buffer.h"
+#include "x/renderer/buffer/uniform_buffer.h"
 
 // OpenGL的UBO
 class OpenGLUniformBuffer : public UniformBuffer

@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "x/renderer/vertex_array.h"
+#include "x/renderer/buffer/vertex_array.h"
 
 /**
  * 为了让shader的attribute怎么取VBO里面的数据

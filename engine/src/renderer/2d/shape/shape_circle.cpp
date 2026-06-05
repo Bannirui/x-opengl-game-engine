@@ -3,7 +3,7 @@
 //
 
 #include "renderer/2d/renderer_2D_internal.h"
-#include "x/renderer/renderer_2D.h"
+#include "x/renderer/2d/renderer_2D.h"
 
 void Renderer2D::DrawCircle(const glm::mat4& transform, const glm::vec4& color, float thickness, float fade,
                             int entityID) {

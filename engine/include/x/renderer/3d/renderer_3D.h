@@ -23,20 +23,29 @@ public:
     static void SetViewport(uint32_t width, uint32_t height);
 
     static void BeginScene(const Camera& camera, const glm::mat4& viewMatrix);
+    /**
+     * 上传UBO
+     *   - Camera
+     *   - Light
+     *   - PBR
+     * @param camera 轨迹球相机
+     */
     static void BeginScene(const EditorCamera& camera);
 
-    static void DrawMesh(const X::Ref<Mesh>& mesh, const X::Ref<Material>& material,
-                         const glm::mat4& transform, int32_t entityID = -1);
+    static void DrawMesh(const X::Ref<Mesh>& mesh, const X::Ref<Material>& material, const glm::mat4& transform,
+                         int32_t entityID = -1);
 
     static void EndScene();
+    /**
+     * 绘制一个覆盖全屏的大立方体 用深度测试GL_LEQUAL让它始终在最远处
+     * 这个天空盒只会画一次
+     */
     static void DrawSkybox();
 
     // PBR environment
     static void SetEnvironmentMap(const X::Ref<TextureCube>& envMap);
-    static void SetEnvironmentMaps(const X::Ref<TextureCube>& envMap,
-                                    const X::Ref<TextureCube>& irradianceMap,
-                                    const X::Ref<TextureCube>& prefilterMap,
-                                    uint32_t brdfLUTTexture);
+    static void SetEnvironmentMaps(const X::Ref<TextureCube>& envMap, const X::Ref<TextureCube>& irradianceMap,
+                                   const X::Ref<TextureCube>& prefilterMap, uint32_t brdfLUTTexture);
     static void SetExposure(float exposure);
     static const X::Ref<TextureCube>& GetEnvironmentMap();
 

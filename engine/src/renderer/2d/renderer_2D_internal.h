@@ -6,10 +6,10 @@
 #pragma once
 
 #include "renderer/buffer/batch_group.h"
-#include "x/renderer/renderer_2D.h"
+#include "x/renderer/2d/renderer_2D.h"
+#include "x/renderer/buffer/uniform_buffer.h"
 #include "x/renderer/shader.h"
 #include "x/renderer/texture.h"
-#include "x/renderer/uniform_buffer.h"
 
 #include <glm/glm.hpp>
 
@@ -23,7 +23,8 @@ struct QuadVertex {
     glm::vec2 texCoord;
     // shader采样器用贴图缓冲区的哪个贴图
     int texIndex;
-    // 贴图因子 uv坐标值区间[0...1] 假设因子是n 那么现在uv区间就是[0...n] 当uv超出1后触发OpenGL策略 现在设置的是repeat 就会重复n个贴图
+    // 贴图因子 uv坐标值区间[0...1] 假设因子是n 那么现在uv区间就是[0...n] 当uv超出1后触发OpenGL策略 现在设置的是repeat
+    // 就会重复n个贴图
     float tilingFactor;
     int entityID;
 };

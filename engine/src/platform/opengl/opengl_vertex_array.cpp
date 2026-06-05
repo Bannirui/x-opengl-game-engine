@@ -4,7 +4,7 @@
 
 #include "platform/opengl/opengl_vertex_array.h"
 
-#include "x/renderer/buffer.h"
+#include "x/renderer/buffer/buffer.h"
 
 #include <glad/glad.h>
 

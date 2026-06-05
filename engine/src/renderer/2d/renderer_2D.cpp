@@ -2,15 +2,15 @@
 // Created by dingrui on 2/28/26.
 //
 
-#include "x/renderer/renderer_2D.h"
+#include "x/renderer/2d/renderer_2D.h"
 
 #include "renderer_2D_internal.h"
-#include "x/renderer/camera.h"
-#include "x/renderer/editor_camera.h"
+#include "x/renderer/buffer/uniform_buffer.h"
+#include "x/renderer/camera/camera.h"
+#include "x/renderer/camera/editor_camera.h"
 #include "x/renderer/render_command.h"
 #include "x/renderer/shader.h"
 #include "x/renderer/texture.h"
-#include "x/renderer/uniform_buffer.h"
 
 Renderer2DData s_data;
 
@@ -64,8 +64,8 @@ void Renderer2D::Init() {
     s_data.QuadVertexPositions[1] = {0.5f, -0.5f, 0.0f, 1.0f};
     s_data.QuadVertexPositions[2] = {0.5f, 0.5f, 0.0f, 1.0f};
     s_data.QuadVertexPositions[3] = {-0.5f, 0.5f, 0.0f, 1.0f};
-    // 在GPU显存上创建一个UBO binding=0
-    s_data.CameraUniformBuffer = UniformBuffer::Create(sizeof(Renderer2DData::CameraData), 0);
+    // 在GPU显存上创建一个UBO binding=Camera
+    s_data.CameraUniformBuffer = UniformBuffer::Create(sizeof(Renderer2DData::CameraData), UBOBinding::Camera);
 }
 
 void Renderer2D::Shutdown() {

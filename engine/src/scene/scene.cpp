@@ -5,8 +5,8 @@
 #include "x/scene/scene.h"
 
 #include "x/core/timestep.h"
-#include "x/renderer/renderer_2D.h"
-#include "x/renderer/renderer_3D.h"
+#include "x/renderer/2d/renderer_2D.h"
+#include "x/renderer/3d/renderer_3D.h"
 #include "x/scene/component.h"
 #include "x/scene/entity.h"
 

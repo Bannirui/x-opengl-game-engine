@@ -4,15 +4,15 @@
 
 #include "example_layer.h"
 
-#include "glm/ext/matrix_transform.hpp"
-#include "x/renderer/buffer.h"
+#include "x/renderer/buffer/buffer.h"
+#include "x/renderer/buffer/vertex_array.h"
 #include "x/renderer/render_command.h"
 #include "x/renderer/renderer.h"
 #include "x/renderer/texture.h"
-#include "x/renderer/vertex_array.h"
 
-ExampleLayer::ExampleLayer() : Layer("X-EXAMPLE"), m_cameraController(1280.0f / 720.0f)
-{
+#include <glm/ext/matrix_transform.hpp>
+
+ExampleLayer::ExampleLayer() : Layer("X-EXAMPLE"), m_cameraController(1280.0f / 720.0f) {
     // 三角形
     // clang-format off
 		float vertices1[] = {
@@ -27,7 +27,7 @@ ExampleLayer::ExampleLayer() : Layer("X-EXAMPLE"), m_cameraController(1280.0f / 
     m_vertexArray = VertexArray::Create();
     // VAO托管VBO
     X::Ref<VertexBuffer> vertexBuffer = VertexBuffer::Create(vertices1, sizeof(vertices1));
-    BufferLayout         layout       = {{ShaderDataType::kFloat3, "a_Position"}, {ShaderDataType::kFloat4, "a_Color"}};
+    BufferLayout layout = {{ShaderDataType::kFloat3, "a_Position"}, {ShaderDataType::kFloat4, "a_Color"}};
     vertexBuffer->SetLayout(layout);
     m_vertexArray->AddVertexBuffer(vertexBuffer);
     // VAO托管EBO
@@ -111,7 +111,7 @@ ExampleLayer::ExampleLayer() : Layer("X-EXAMPLE"), m_cameraController(1280.0f / 
     // clang-format on
     auto textureShader = m_shaderLib.Load("asset/shader/Texture.glsl");
 
-    m_texture     = Texture2D::Create("asset/texture/Checkerboard.png");
+    m_texture = Texture2D::Create("asset/texture/Checkerboard.png");
     m_logoTexture = Texture2D::Create("asset/texture/ChernoLogo.png");
 
     textureShader->Bind();
@@ -124,8 +124,7 @@ void ExampleLayer::OnAttach() {}
 
 void ExampleLayer::OnDetach() {}
 
-void ExampleLayer::OnUpdate(Timestep ts)
-{
+void ExampleLayer::OnUpdate(Timestep ts) {
     // update
     m_cameraController.OnUpdate(ts);
     // render
@@ -138,10 +137,8 @@ void ExampleLayer::OnUpdate(Timestep ts)
 
     m_flatColorShader->Bind();
     m_flatColorShader->SetFloat3("u_Color", m_color);
-    for (int y = 0; y < 20; ++y)
-    {
-        for (int x = 0; x < 20; ++x)
-        {
+    for (int y = 0; y < 20; ++y) {
+        for (int x = 0; x < 20; ++x) {
             glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
             glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
             // 第2个shader
@@ -163,7 +160,6 @@ void ExampleLayer::OnUpdate(Timestep ts)
 
 void ExampleLayer::OnImguiRender() {}
 
-void ExampleLayer::OnEvent(Event &e)
-{
+void ExampleLayer::OnEvent(Event& e) {
     m_cameraController.OnEvent(e);
 }

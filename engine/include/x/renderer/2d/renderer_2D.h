@@ -5,7 +5,7 @@
 #pragma once
 
 #include "x/core/base.h"
-#include "x/renderer/orthographic_camera.h"
+#include "x/renderer/camera/orthographic_camera.h"
 
 struct SpriteRendererComponent;
 class EditorCamera;

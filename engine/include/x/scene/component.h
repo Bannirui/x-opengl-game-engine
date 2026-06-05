@@ -4,10 +4,10 @@
 
 #pragma once
 
+#include "x/animation/animator.h"
 #include "x/core/base.h"
 #include "x/core/uuid.h"
-#include "x/animation/animator.h"
-#include "x/scene/scene_camera.h"
+#include "x/renderer/camera/scene_camera.h"
 
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/glm.hpp>
@@ -185,7 +185,7 @@ struct AnimatorComponent {
 template <typename... Component>
 struct ComponentGroup {};
 
-using AllComponents = ComponentGroup<TransformComponent, SpriteRendererComponent, CircleRendererComponent,
-                                     MeshComponent, MaterialComponent,
-                                     CameraComponent, ScriptComponent, NativeScriptComponent, Rigidbody2DComponent,
-                                     BoxCollider2DComponent, CircleCollider2DComponent>;
+using AllComponents =
+    ComponentGroup<TransformComponent, SpriteRendererComponent, CircleRendererComponent, MeshComponent,
+                   MaterialComponent, CameraComponent, ScriptComponent, NativeScriptComponent, Rigidbody2DComponent,
+                   BoxCollider2DComponent, CircleCollider2DComponent>;

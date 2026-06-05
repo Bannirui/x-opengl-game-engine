@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "x/renderer/frame_buffer.h"
+#include "x/renderer/buffer/frame_buffer.h"
 
 class OpenGLFramebuffer : public FrameBuffer
 {

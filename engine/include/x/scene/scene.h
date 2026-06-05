@@ -4,17 +4,16 @@
 
 #pragma once
 
-#include <entt/entt.hpp>
-
 #include "x/core/timestep.h"
-#include "x/renderer/editor_camera.h"
+#include "x/renderer/camera/editor_camera.h"
+
+#include <entt/entt.hpp>
 
 class UUID;
 class Entity;
 class b2World;
 
-class Scene
-{
+class Scene {
 public:
     Scene();
     ~Scene();
@@ -23,9 +22,11 @@ public:
 
     Entity CreateEntity(const std::string& name = std::string());
     Entity CreateEntityWithUUID(UUID uuid, const std::string& name = std::string());
-    void   DestroyEntity(Entity entity);
+    void DestroyEntity(Entity entity);
 
-    entt::registry& Reg() { return m_registry; }
+    entt::registry& Reg() {
+        return m_registry;
+    }
 
     void OnRuntimeStart();
     void OnRuntimeStop();
@@ -36,16 +37,19 @@ public:
     void OnUpdateEditor(Timestep ts, EditorCamera& camera);
     void OnViewportResize(uint32_t width, uint32_t height);
 
-    entt::registry& get_registry() { return m_registry; }
+    entt::registry& get_registry() {
+        return m_registry;
+    }
 
-    const entt::registry& get_registry() const { return m_registry; }
+    const entt::registry& get_registry() const {
+        return m_registry;
+    }
 
-    void   DuplicateEntity(Entity entity);
+    void DuplicateEntity(Entity entity);
     Entity GetPrimaryCameraEntity();
 
     template <typename... Components>
-    auto GetAllEntitiesWith()
-    {
+    auto GetAllEntitiesWith() {
         return m_registry.view<Components...>();
     }
 
@@ -63,6 +67,6 @@ private:
     friend class SceneSerializer;
 
     entt::registry m_registry;
-    uint32_t       m_viewportWidth{0}, m_viewportHeight{0};
-    b2World*       m_physicsWorld{nullptr};
+    uint32_t m_viewportWidth{0}, m_viewportHeight{0};
+    b2World* m_physicsWorld{nullptr};
 };

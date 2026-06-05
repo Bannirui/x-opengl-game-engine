@@ -5,8 +5,8 @@
 #pragma once
 
 #include "x/core/base.h"
-#include "x/renderer/buffer.h"
-#include "x/renderer/vertex_array.h"
+#include "x/renderer/buffer/buffer.h"
+#include "x/renderer/buffer/vertex_array.h"
 
 /**
  * 批次化渲染组 管理一种图形的完整渲染管线

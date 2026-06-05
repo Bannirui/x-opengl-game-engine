@@ -3,7 +3,7 @@
 //
 
 #include "renderer/2d/renderer_2D_internal.h"
-#include "x/renderer/renderer_2D.h"
+#include "x/renderer/2d/renderer_2D.h"
 #include "x/scene/component.h"
 
 #include <glm/ext/matrix_transform.hpp>
@@ -26,9 +26,8 @@ void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, cons
 void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color) {
     X_PROFILE_FUNCTION();
     // 变换矩阵
-    glm::mat4 transform =
-        glm::translate(glm::mat4(1.0f), position) */*再平移 移动用position控制*/
-            glm::scale(glm::mat4(1.0f), {size.x, size.y, 1.0f}); /*先缩放 size控制xy的缩放*/
+    glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) *          /*再平移 移动用position控制*/
+                          glm::scale(glm::mat4(1.0f), {size.x, size.y, 1.0f}); /*先缩放 size控制xy的缩放*/
     DrawQuad(transform, color);
 }
 
@@ -159,9 +158,10 @@ void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& siz
                                  const X::Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor) {
     X_PROFILE_FUNCTION();
     // 变换矩阵 仅仅绕着z轴旋转角度
-    glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * /*最后移动*/
-                          glm::rotate(glm::mat4(1.0f), glm::radians(rotation), {0.0f, 0.0f, 1.0f}) * /*再旋转 绕着z轴旋转rotation角度*/
-                          glm::scale(glm::mat4(1.0f), {size.x, size.y, 1.0f}); /*先缩放 对xy缩放*/
+    glm::mat4 transform =
+        glm::translate(glm::mat4(1.0f), position) *                                /*最后移动*/
+        glm::rotate(glm::mat4(1.0f), glm::radians(rotation), {0.0f, 0.0f, 1.0f}) * /*再旋转 绕着z轴旋转rotation角度*/
+        glm::scale(glm::mat4(1.0f), {size.x, size.y, 1.0f});                       /*先缩放 对xy缩放*/
     DrawQuad(transform, texture, tilingFactor, tintColor);
 }
 

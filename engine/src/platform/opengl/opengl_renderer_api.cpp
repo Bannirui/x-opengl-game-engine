@@ -4,10 +4,8 @@
 
 #include "platform/opengl/opengl_renderer_api.h"
 
-#include <glad/glad.h>
-
-#include "x/renderer/buffer.h"
-#include "x/renderer/vertex_array.h"
+#include "x/renderer/buffer/buffer.h"
+#include "x/renderer/buffer/vertex_array.h"
 
 #include <glad/glad.h>
 

@@ -5,14 +5,13 @@
 #include "csm_pass.h"
 
 #include "renderer/3d/renderer_3D_internal.h"
-#include "x/renderer/vertex_array.h"
+#include "x/renderer/buffer/vertex_array.h"
 
 #include <glad/glad.h>
 
 #include <glm/gtc/type_ptr.hpp>
 
-CSMPass::CSMPass(const std::string& name, uint32_t shadowSize,
-                 const std::vector<MeshDrawCommand>& drawCommands)
+CSMPass::CSMPass(const std::string& name, uint32_t shadowSize, const std::vector<MeshDrawCommand>& drawCommands)
     : RenderPass(name), m_shadowSize(shadowSize), m_drawCommands(drawCommands) {}
 
 void CSMPass::Setup() {
@@ -58,8 +57,8 @@ void CSMPass::Execute() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void CSMPass::UpdateCascades(const glm::mat4& view, const glm::mat4& projection,
-                              const glm::vec3& lightDirection, float nearClip, float farClip) {
+void CSMPass::UpdateCascades(const glm::mat4& view, const glm::mat4& projection, const glm::vec3& lightDirection,
+                             float nearClip, float farClip) {
     m_nearClip = nearClip;
     m_farClip = farClip;
     m_cascadeSplits = ComputeCascadeSplits(nearClip, farClip);

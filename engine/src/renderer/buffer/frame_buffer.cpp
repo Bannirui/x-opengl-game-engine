@@ -2,7 +2,7 @@
 // Created by dingrui on 3/3/26.
 //
 
-#include "x/renderer/frame_buffer.h"
+#include "x/renderer/buffer/frame_buffer.h"
 
 #include "platform/opengl/opengl_framebuffer.h"
 #include "x/renderer/renderer.h"

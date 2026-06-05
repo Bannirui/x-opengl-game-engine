@@ -2,7 +2,7 @@
 // Created by dingrui on 3/7/26.
 //
 
-#include "x/renderer/uniform_buffer.h"
+#include "x/renderer/buffer/uniform_buffer.h"
 
 #include "platform/opengl/opengl_uniform_buffer.h"
 #include "x/renderer/renderer.h"
