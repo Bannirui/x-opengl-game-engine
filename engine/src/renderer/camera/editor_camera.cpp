@@ -23,20 +23,26 @@ EditorCamera::EditorCamera(float fov, float aspectRatio, float nearClip, float f
 
 EditorCamera::~EditorCamera() {}
 
-void EditorCamera::OnUpdate(Timestep /* ts */) {
+void EditorCamera::OnUpdate(Timestep ts) {
+    // 鼠标位置
+    const glm::vec2 mouse{Input::GetMouseX(), Input::GetMouseY()};
+    // 鼠标移动
+    glm::vec2 delta = (mouse - m_lastMousePosition) * 0.003f;
+    m_lastMousePosition = mouse;
+
     if (Input::IsKeyPressed(X::KEY::LeftAlt)) {
-        const glm::vec2& mouse{Input::GetMouseX(), Input::GetMouseY()};
-        glm::vec2 delta = (mouse - m_lastMousePosition) * 0.003f;
-        m_lastMousePosition = mouse;
+        float dt = ts.GetSeconds();
         if (Input::IsMouseButtonPressed(X::MOUSE::ButtonMiddle)) {
+            // alt+鼠标中键 拖动
             mousePan(delta);
         } else if (Input::IsMouseButtonPressed(X::MOUSE::ButtonLeft)) {
+            // alt+鼠标左键 旋转
             mouseRotate(delta);
         } else if (Input::IsMouseButtonPressed(X::MOUSE::ButtonRight)) {
-            mouseZoom(delta.y);
+            mouseZoom(delta.y * dt * 10.0f);
         }
+        updateView();
     }
-    updateView();
 }
 
 void EditorCamera::OnEvent(Event& e) {
@@ -93,7 +99,10 @@ void EditorCamera::mouseRotate(glm::vec2& delta) {
     m_pitch += delta.y * rotationSpeed();
 }
 
-void EditorCamera::mouseZoom(float /* delta */) {}
+void EditorCamera::mouseZoom(float delta) {
+    m_distance -= delta * zoomSpeed();
+    m_distance = std::max(m_distance, 0.1f);
+}
 
 glm::vec3 EditorCamera::calculatePosition() const {
     return m_focalPoint - GetForwardDirection() * m_distance;

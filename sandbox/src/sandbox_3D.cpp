@@ -4,7 +4,6 @@
 
 #include "sandbox_3D.h"
 
-#include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 #include <x/renderer/3d/renderer_3D.h>
@@ -22,17 +21,6 @@ Sandbox3D::Sandbox3D() : Layer("Sandbox3D"), m_camera(45.0f, 1280.0f / 720.0f, 0
 
 void Sandbox3D::OnAttach() {
     X_PROFILE_FUNCTION();
-    InitLevel3PBR();
-}
-
-void Sandbox3D::OnDetach() {
-    X_PROFILE_FUNCTION();
-    m_cubeShader.reset();
-    m_cubeMesh.reset();
-    m_cubeMaterial.reset();
-}
-
-void Sandbox3D::InitLevel3PBR() {
     // clang-format off
     std::vector<StaticMeshVertex> vertices = {
         {{-0.5f, -0.5f,  0.5f}, {0.0f, 0.0f,  1.0f}, {0.0f, 0.0f}},
@@ -89,9 +77,13 @@ void Sandbox3D::InitLevel3PBR() {
     m_cubeMaterial->SetTexture("u_AOMap", whiteTex);
 }
 
-// ============================================================
-// OnUpdate
-// ============================================================
+void Sandbox3D::OnDetach() {
+    X_PROFILE_FUNCTION();
+    m_cubeShader.reset();
+    m_cubeMesh.reset();
+    m_cubeMaterial.reset();
+}
+
 void Sandbox3D::OnUpdate(Timestep ts) {
     X_PROFILE_FUNCTION();
 
