@@ -52,7 +52,7 @@ void SceneCamera::recalculateProjection() {
             break;
         }
         default: {
-            X_CORE_ASSERT(false, "Unsupported projection.");
+            X_CORE_ERROR("Unsupported projection.");
             break;
         }
     }

@@ -4,27 +4,23 @@
 
 #include "x/renderer/renderer_api.h"
 
-#include "x/renderer/renderer.h"
+#include "platform/opengl/opengl_renderer_api.h"
 #include "x/core/base.h"
 #include "x/core/x_log.h"
-#include "platform/opengl/opengl_renderer_api.h"
+#include "x/renderer/renderer.h"
 
 RendererAPI::API RendererAPI::s_API = RendererAPI::API::kOpenGL;
 
-X::Scope<RendererAPI> RendererAPI::Create()
-{
-    switch (Renderer::GetAPI())
-    {
-        case RendererAPI::API::kNone:
-        {
-            X_CORE_ASSERT(false, "RendererAPI::kNone is currently not supported!");
+X::Scope<RendererAPI> RendererAPI::Create() {
+    switch (Renderer::GetAPI()) {
+        case RendererAPI::API::kNone: {
+            X_CORE_ERROR("RendererAPI::kNone is currently not supported!");
             return nullptr;
         }
-        case RendererAPI::API::kOpenGL:
-        {
+        case RendererAPI::API::kOpenGL: {
             return X::CreateScope<OpenGLRendererAPI>();
         }
     }
-    X_CORE_ASSERT(false, "Unknown RendererAPI!");
+    X_CORE_ERROR("Unknown RendererAPI!");
     return nullptr;
 }

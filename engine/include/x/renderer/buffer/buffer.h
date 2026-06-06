@@ -74,7 +74,7 @@ static uint32_t ShaderDataTypeSize(ShaderDataType type) {
             return 1;
         }
     }
-    X_CORE_ASSERT(false, "Unknown ShaderDataType!");
+    X_CORE_ERROR("Unknown ShaderDataType!");
     return 0;
 }
 
@@ -175,7 +175,7 @@ struct BufferElement {
                 return 1;
             }
         }
-        X_CORE_ASSERT(false, "Unknown ShaderDataType!");
+        X_CORE_ERROR("Unknown ShaderDataType!");
         return 0;
     }
 };

@@ -30,7 +30,7 @@ static b2BodyType Rigidbody2DTypeToBox2DBody(Rigidbody2DComponent::BodyType body
         default:
             break;
     }
-    X_CORE_ASSERT(false, "Unknown body type");
+    X_CORE_ERROR("Unknown body type");
     return b2_staticBody;
 }
 

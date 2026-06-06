@@ -10,13 +10,13 @@
 X::Ref<UniformBuffer> UniformBuffer::Create(uint32_t size, uint32_t binding) {
     switch (Renderer::GetAPI()) {
         case RendererAPI::API::kNone: {
-            X_CORE_ASSERT(false, "RendererAPI::kNone is currently not supported!");
+            X_CORE_ERROR("RendererAPI::kNone is currently not supported!");
             return nullptr;
         }
         case RendererAPI::API::kOpenGL: {
             return X::CreateRef<OpenGLUniformBuffer>(size, binding);
         }
     }
-    X_CORE_ASSERT(false, "Unknown RendererAPI!");
+    X_CORE_ERROR("Unknown RendererAPI!");
     return nullptr;
 }

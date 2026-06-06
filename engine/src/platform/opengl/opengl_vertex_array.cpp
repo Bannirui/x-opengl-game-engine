@@ -19,7 +19,7 @@
 static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type) {
     switch (type) {
         case ShaderDataType::kNone: {
-            X_CORE_ASSERT(false, "Not support ShaderDataType::kNone");
+            X_CORE_ERROR("Not support ShaderDataType::kNone");
         }
         case ShaderDataType::kFloat: {
             return GL_FLOAT;
@@ -55,8 +55,7 @@ static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type) {
             return GL_BOOL;
         }
     }
-
-    X_CORE_ASSERT(false, "Unknown ShaderDataType!");
+    X_CORE_ERROR("Unknown ShaderDataType!");
     return 0;
 }
 
@@ -114,10 +113,10 @@ void OpenGLVertexArray::AddVertexBuffer(const X::Ref<VertexBuffer>& vertexBuffer
                 glEnableVertexAttribArray(m_vertexBufferIndex);
                 // 告诉OpenGL怎么理解顶点数据
                 glVertexAttribPointer(
-                    m_vertexBufferIndex,          // 对应着色器的location 比如0,1,2...就对应着色器location 0,1,2...
+                    m_vertexBufferIndex,  // 对应着色器的location 比如0,1,2...就对应着色器location 0,1,2...
                     element.GetComponentCount(),  // 顶点的这个分量有多少个数据
-                    ShaderDataTypeToOpenGLBaseType(element.type),                      // 数据类型
-                    element.normalized ? GL_TRUE : GL_FALSE,                           // 是否归一化
+                    ShaderDataTypeToOpenGLBaseType(element.type),  // 数据类型
+                    element.normalized ? GL_TRUE : GL_FALSE,  // 是否归一化
                     layout.GetStride(), reinterpret_cast<const void*>(element.offset)  // 这个顶点分量在顶点中的偏移
                 );
                 // 比如参数依次是0 3 GL_FLOAT GL_TRUE 0
@@ -153,7 +152,7 @@ void OpenGLVertexArray::AddVertexBuffer(const X::Ref<VertexBuffer>& vertexBuffer
                 break;
             }
             default:
-                X_CORE_ASSERT(false, "Unknown ShaderDataType!");
+                X_CORE_ERROR("Unknown ShaderDataType!");
         }
     }
     m_vertexBuffers.push_back(vertexBuffer);

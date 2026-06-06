@@ -26,7 +26,7 @@ namespace Util {
         if (type == "fragment" || type == "pixel") {
             return GL_FRAGMENT_SHADER;
         }
-        X_CORE_ASSERT(false, "Unknown shader type");
+        X_CORE_ERROR("Unknown shader type");
         return 0;
     }
 
@@ -37,7 +37,7 @@ namespace Util {
             case GL_FRAGMENT_SHADER:
                 return "GL_FRAGMENT_SHADER";
         }
-        X_CORE_ASSERT(false);
+        X_CORE_ERROR("unknown stage={}", stage);
         return nullptr;
     }
 
@@ -290,7 +290,7 @@ void OpenGLShader::uploadUniformFloat(const std::string& name, float value) cons
         glUniform1f(location, value);
         return;
     }
-    X_CORE_WARN("shader[{}] 中拿不到uniform[{}]的location (可能被GLSL编译器优化掉了)", m_name, name);
+    X_CORE_ERROR("shader[{}] 中拿不到uniform[{}]的location (可能被GLSL编译器优化掉了)", m_name, name);
 }
 
 void OpenGLShader::uploadUniformFloat2(const std::string& name, const glm::vec2& value) const {
@@ -299,7 +299,7 @@ void OpenGLShader::uploadUniformFloat2(const std::string& name, const glm::vec2&
         glUniform2f(location, value.x, value.y);
         return;
     }
-    X_CORE_WARN("shader[{}] 中拿不到uniform[{}]的location (可能被GLSL编译器优化掉了)", m_name, name);
+    X_CORE_ERROR("shader[{}] 中拿不到uniform[{}]的location (可能被GLSL编译器优化掉了)", m_name, name);
 }
 
 void OpenGLShader::uploadUniformFloat3(const std::string& name, const glm::vec3& value) const {
@@ -308,7 +308,7 @@ void OpenGLShader::uploadUniformFloat3(const std::string& name, const glm::vec3&
         glUniform3f(location, value.x, value.y, value.z);
         return;
     }
-    X_CORE_WARN("shader[{}] 中拿不到uniform[{}]的location (可能被GLSL编译器优化掉了)", m_name, name);
+    X_CORE_ERROR("shader[{}] 中拿不到uniform[{}]的location (可能被GLSL编译器优化掉了)", m_name, name);
 }
 
 void OpenGLShader::uploadUniformFloat4(const std::string& name, const glm::vec4& value) const {
@@ -317,7 +317,7 @@ void OpenGLShader::uploadUniformFloat4(const std::string& name, const glm::vec4&
         glUniform4f(location, value.x, value.y, value.z, value.w);
         return;
     }
-    X_CORE_WARN("shader[{}] 中拿不到uniform[{}]的location (可能被GLSL编译器优化掉了)", m_name, name);
+    X_CORE_ERROR("shader[{}] 中拿不到uniform[{}]的location (可能被GLSL编译器优化掉了)", m_name, name);
 }
 
 void OpenGLShader::uploadUniformMat3(const std::string& name, const glm::mat3& matrix) const {
@@ -326,7 +326,7 @@ void OpenGLShader::uploadUniformMat3(const std::string& name, const glm::mat3& m
         glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
         return;
     }
-    X_CORE_WARN("shader[{}] 中拿不到uniform[{}]的location (可能被GLSL编译器优化掉了)", m_name, name);
+    X_CORE_ERROR("shader[{}] 中拿不到uniform[{}]的location (可能被GLSL编译器优化掉了)", m_name, name);
 }
 
 void OpenGLShader::uploadUniformMat4(const std::string& name, const glm::mat4& matrix) const {
@@ -335,7 +335,7 @@ void OpenGLShader::uploadUniformMat4(const std::string& name, const glm::mat4& m
         glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
         return;
     }
-    X_CORE_WARN("shader[{}] 中拿不到uniform[{}]的location (可能被GLSL编译器优化掉了)", m_name, name);
+    X_CORE_ERROR("shader[{}] 中拿不到uniform[{}]的location (可能被GLSL编译器优化掉了)", m_name, name);
 }
 
 /**
@@ -345,6 +345,7 @@ void OpenGLShader::uploadUniformMat4(const std::string& name, const glm::mat4& m
  */
 void OpenGLShader::creatProgram() {
     GLuint program = glCreateProgram();
+    X_CORE_ASSERT(program > 0, "create an empty program object failed.")
     std::vector<GLuint> shaderIDs;
 
     for (auto&& [stage, source] : m_glslSources) {
@@ -362,7 +363,7 @@ void OpenGLShader::creatProgram() {
             glGetShaderInfoLog(shaderID, maxLength, &maxLength, infoLog.data());
             X_CORE_ERROR("Shader compilation failed ({}):\n{}", Util::GLShaderStageToString(stage), infoLog.data());
             glDeleteShader(shaderID);
-            X_CORE_ASSERT(false);
+            return;
         }
         glAttachShader(program, shaderID);
     }
@@ -378,7 +379,7 @@ void OpenGLShader::creatProgram() {
         for (auto id : shaderIDs) {
             glDeleteShader(id);
         }
-        X_CORE_ASSERT(false, "Shader linking failed ({}):\n{}", m_filePath, infoLog.data());
+        X_CORE_ERROR("Shader linking failed ({}):\n{}", m_filePath, infoLog.data());
     }
     for (auto id : shaderIDs) {
         glDetachShader(program, id);

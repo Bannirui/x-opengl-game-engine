@@ -78,7 +78,7 @@ namespace Util {
             default:
                 break;
         }
-        X_CORE_ASSERT(false);
+        X_CORE_ERROR("unknown format");
         return 0;
     }
 #endif
@@ -141,7 +141,7 @@ void OpenGLFramebuffer::Invalidate() {
                                              m_specification.m_width, m_specification.m_height, i);
                     break;
                 default:
-                    X_CORE_ASSERT(false, "Unknown framebuffer format")
+                    X_CORE_ERROR("Unknown framebuffer format");
             }
         }
     }
@@ -155,7 +155,7 @@ void OpenGLFramebuffer::Invalidate() {
                                          m_specification.m_height);
                 break;
             default:
-                X_CORE_ASSERT(false, "Unknown depth format")
+                X_CORE_ERROR("Unknown depth format");
         }
     }
     if (m_colorAttachments.empty()) {

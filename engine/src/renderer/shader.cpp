@@ -12,28 +12,28 @@
 X::Ref<Shader> Shader::Create(const std::string& filepath) {
     switch (Renderer::GetAPI()) {
         case RendererAPI::API::kNone: {
-            X_CORE_ASSERT(false, "RendererAPI::kNone is currently not supported!");
+            X_CORE_ERROR("RendererAPI::kNone is currently not supported!");
             return nullptr;
         }
         case RendererAPI::API::kOpenGL: {
             return X::CreateRef<OpenGLShader>(filepath);
         }
     }
-    X_CORE_ASSERT(false, "Unknown RendererAPI!");
+    X_CORE_ERROR("Unknown RendererAPI!");
     return nullptr;
 }
 
 X::Ref<Shader> Shader::Create(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc) {
     switch (Renderer::GetAPI()) {
         case RendererAPI::API::kNone: {
-            X_CORE_ASSERT(false, "RendererAPI::kNone is currently not supported!");
+            X_CORE_ERROR("RendererAPI::kNone is currently not supported!");
             return nullptr;
         }
         case RendererAPI::API::kOpenGL: {
             return X::CreateRef<OpenGLShader>(name, vertexSrc, fragmentSrc);
         }
     }
-    X_CORE_ASSERT(false, "Unknown RendererAPI!");
+    X_CORE_ERROR("Unknown RendererAPI!");
     return nullptr;
 }
 
