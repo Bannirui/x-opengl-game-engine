@@ -4,13 +4,11 @@
 
 #pragma once
 
-#include <glm/glm.hpp>
-
-#include <x/core/base.h>
+#include <x/renderer/camera/editor_camera.h>
+#include <x/renderer/material.h>
+#include <x/renderer/mesh.h>
 
 #include <engine.h>
-
-class VertexArray;
 
 class Sandbox3D : public Layer {
 public:
@@ -26,12 +24,11 @@ public:
 private:
     void InitLevel3PBR();
 
+    EditorCamera m_camera;
     float m_rotation = 0.0f;
 
-    X::Ref<Shader> m_pbrShader;
+    // 渲染立方体要用到
+    X::Ref<Shader> m_cubeShader;
     X::Ref<Mesh> m_cubeMesh;
     X::Ref<Material> m_cubeMaterial;
-
-    glm::mat4 m_viewMatrix{1.0f};
-    glm::mat4 m_projectionMatrix{1.0f};
 };

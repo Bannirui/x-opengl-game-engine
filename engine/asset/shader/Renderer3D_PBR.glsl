@@ -51,7 +51,7 @@ void main() {
     v_Normal = mat3(transpose(inverse(u_Model))) * a_Normal;
     v_TexCoord = a_TexCoord;
     v_EntityID = u_EntityID;
-    gl_Position = vec4(a_Position * 0.1, 1.0);
+    gl_Position = u_ViewProjection * worldPos;
 }
 
 // =============================================================================
@@ -264,10 +264,6 @@ float CascadedShadowCalculation(vec3 worldPos, float NdotL) {
 // =============================================================================
 
 void main() {
-    // todo: debug — 验证fragment shader是否被调用
-    o_Color = vec4(1.0, 0.0, 0.0, 1.0);
-    return;
-
     // ---- 方向向量 ----
     vec3 N = normalize(v_Normal); // 表面法线 (世界空间)
     vec3 V = normalize(u_CameraPosition - v_WorldPos); // 视线方向 (片段→相机)
