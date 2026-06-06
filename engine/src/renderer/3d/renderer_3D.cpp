@@ -31,17 +31,14 @@ static Renderer3DData s_data;
 
 void Renderer3D::Init() {
     X_PROFILE_FUNCTION();
-
     // 1 PBR环境捕获工具 天空盒HDR到Cube map转换+HDR滤波器
     PBREnvironment::InitCaptureResources();
     // 2 后处理全屏四边形 只有一个quad的VAO
     FullscreenQuad::Init();
-
     // 3 创建Shader对象
     s_data.DefaultShader = Shader::Create("asset/shader/Renderer3D_Phong.glsl");
     s_data.PBRShader = Shader::Create("asset/shader/Renderer3D_PBR.glsl");
     s_data.SkyboxShader = Shader::Create("asset/shader/Skybox.glsl");
-
     /**
      * 4 显式绑定UBO Block到binding slot 为什么需要这一步
      *   - 1 虽然GLSL源码中已声明layout(std140, binding=N)
@@ -57,7 +54,6 @@ void Renderer3D::Init() {
         {"Light", UBOBinding::Light},           {"PBRSettings", UBOBinding::PBRSettings},
         {"LightSpace", UBOBinding::LightSpace}, {"CSMData", UBOBinding::CSMData},
     };
-
     // 手动绑定UBO的block跟binding
     auto setupBlockBindings = [](const X::Ref<Shader>& shader) {
         // OpenGL维护的shader object
@@ -75,12 +71,10 @@ void Renderer3D::Init() {
     setupBlockBindings(s_data.DefaultShader);
     setupBlockBindings(s_data.PBRShader);
     setupBlockBindings(s_data.SkyboxShader);
-
     // 5 白色纹理 没有贴图时的默认材质
     s_data.WhiteTexture = Texture2D::Create(1, 1);
     uint32_t whiteTextureData = 0xffffffff;  // RGBA 全白
     s_data.WhiteTexture->SetData(&whiteTextureData, sizeof(uint32_t));
-
     /**
      * 6 创建UBO缓冲区
      * glGenBuffers+glBindBuffer(GL_UNIFORM_BUFFER)+glBufferData分配显存
@@ -90,7 +84,6 @@ void Renderer3D::Init() {
     s_data.CameraUBO = UniformBuffer::Create(sizeof(Renderer3DData::CameraData), UBOBinding::Camera);
     // Model UBO (binding=1) 每个物体不同 Flush 时每物体更新
     s_data.ModelUBO = UniformBuffer::Create(sizeof(glm::mat4), UBOBinding::Model);
-
     // 7 默认光源参数
     LightData defaultLight{};
     defaultLight.Direction = glm::vec3(-0.5f, -1.0f, -0.3f);  // 斜上方平行光
@@ -99,12 +92,10 @@ void Renderer3D::Init() {
     defaultLight.Specular = glm::vec3(1.0f);                  // 白光镜面反射
     s_data.LightBuffer = defaultLight;
     s_data.LightUBO = UniformBuffer::Create(sizeof(LightData), UBOBinding::Light);
-
     // 8 PBR 默认参数
     s_data.PBRBuffer.CameraPosition = glm::vec3(0.0f);
     s_data.PBRBuffer.Exposure = 1.0f;
     s_data.PBRUBO = UniformBuffer::Create(sizeof(PBRSettingsData), UBOBinding::PBRSettings);
-
     /**
      * 9 默认Cubemap 黑色
      * PBR shader需要IrradianceMap/PrefilterMap采样器
@@ -115,7 +106,6 @@ void Renderer3D::Init() {
         s_data.IrradianceMap = defaultCube;
         s_data.PrefilterMap = defaultCube;
     }
-
     /**
      * 10 默认BRDF LUT 白色1×1 RG16F
      * RG16F
@@ -131,7 +121,6 @@ void Renderer3D::Init() {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     }
-
     // 11 默认Shadow Map 白色深度=无阴影
     {
         float whiteDepth = 1.0f;  // 1.0=最远深度=不被遮挡
@@ -219,9 +208,6 @@ void Renderer3D::BeginScene(const EditorCamera& camera) {
     s_data.Stats = {};
 }
 
-/**
- * 每帧结束时调用 触发Flush提交所有累积的绘制命令
- */
 void Renderer3D::EndScene() {
     X_PROFILE_FUNCTION();
     Flush();
@@ -278,7 +264,7 @@ void Renderer3D::Flush() {
 
         // 遍历该Material下的每个绘制命令
         for (auto& cmd : bucket.Commands) {
-            // 更新Model UBO 当前物体的世界变换矩阵
+            // 更新UBO 模型矩阵 负责把本地坐标转换成世界坐标
             s_data.ModelUBO->SetData(glm::value_ptr(cmd.Transform), sizeof(glm::mat4));
             // 设置EntityID 用于帧缓冲读回实现鼠标拾取
             bucket.MaterialAsset->GetShader()->SetInt("u_EntityID", cmd.EntityID);
@@ -304,26 +290,20 @@ void Renderer3D::Flush() {
     }
 }
 
-/**
- * 提交一个绘制网格的命令
- * 不立刻绘制 而是按照Material分组累积到Buckets 在EndScene->Flush()时统一批量提交
- * @param transform 变换矩阵
- */
 void Renderer3D::DrawMesh(const X::Ref<Mesh>& mesh, const X::Ref<Material>& material, const glm::mat4& transform,
                           int32_t entityID) {
     X_PROFILE_FUNCTION();
     if (!mesh || !material) {
         return;
     }
-    // 查找是否已有相同Material的Bucket 可能提交过来的多个mesh其实画的都是一种材质
+    // 看看这个材质是不是已经有其他的绘制指令了 可能提交过来的多个mesh其实画的都是一种材质
     for (auto& bucket : s_data.Buckets) {
         if (*bucket.MaterialAsset == *material) {
             bucket.Commands.push_back({mesh, transform, entityID});
             return;
         }
     }
-
-    // 新建Bucket
+    // 有个新的材质要绘制
     MaterialBucket newBucket{};
     newBucket.MaterialAsset = material;
     newBucket.Commands.push_back({mesh, transform, entityID});

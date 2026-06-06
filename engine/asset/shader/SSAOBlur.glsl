@@ -12,7 +12,7 @@ void main() {
 layout(location = 0) in vec2 v_TexCoord;
 layout(location = 0) out float o_Color;
 uniform sampler2D u_SSAOInput;
-layout(location = 0) uniform vec2 u_TexelSize;
+uniform vec2 u_TexelSize;
 void main() {
     float result = 0.0;
     for (int x = -2; x <= 2; ++x)

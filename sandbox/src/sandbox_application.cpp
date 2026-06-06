@@ -12,13 +12,11 @@
 class Sandbox : public XApplication {
 public:
     Sandbox(const ApplicationSpecification& spec) : XApplication(spec) {
-        PushLayer(X::CreateScope<Sandbox2D>());
-        // PushLayer(X::CreateScope<Sandbox3D>());
+        // PushLayer(X::CreateScope<Sandbox2D>());
+        PushLayer(X::CreateScope<Sandbox3D>());
     }
 
-    ~Sandbox() override {
-        // todo
-    }
+    ~Sandbox() override = default;
 };
 
 XApplication* CreateApplication(ApplicationCommandLineArgs args) {

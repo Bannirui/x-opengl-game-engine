@@ -4,15 +4,15 @@
 
 #pragma once
 
-#include <glm/glm.hpp>
-
-#include <x/core/layer.h>
-#include <x/renderer/editor_camera.h>
-#include <x/renderer/orthographic_camera_controller.h>
-#include <x/scene/entity.h>
-
 #include "panel/content_browser_panel.h"
 #include "panel/scene_hierarchy_panel.h"
+
+#include <glm/glm.hpp>
+
+#include <../../engine/include/x/renderer/camera/editor_camera.h>
+#include <../../engine/include/x/renderer/camera/orthographic_camera_controller.h>
+#include <x/core/layer.h>
+#include <x/scene/entity.h>
 
 class MouseButtonPressedEvent;
 class KeyPressEvent;

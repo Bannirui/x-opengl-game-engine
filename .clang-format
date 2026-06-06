@@ -65,6 +65,8 @@ CommentPragmas: '^ IWYU pragma:'
 # 对齐 适度就行 避免过度表格化
 AlignConsecutiveAssignments: false
 AlignConsecutiveDeclarations: false
+# 尾注释只保留1个空格 不强制对齐同一列
+AlignTrailingComments: false
 
 DerivePointerAlignment: false
 FixNamespaceComments: true

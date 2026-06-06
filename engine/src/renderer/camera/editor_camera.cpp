@@ -2,7 +2,7 @@
 // Created by rui ding on 2026/3/6.
 //
 
-#include "x/renderer/editor_camera.h"
+#include "x/renderer/camera/editor_camera.h"
 
 #include "x/core/input.h"
 #include "x/core/timestep.h"
@@ -12,21 +12,23 @@
 #include <glm/gtx/quaternion.hpp>
 
 EditorCamera::EditorCamera(float fov, float aspectRatio, float nearClip, float farClip)
-    : Camera(glm::perspective(glm::radians(fov), aspectRatio, nearClip, farClip)),
-      m_fov(fov),
-      m_aspectRatio(aspectRatio),
-      m_nearClip(nearClip),
-      m_farClip(farClip) {
+    : Camera(glm::perspective(glm::radians(fov), aspectRatio, nearClip, farClip)), /* 投影矩阵 */
+      m_fov(fov), /* 视角 角度 */
+      m_aspectRatio(aspectRatio), /* 宽高比 */
+      m_nearClip(nearClip), /* 近剪裁面 */
+      m_farClip(farClip) /* 远剪裁面 */
+{
     updateView();
 }
 
 EditorCamera::~EditorCamera() {}
 
 void EditorCamera::OnUpdate(Timestep /* ts */) {
-    if (Input::IsKeyPressed(X::KEY::LeftAlt)) {
+    // todo
+    // if (Input::IsKeyPressed(X::KEY::LeftAlt)) {
         const glm::vec2& mouse{Input::GetMouseX(), Input::GetMouseY()};
-        glm::vec2 delta = (mouse - m_initialMousePosition) * 0.003f;
-        m_initialMousePosition = mouse;
+        glm::vec2 delta = (mouse - m_lastMousePosition) * 0.003f;
+        m_lastMousePosition = mouse;
         if (Input::IsMouseButtonPressed(X::MOUSE::ButtonMiddle)) {
             mousePan(delta);
         } else if (Input::IsMouseButtonPressed(X::MOUSE::ButtonLeft)) {
@@ -34,7 +36,7 @@ void EditorCamera::OnUpdate(Timestep /* ts */) {
         } else if (Input::IsMouseButtonPressed(X::MOUSE::ButtonRight)) {
             mouseZoom(delta.y);
         }
-    }
+    // }
     updateView();
 }
 

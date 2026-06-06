@@ -5,7 +5,7 @@
 #include "advanced_effects.h"
 
 #include "renderer/3d/renderer_3D_internal.h"
-#include "x/renderer/vertex_array.h"
+#include "x/renderer/buffer/vertex_array.h"
 
 #include <glad/glad.h>
 
@@ -18,15 +18,43 @@
 static GLuint s_quadVAO = 0;
 static GLuint s_quadVBO = 0;
 
+/**
+ * 全屏Quad
+ */
 void FullscreenQuad::Init() {
-    float verts[] = {-1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f, 1.0f};
+    // 4个顶点覆盖整个屏幕
+    // clang-format off
+    //     x     y
+    float verts[] = {
+        -1.0f, -1.0f,
+         1.0f, -1.0f,
+        -1.0f,  1.0f,
+         1.0f,  1.0f
+    };
+    // clang-format on
+    // 创建VAO
     glGenVertexArrays(1, &s_quadVAO);
+    // 创建VBO
     glGenBuffers(1, &s_quadVBO);
+    // 绑定VAO 后面对VAO的操作都会记录到这个VAO中
     glBindVertexArray(s_quadVAO);
+    // 绑定VBO
     glBindBuffer(GL_ARRAY_BUFFER, s_quadVBO);
+    // 顶点数据传到GPU
     glBufferData(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
+    // 开启attribute=0 对应shader程序的location=0
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
+    // 告诉GPU怎么取VBO
+    glVertexAttribPointer(0,  // location=0
+                          2,  // 每个顶点有2个float
+                          GL_FLOAT,  // 类型是float
+                          GL_FALSE,  // 不归一化
+                          0,  // 不偏移
+                          nullptr);
+
+    // 解绑VAO和VBO
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void FullscreenQuad::Render() {

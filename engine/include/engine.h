@@ -28,16 +28,15 @@
 #include "x/scene/scriptable_entity.h"
 
 // ---Renderer---
-#include "x/renderer/orthographic_camera_controller.h"
-#include "x/renderer/orthographic_camera.h"
-#include "x/renderer/renderer.h"
+#include "x/renderer/2d/renderer_2D.h"
+#include "x/renderer/3d/renderer_3D.h"
+#include "x/renderer/buffer/buffer.h"
+#include "x/renderer/buffer/frame_buffer.h"
+#include "x/renderer/buffer/vertex_array.h"
+#include "x/renderer/camera/orthographic_camera.h"
+#include "x/renderer/camera/orthographic_camera_controller.h"
 #include "x/renderer/render_command.h"
-#include "x/renderer/renderer_2D.h"
-#include "x/renderer/renderer_3D.h"
-
+#include "x/renderer/renderer.h"
 #include "x/renderer/shader.h"
 #include "x/renderer/texture.h"
-#include "x/renderer/buffer.h"
-#include "x/renderer/vertex_array.h"
-#include "x/renderer/frame_buffer.h"
 // ---Renderer---

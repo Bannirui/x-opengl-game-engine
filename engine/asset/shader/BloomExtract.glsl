@@ -12,7 +12,7 @@ void main() {
 layout(location = 0) in vec2 v_TexCoord;
 layout(location = 0) out vec4 o_Color;
 uniform sampler2D u_Scene;
-layout(location = 0) uniform float u_Threshold;
+uniform float u_Threshold;
 void main() {
     vec3 color = texture(u_Scene, v_TexCoord).rgb;
     float brightness = dot(color, vec3(0.2126, 0.7152, 0.0722));

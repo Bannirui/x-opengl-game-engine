@@ -10,6 +10,8 @@
 
 #include <glm/glm.hpp>
 
+#include <unordered_map>
+
 class OpenGLShader : public Shader {
 public:
     /**
@@ -73,13 +75,7 @@ private:
     void uploadUniformMat4(const std::string& name, const glm::mat4& matrix) const;
 
 private:
-    /**
-     * 要是系统用的OpenGL版本高 就支持spirv 那么就用shaderc编译成spirv字节码
-     * @param shaderSources vertex和frag源码 key是vertex和frag类型枚举 value是对应的源码
-     */
-    void compileBinariesIfSupportSpirv(const std::unordered_map<GLenum, std::string>& shaderSources);
     void creatProgram();
-    void reflect(GLenum stage, const std::vector<uint32_t>& shaderData);
 
 private:
     // OpenGL创建的program object OpenGL会分配唯一的id引用它 以后渲染就是用这个program object
@@ -95,8 +91,6 @@ private:
     std::string m_filePath;
     // shader程序的名字 从shader程序路径里面截出来的
     std::string m_name;
-    // GLSL->Shaderc->Spir-V字节码 把GLSL编译成了spirv字节码 高版本支持spirv就用这种
-    std::unordered_map<GLenum, std::vector<uint32_t>> m_spirvBinaries;
-    // GLSL源码 低版本不支持spirv就用源码
+    // GLSL源码 已经经过了预处理
     std::unordered_map<GLenum, std::string> m_glslSources;
 };

@@ -20,7 +20,7 @@
 struct MeshDrawCommand {
     // 风格资源
     X::Ref<Mesh> MeshAsset;
-    // 世界变换矩阵
+    // 模型矩阵 MVP的M 剪裁空间坐标=投影矩阵*观察矩阵*模型矩阵*本地坐标 模型矩阵负责把本地坐标转换到世界坐标
     glm::mat4 Transform;
     // 用来鼠标拾取
     int32_t EntityID;
@@ -80,19 +80,22 @@ struct Renderer3DData {
      */
     std::vector<MaterialBucket> Buckets;
 
+    // 剪裁空间坐标gl_Position=投影矩阵P*观察矩阵V*模型矩阵M*本地坐标
     // 约定的UBO
-    X::Ref<UniformBuffer> CameraUBO;  // slot0 ViewProjection矩阵 每帧更新
-    X::Ref<UniformBuffer> ModelUBO;   // slot1 World矩阵 每个draw call更新
-    X::Ref<UniformBuffer> LightUBO;   // slot2 平行光 每帧更新
-    X::Ref<UniformBuffer> PBRUBO;     // slot3 相机位置+曝光度 每帧更新
+    // slot0 ViewProjection矩阵 每帧更新 P*V的结果 负责把世界坐标转换剪裁坐标
+    X::Ref<UniformBuffer> CameraUBO;
+    // slot1 模型矩阵M 负责把本地坐标转换世界
+    X::Ref<UniformBuffer> ModelUBO;
+    X::Ref<UniformBuffer> LightUBO;  // slot2 光照 每帧更新
+    X::Ref<UniformBuffer> PBRUBO;  // slot3 相机位置+曝光度 每帧更新
 
     // 纹理贴图
-    X::Ref<Texture2D> WhiteTexture;      // 1*1白色纹理 没有贴图时作为兜底使用
+    X::Ref<Texture2D> WhiteTexture;  // 1*1白色纹理 没有贴图时作为兜底使用
     X::Ref<TextureCube> EnvironmentMap;  // HDR环境光 天空盒原始图
-    X::Ref<TextureCube> IrradianceMap;   // 漫反射辐照度图
-    X::Ref<TextureCube> PrefilterMap;    // 预过滤镜面反射图 多级的mipmap
-    uint32_t BRDFLUTTexture = 0;         // BRDF积分LUT查找表
-    uint32_t DefaultShadowMap = 0;       // 默认阴影贴图
+    X::Ref<TextureCube> IrradianceMap;  // 漫反射辐照度图
+    X::Ref<TextureCube> PrefilterMap;  // 预过滤镜面反射图 多级的mipmap
+    uint32_t BRDFLUTTexture = 0;  // BRDF积分LUT查找表
+    uint32_t DefaultShadowMap = 0;  // 默认阴影贴图
 
     // 着色器
     X::Ref<Shader> DefaultShader;  // 冯氏
@@ -106,10 +109,10 @@ struct Renderer3DData {
 
     CameraData CameraBuffer;
 
-    glm::mat4 CurrentViewMatrix;        // 当前帧的View矩阵 供天空盒剥离位移用
+    glm::mat4 CurrentViewMatrix;  // 当前帧的View矩阵 供天空盒剥离位移用
     glm::mat4 CurrentProjectionMatrix;  // 当前帧的Projection矩阵 供天空盒用
 
-    LightData LightBuffer;      // 平行光
+    LightData LightBuffer;  // 平行光
     PBRSettingsData PBRBuffer;  // 相机+曝光度
 
     Renderer3D::Statistics Stats;

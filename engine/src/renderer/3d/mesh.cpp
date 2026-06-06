@@ -4,8 +4,8 @@
 
 #include "x/renderer/mesh.h"
 
-#include "x/renderer/buffer.h"
-#include "x/renderer/vertex_array.h"
+#include "../../../include/x/renderer/buffer/buffer.h"
+#include "../../../include/x/renderer/buffer/vertex_array.h"
 
 X::Ref<Mesh> Mesh::Create(const std::vector<StaticMeshVertex>& vertices, const std::vector<uint32_t>& indices) {
     X_PROFILE_FUNCTION();

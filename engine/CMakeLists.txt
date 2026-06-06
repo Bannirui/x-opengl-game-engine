@@ -63,7 +63,6 @@ target_link_libraries(${LIB_NAME}
         EnTT
         yaml-cpp
         imguizmo
-        shaderc spirv-cross-core
         box2d
 )
 

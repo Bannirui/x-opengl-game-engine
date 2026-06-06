@@ -17,6 +17,7 @@ public:
                                              uint32_t maxMip = 5);
     static uint32_t BakeBRDFLUT(uint32_t size = 512);
 
+    // 引擎初始化时
     static void InitCaptureResources();
     static void ShutdownCaptureResources();
 

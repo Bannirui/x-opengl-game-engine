@@ -35,8 +35,8 @@ layout(location = 2) out vec2 v_TexCoord;
 // flat 每个图元片段取同一个值
 layout(location = 3) flat out int v_EntityID;
 
-// Uniform变量 实体ID 用于鼠标拾取 非opaque须指定location
-layout(location = 0) uniform int u_EntityID;
+// Uniform变量 实体ID 用于鼠标拾取
+uniform int u_EntityID;
 
 void main() {
     // 计算世界空间坐标
@@ -75,10 +75,10 @@ layout(std140, binding = 2) uniform Light {
 // Opaque型 uniform变量 纹理采样器 不需要location
 uniform sampler2D u_DiffuseMap;
 
-// Non-opaque型 uniform变量 Phong材质参数 SPIR-V要求显式layout(location)
-layout(location = 0) uniform float u_Shininess;           // 高光系数 (shininess exponent)
-layout(location = 1) uniform vec3 u_MaterialDiffuse;      // 材质漫反射颜色
-layout(location = 2) uniform vec3 u_MaterialSpecular;     // 材质镜面反射颜色
+// Phong材质参数
+uniform float u_Shininess;           // 高光系数 (shininess exponent)
+uniform vec3 u_MaterialDiffuse;      // 材质漫反射颜色
+uniform vec3 u_MaterialSpecular;     // 材质镜面反射颜色
 
 void main() {
     // Phong光照模型

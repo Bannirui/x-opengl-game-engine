@@ -14,8 +14,6 @@
 
 #include <shaderc/shaderc.hpp>
 
-#include <spirv_cross.hpp>
-
 namespace Util {
     /**
      * 在glsl源码里面会首先声明类型 在#version之前先声明类型
@@ -31,19 +29,6 @@ namespace Util {
         X_CORE_ASSERT(false, "Unknown shader type");
         return 0;
     }
-
-#ifdef glSpecializeShaderARB
-    static shaderc_shader_kind GLShaderStageToShaderC(GLenum stage) {
-        switch (stage) {
-            case GL_VERTEX_SHADER:
-                return shaderc_glsl_vertex_shader;
-            case GL_FRAGMENT_SHADER:
-                return shaderc_glsl_fragment_shader;
-        }
-        X_CORE_ASSERT(false);
-        return (shaderc_shader_kind)0;
-    }
-#endif
 
     static const char* GLShaderStageToString(GLenum stage) {
         switch (stage) {
@@ -67,19 +52,6 @@ namespace Util {
             std::filesystem::create_directories(cacheDirectory);
         }
     }
-
-#ifdef glSpecializeShaderARB
-    static const char* GLShaderStageCachedFileExtension(GLenum stage) {
-        switch (stage) {
-            case GL_VERTEX_SHADER:
-                return ".cached_spirv.vert";
-            case GL_FRAGMENT_SHADER:
-                return ".cached_spirv.frag";
-        }
-        X_CORE_ASSERT(false, "Unknown shader stage");
-        return "";
-    }
-#endif
 }  // namespace Util
 
 /**
@@ -176,7 +148,7 @@ static bool isVersionSpecificFilePath(const std::string& filepath) {
  *     用了备用的shader 所以开发的时候并不知道#version声明真的是什么版本 所以需要处理一下 用当前运行时的OpenGL真实版本号
  * @param glslPath shader程序的路径 源码路径里面的版本号判定源码里面的#version要不要动态替换掉
  * @param glslSrc shader程序的源码
- * @return shader程序 key=verterx或frag枚举 value=vertex或frag对应的源码
+ * @return shader程序 key=vertex或frag枚举 value=vertex或frag对应的源码
  */
 static std::unordered_map<GLenum, std::string> preProcess(const std::string& glslPath, const std::string& glslSrc) {
     X_PROFILE_FUNCTION();
@@ -219,7 +191,7 @@ OpenGLShader::OpenGLShader(const std::string& filepath) {
     auto shaderSources = preProcess(m_filePath, source);
     {
         Timer timer;
-        compileBinariesIfSupportSpirv(shaderSources);
+        m_glslSources = shaderSources;
         // 创建OpenGL的shader object
         creatProgram();
         X_CORE_INFO("Shader creation took {} ms", timer.ElapsedMillis());
@@ -237,7 +209,7 @@ OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexSrc
     std::unordered_map<GLenum, std::string> shaderSources;
     shaderSources[GL_VERTEX_SHADER] = vertexSrc;
     shaderSources[GL_FRAGMENT_SHADER] = fragmentSrc;
-    compileBinariesIfSupportSpirv(shaderSources);
+    m_glslSources = shaderSources;
     creatProgram();
 }
 
@@ -295,11 +267,12 @@ void OpenGLShader::SetMat4(const std::string& name, const glm::mat4& value) {
 }
 
 void OpenGLShader::uploadUniformInt(const std::string& name, int value) const {
-    // 先拿到shader程序里面uniform变量对应的location
     GLint location = glGetUniformLocation(m_rendererId, name.c_str());
-    // 通过location给uniform变量传值 uniform变量的命名空间是每个shader的也就是说明这个变量只能当前shader用
-    // UBO是OpenGL在显存开辟的常量内存可以给所有的shader共享
-    glUniform1i(location, value);
+    if (location != -1) {
+        glUniform1i(location, value);
+        return;
+    }
+    X_CORE_WARN("shader[{}] 中拿不到uniform[{}]的location (可能被GLSL编译器优化掉了)", m_name, name);
 }
 
 void OpenGLShader::uploadUniformIntArray(const std::string& name, int* values, uint32_t count) const {
@@ -308,107 +281,61 @@ void OpenGLShader::uploadUniformIntArray(const std::string& name, int* values, u
         glUniform1iv(location, count, values);
         return;
     }
-    // SPIR-V驱动可能不支持按数组名查询location 逐个元素尝试
-    for (uint32_t i = 0; i < count; i++) {
-        std::string elemName = name + "[" + std::to_string(i) + "]";
-        GLint elemLoc = glGetUniformLocation(m_rendererId, elemName.c_str());
-        if (elemLoc != -1) {
-            glUniform1i(elemLoc, values[i]);
-        }
-    }
+    X_CORE_WARN("shader[{}] 中拿不到uniform[{}]的location (可能被GLSL编译器优化掉了)", m_name, name);
 }
 
 void OpenGLShader::uploadUniformFloat(const std::string& name, float value) const {
     GLint location = glGetUniformLocation(m_rendererId, name.c_str());
-    glUniform1f(location, value);
+    if (location != -1) {
+        glUniform1f(location, value);
+        return;
+    }
+    X_CORE_WARN("shader[{}] 中拿不到uniform[{}]的location (可能被GLSL编译器优化掉了)", m_name, name);
 }
 
 void OpenGLShader::uploadUniformFloat2(const std::string& name, const glm::vec2& value) const {
     GLint location = glGetUniformLocation(m_rendererId, name.c_str());
-    glUniform2f(location, value.x, value.y);
+    if (location != -1) {
+        glUniform2f(location, value.x, value.y);
+        return;
+    }
+    X_CORE_WARN("shader[{}] 中拿不到uniform[{}]的location (可能被GLSL编译器优化掉了)", m_name, name);
 }
 
 void OpenGLShader::uploadUniformFloat3(const std::string& name, const glm::vec3& value) const {
     GLint location = glGetUniformLocation(m_rendererId, name.c_str());
-    glUniform3f(location, value.x, value.y, value.z);
+    if (location != -1) {
+        glUniform3f(location, value.x, value.y, value.z);
+        return;
+    }
+    X_CORE_WARN("shader[{}] 中拿不到uniform[{}]的location (可能被GLSL编译器优化掉了)", m_name, name);
 }
 
 void OpenGLShader::uploadUniformFloat4(const std::string& name, const glm::vec4& value) const {
     GLint location = glGetUniformLocation(m_rendererId, name.c_str());
-    glUniform4f(location, value.x, value.y, value.z, value.w);
+    if (location != -1) {
+        glUniform4f(location, value.x, value.y, value.z, value.w);
+        return;
+    }
+    X_CORE_WARN("shader[{}] 中拿不到uniform[{}]的location (可能被GLSL编译器优化掉了)", m_name, name);
 }
 
 void OpenGLShader::uploadUniformMat3(const std::string& name, const glm::mat3& matrix) const {
     GLint location = glGetUniformLocation(m_rendererId, name.c_str());
-    glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
+    if (location != -1) {
+        glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
+        return;
+    }
+    X_CORE_WARN("shader[{}] 中拿不到uniform[{}]的location (可能被GLSL编译器优化掉了)", m_name, name);
 }
 
 void OpenGLShader::uploadUniformMat4(const std::string& name, const glm::mat4& matrix) const {
     GLint location = glGetUniformLocation(m_rendererId, name.c_str());
-    glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
-}
-
-void OpenGLShader::compileBinariesIfSupportSpirv(const std::unordered_map<GLenum, std::string>& shaderSources) {
-    m_glslSources = shaderSources;
-
-    if (X::GLRendererInfo::Get().ARB_gl_spirv) {
-#ifdef glSpecializeShaderARB
-        shaderc::Compiler compiler;
-        shaderc::CompileOptions options;
-        options.SetTargetEnvironment(shaderc_target_env_opengl, shaderc_env_version_opengl_4_5);
-        options.SetOptimizationLevel(shaderc_optimization_level_performance);
-        // 让glsl在生成的SPIR-V字节码中保留OpName/OpLine等调试符号
-        // 不加这一行时shaderc_optimization_level_performance优化级别会剥离这些调试信息
-        // OpenGL驱动需要OpName指令才能通过glGetUniformLocation按名称查找uniform变量
-        // 没有OpName glGetUniformLocation("u_Textures")返回-1
-        // 后续的glUniform1iv就是空操作 所有sampler保持默认值0 指向白色纹理 导致贴图显示纯白
-        options.SetGenerateDebugInfo();
-
-        std::filesystem::path cacheDirectory = Util::GetCacheDirectory();
-        bool useCache = !m_filePath.empty();
-        m_spirvBinaries.clear();
-        for (auto&& [stage, source] : shaderSources) {
-            if (useCache) {
-                std::filesystem::path cachedPath =
-                    cacheDirectory / (std::filesystem::path(m_filePath).filename().string() +
-                                      Util::GLShaderStageCachedFileExtension(stage));
-                std::ifstream in(cachedPath, std::ios::in | std::ios::binary);
-                if (in.is_open()) {
-                    in.seekg(0, std::ios::end);
-                    auto size = in.tellg();
-                    in.seekg(0, std::ios::beg);
-                    auto& data = m_spirvBinaries[stage];
-                    data.resize(size / sizeof(uint32_t));
-                    in.read((char*)data.data(), size);
-                    reflect(stage, m_spirvBinaries[stage]);
-                    continue;
-                }
-            }
-
-            shaderc::SpvCompilationResult module =
-                compiler.CompileGlslToSpv(source, Util::GLShaderStageToShaderC(stage), m_filePath.c_str(), options);
-            if (module.GetCompilationStatus() != shaderc_compilation_status_success) {
-                X_CORE_ERROR(module.GetErrorMessage());
-                X_CORE_ASSERT(false);
-            }
-            m_spirvBinaries[stage] = std::vector<uint32_t>(module.cbegin(), module.cend());
-
-            if (useCache) {
-                std::filesystem::path cachedPath =
-                    cacheDirectory / (std::filesystem::path(m_filePath).filename().string() +
-                                      Util::GLShaderStageCachedFileExtension(stage));
-                std::ofstream out(cachedPath, std::ios::out | std::ios::binary);
-                if (out.is_open()) {
-                    auto& data = m_spirvBinaries[stage];
-                    out.write((char*)data.data(), data.size() * sizeof(uint32_t));
-                    out.flush();
-                }
-            }
-
-            reflect(stage, m_spirvBinaries[stage]);
-        }
-#endif
+    if (location != -1) {
+        glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
+        return;
     }
+    X_CORE_WARN("shader[{}] 中拿不到uniform[{}]的location (可能被GLSL编译器优化掉了)", m_name, name);
 }
 
 /**
@@ -417,49 +344,28 @@ void OpenGLShader::compileBinariesIfSupportSpirv(const std::unordered_map<GLenum
  * 只在渲染前执行一下glUseProgram激活它就可以用它进行渲染了
  */
 void OpenGLShader::creatProgram() {
-    // 创建OpenGL的shader object
     GLuint program = glCreateProgram();
     std::vector<GLuint> shaderIDs;
 
-    if (X::GLRendererInfo::Get().ARB_gl_spirv) {
-#ifdef glSpecializeShaderARB
-        // 支持spriv 用字节码创建shader程序
-        for (auto&& [stage, spirv] : m_spirvBinaries) {
-            // 创建OpenGL的shader object OpenGL会分配唯一id引用它
-            GLuint shaderID = shaderIDs.emplace_back(glCreateShader(stage));
-            glShaderBinary(1, &shaderID, GL_SHADER_BINARY_FORMAT_SPIR_V_ARB, spirv.data(),
-                           spirv.size() * sizeof(uint32_t));
-            glSpecializeShaderARB(shaderID, "main", 0, nullptr, nullptr);
-            glAttachShader(program, shaderID);
-        }
-#endif
-    } else {
-        // 不支持spirv就用GLSL源码创建shader程序
-        for (auto&& [stage, source] : m_glslSources) {
-            // 创建OpenGL的shader object OpenGL会分配唯一的id引用它
-            GLuint shaderID = shaderIDs.emplace_back(glCreateShader(stage));
-            const char* src = source.c_str();
-            // 把shader源码告诉它
-            glShaderSource(shaderID, 1, &src, nullptr);
-            // 编译shader源码
-            glCompileShader(shaderID);
+    for (auto&& [stage, source] : m_glslSources) {
+        GLuint shaderID = shaderIDs.emplace_back(glCreateShader(stage));
+        const char* src = source.c_str();
+        glShaderSource(shaderID, 1, &src, nullptr);
+        glCompileShader(shaderID);
 
-            GLint isCompiled = 0;
-            glGetShaderiv(shaderID, GL_COMPILE_STATUS, &isCompiled);
-            if (isCompiled == GL_FALSE) {
-                GLint maxLength = 0;
-                glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &maxLength);
-                std::vector<GLchar> infoLog(maxLength);
-                glGetShaderInfoLog(shaderID, maxLength, &maxLength, infoLog.data());
-                X_CORE_ERROR("Shader compilation failed ({}):\n{}", Util::GLShaderStageToString(stage), infoLog.data());
-                glDeleteShader(shaderID);
-                X_CORE_ASSERT(false);
-            }
-            // 告诉program object要链接哪些shader object
-            glAttachShader(program, shaderID);
+        GLint isCompiled = 0;
+        glGetShaderiv(shaderID, GL_COMPILE_STATUS, &isCompiled);
+        if (isCompiled == GL_FALSE) {
+            GLint maxLength = 0;
+            glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &maxLength);
+            std::vector<GLchar> infoLog(maxLength);
+            glGetShaderInfoLog(shaderID, maxLength, &maxLength, infoLog.data());
+            X_CORE_ERROR("Shader compilation failed ({}):\n{}", Util::GLShaderStageToString(stage), infoLog.data());
+            glDeleteShader(shaderID);
+            X_CORE_ASSERT(false);
         }
+        glAttachShader(program, shaderID);
     }
-    // 执行链接 把多个shader程序链接成一个完整的程序
     glLinkProgram(program);
     GLint isLinked = 0;
     glGetProgramiv(program, GL_LINK_STATUS, &isLinked);
@@ -479,23 +385,4 @@ void OpenGLShader::creatProgram() {
         glDeleteShader(id);
     }
     m_rendererId = program;
-}
-
-void OpenGLShader::reflect(GLenum stage, const std::vector<uint32_t>& shaderData) {
-    spirv_cross::Compiler compiler(shaderData);
-    spirv_cross::ShaderResources resources = compiler.get_shader_resources();
-    X_CORE_TRACE("OpenGLShader::reflect - {} {}", Util::GLShaderStageToString(stage), m_filePath);
-    X_CORE_TRACE("  {} uniform buffers", resources.uniform_buffers.size());
-    X_CORE_TRACE("  {} resources", resources.sampled_images.size());
-    X_CORE_TRACE("Uniform buffers:");
-    for (const auto& resource : resources.uniform_buffers) {
-        const auto& bufferType = compiler.get_type(resource.base_type_id);
-        uint32_t bufferSize = compiler.get_declared_struct_size(bufferType);
-        uint32_t binding = compiler.get_decoration(resource.id, spv::DecorationBinding);
-        int memberCount = bufferType.member_types.size();
-        X_CORE_TRACE("  {}", resource.name);
-        X_CORE_TRACE("    Size = {}", bufferSize);
-        X_CORE_TRACE("    Binding = {}", binding);
-        X_CORE_TRACE("    Members = {}", memberCount);
-    }
 }

@@ -16,14 +16,14 @@ layout(std140, binding = 1) uniform Model {
 };
 
 const int MAX_BONES = 64;
-layout(location = 0) uniform mat4 u_BoneMatrices[MAX_BONES];
+uniform mat4 u_BoneMatrices[MAX_BONES];
 
-layout(location = 64) out vec3 v_WorldPos;
-layout(location = 65) out vec3 v_Normal;
-layout(location = 66) out vec2 v_TexCoord;
-layout(location = 67) flat out int v_EntityID;
+layout(location = 0) out vec3 v_WorldPos;
+layout(location = 1) out vec3 v_Normal;
+layout(location = 2) out vec2 v_TexCoord;
+layout(location = 3) flat out int v_EntityID;
 
-layout(location = 68) uniform int u_EntityID;
+uniform int u_EntityID;
 
 void main() {
     mat4 boneTransform = u_BoneMatrices[a_BoneIndices[0]] * a_BoneWeights[0] +
@@ -83,10 +83,10 @@ uniform sampler2D u_ShadowMap0;
 uniform sampler2D u_ShadowMap1;
 uniform sampler2D u_ShadowMap2;
 uniform sampler2D u_ShadowMap3;
-layout(location = 0) uniform vec3 u_Albedo;
-layout(location = 1) uniform float u_Metallic;
-layout(location = 2) uniform float u_Roughness;
-layout(location = 3) uniform float u_AO;
+uniform vec3 u_Albedo;
+uniform float u_Metallic;
+uniform float u_Roughness;
+uniform float u_AO;
 
 const float PI = 3.14159265359;
 

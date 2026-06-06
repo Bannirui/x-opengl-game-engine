@@ -32,9 +32,17 @@ public:
      */
     static void BeginScene(const EditorCamera& camera);
 
+    /**
+     * 提交一个绘制网格的命令
+     * 不立刻绘制 而是按照Material分组累积到Buckets 在EndScene->Flush()时统一批量提交
+     * @param transform 模型矩阵M 把本地坐标转换到世界坐标
+     */
     static void DrawMesh(const X::Ref<Mesh>& mesh, const X::Ref<Material>& material, const glm::mat4& transform,
                          int32_t entityID = -1);
 
+    /**
+     * 每帧结束时调用 触发Flush提交所有累积的绘制命令
+     */
     static void EndScene();
     /**
      * 绘制一个覆盖全屏的大立方体 用深度测试GL_LEQUAL让它始终在最远处

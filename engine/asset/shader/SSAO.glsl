@@ -13,10 +13,10 @@ layout(location = 0) in vec2 v_TexCoord;
 layout(location = 0) out float o_SSAO;
 uniform sampler2D u_DepthMap;
 uniform sampler2D u_NormalMap;
-layout(location = 3) uniform vec3 u_Samples[64];
-layout(location = 0) uniform mat4 u_Projection;
-layout(location = 1) uniform float u_Radius;
-layout(location = 2) uniform float u_Bias;
+uniform vec3 u_Samples[64];
+uniform mat4 u_Projection;
+uniform float u_Radius;
+uniform float u_Bias;
 const int KERNEL_SIZE = 64;
 
 void main() {

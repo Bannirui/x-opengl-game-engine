@@ -49,19 +49,19 @@ void main()
 
 // vertex传过来的attribute变量
 // 顶点颜色
-layout(location = 0) in vec4 a_Color;
+layout(location = 0) in vec4 v_Color;
 // uv坐标
-layout(location = 1) in vec2 a_TexCoord;
+layout(location = 1) in vec2 v_TexCoord;
 // 铺几个纹理图片
-layout(location = 2) flat in float a_TilingFactor;
+layout(location = 2) flat in float v_TilingFactor;
 // 用哪个纹理采样器
-layout(location = 3) flat in int a_TexIndex;
+layout(location = 3) flat in int v_TexIndex;
 // 用于鼠标拾取
-layout(location = 4) flat in int a_EntityID;
+layout(location = 4) flat in int v_EntityID;
 
 // fragment输出的变量
 layout(location = 0) out vec4 o_Color;
-layout(location = 1) flat out int o_EntityID;
+layout(location = 1) out int o_EntityID;
 
 // 外面传到shader的uniform变量
 uniform sampler2D u_Textures[16];

@@ -77,6 +77,7 @@ struct Renderer2DData {
     Renderer2D::Statistics Stats;
 
     struct CameraData {
+        // MVP的投影矩阵*观察矩阵结果
         glm::mat4 ViewProjection;
     };
 

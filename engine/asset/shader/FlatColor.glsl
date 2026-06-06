@@ -1,9 +1,12 @@
 #type vertex
-#version 330 core
+#version 450 core
 
+// 顶点位置
 layout(location = 0) in vec3 a_Position;
 
+// 投影矩阵P*观察矩阵V
 uniform mat4 u_ViewProjection;
+// 模型矩阵M
 uniform mat4 u_Transform;
 
 void main()
@@ -12,7 +15,7 @@ void main()
 }
 
 #type fragment
-#version 330 core
+#version 450 core
 
 uniform vec4 u_Color;
 

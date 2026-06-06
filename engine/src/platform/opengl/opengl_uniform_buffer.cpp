@@ -24,14 +24,6 @@ OpenGLUniformBuffer::~OpenGLUniformBuffer()
     }
 }
 
-/**
- * 把CPU内存上的数据灌给UBO 也就是把数据从CPU内存写到GPU显存
- * [x...offset...y)比如内存地址x上 从offset开始读 offset到y总共n个字节的数据
- * 把这些数据读出来写给显存
- * @param data CPU内存上的数据地址
- * @param size CPU内存上多大的数据 多少个字节
- * @param offset 从这个CPU内存地址什么地方开始读
- */
 void OpenGLUniformBuffer::SetData(const void* data, uint32_t size, uint32_t offset)
 {
     glBindBuffer(GL_UNIFORM_BUFFER, m_rendererID);

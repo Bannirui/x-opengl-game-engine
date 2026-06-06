@@ -13,7 +13,7 @@ layout(location = 0) in vec2 v_TexCoord;
 layout(location = 0) out vec4 o_Color;
 uniform sampler2D u_Scene;
 uniform sampler2D u_Bloom;
-layout(location = 0) uniform float u_Exposure;
+uniform float u_Exposure;
 void main() {
     vec3 scene = texture(u_Scene, v_TexCoord).rgb;
     vec3 bloom = texture(u_Bloom, v_TexCoord).rgb;
