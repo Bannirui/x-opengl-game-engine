@@ -6,6 +6,7 @@
 
 #include "x/core/timestep.h"
 #include "x/renderer/2d/renderer_2D.h"
+#include "x/renderer/2d/renderer_2D_primitives.h"
 #include "x/renderer/3d/renderer_3D.h"
 #include "x/scene/component.h"
 #include "x/scene/entity.h"
@@ -216,7 +217,7 @@ void Scene::OnUpdateRuntime(Timestep ts) {
             auto group = m_registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
             for (auto entity : group) {
                 auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-                Renderer2D::DrawSprite(transform.GetTransform(), sprite, static_cast<int>(entity));
+                Renderer2DDraw::DrawSprite(transform.GetTransform(), sprite, static_cast<int>(entity));
             }
         }
         // Draw circle
@@ -224,7 +225,7 @@ void Scene::OnUpdateRuntime(Timestep ts) {
             auto view = m_registry.view<TransformComponent, CircleRendererComponent>();
             for (auto entity : view) {
                 auto [transform, circle] = view.get<TransformComponent, CircleRendererComponent>(entity);
-                Renderer2D::DrawCircle(transform.GetTransform(), circle.Color, circle.Thickness, circle.Fade,
+                Renderer2DDraw::DrawCircle(transform.GetTransform(), circle.Color, circle.Thickness, circle.Fade,
                                        static_cast<int>(entity));
             }
         }
@@ -414,7 +415,7 @@ void Scene::renderScene(EditorCamera& camera) {
         auto group = m_registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
         for (auto entity : group) {
             auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-            Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int)entity);
+            Renderer2DDraw::DrawSprite(transform.GetTransform(), sprite, (int)entity);
         }
     }
     // Draw circles
@@ -422,7 +423,7 @@ void Scene::renderScene(EditorCamera& camera) {
         auto view = m_registry.view<TransformComponent, CircleRendererComponent>();
         for (auto entity : view) {
             auto [transform, circle] = view.get<TransformComponent, CircleRendererComponent>(entity);
-            Renderer2D::DrawCircle(transform.GetTransform(), circle.Color, circle.Thickness, circle.Fade, (int)entity);
+            Renderer2DDraw::DrawCircle(transform.GetTransform(), circle.Color, circle.Thickness, circle.Fade, (int)entity);
         }
     }
     Renderer2D::EndScene();

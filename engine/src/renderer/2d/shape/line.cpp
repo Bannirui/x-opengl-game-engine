@@ -4,8 +4,9 @@
 
 #include "renderer/2d/renderer_2D_internal.h"
 #include "x/renderer/2d/renderer_2D.h"
+#include "x/renderer/2d/renderer_2D_primitives.h"
 
-void Renderer2D::DrawLine(const glm::vec3& p0, glm::vec3& p1, const glm::vec4& color, int entityID) {
+void Renderer2DDraw::DrawLine(const glm::vec3& p0, glm::vec3& p1, const glm::vec4& color, int entityID) {
     s_data.Line.Ptr->Position = p0;
     s_data.Line.Ptr->Color = color;
     s_data.Line.Ptr->EntityID = entityID;
@@ -19,7 +20,7 @@ void Renderer2D::DrawLine(const glm::vec3& p0, glm::vec3& p1, const glm::vec4& c
     s_data.Line.Count += 2;
 }
 
-void Renderer2D::DrawRect(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color, int entityID) {
+void Renderer2DDraw::DrawRect(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color, int entityID) {
     glm::vec3 p0 = glm::vec3(position.x - size.x * 0.5f, position.y - size.y * 0.5f, position.z);
     glm::vec3 p1 = glm::vec3(position.x + size.x * 0.5f, position.y - size.y * 0.5f, position.z);
     glm::vec3 p2 = glm::vec3(position.x + size.x * 0.5f, position.y + size.y * 0.5f, position.z);
@@ -30,7 +31,7 @@ void Renderer2D::DrawRect(const glm::vec3& position, const glm::vec2& size, cons
     DrawLine(p3, p0, color, entityID);
 }
 
-void Renderer2D::DrawRect(const glm::mat4& transform, const glm::vec4& color, int entityID) {
+void Renderer2DDraw::DrawRect(const glm::mat4& transform, const glm::vec4& color, int entityID) {
     glm::vec3 lineVertices[4];
     for (size_t i = 0; i < 4; ++i) {
         lineVertices[i] = transform * s_data.QuadVertexPositions[i];
@@ -41,10 +42,10 @@ void Renderer2D::DrawRect(const glm::mat4& transform, const glm::vec4& color, in
     DrawLine(lineVertices[3], lineVertices[0], color, entityID);
 }
 
-float Renderer2D::GetLineWidth() {
+float Renderer2DDraw::GetLineWidth() {
     return s_data.LineWidth;
 }
 
-void Renderer2D::SetLineWidth(float width) {
+void Renderer2DDraw::SetLineWidth(float width) {
     s_data.LineWidth = width;
 }

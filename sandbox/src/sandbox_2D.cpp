@@ -44,11 +44,11 @@ void Sandbox2D::OnUpdate(Timestep ts) {
         Renderer2D::BeginScene(m_cameraController.get_camera());
 
         // 普通矩形
-        Renderer2D::DrawQuad({-1.5f, -0.5f}, {1.0f, 1.0f}, {0.2f, 0.3f, 0.8f, 1.0f});
+        Renderer2DDraw::DrawQuad({-1.5f, -0.5f}, {1.0f, 1.0f}, {0.2f, 0.3f, 0.8f, 1.0f});
         // 纹理矩形
-        Renderer2D::DrawQuad({0.0f, -0.5f}, {1.0f, 1.0f}, m_checkerboardTexture);
+        Renderer2DDraw::DrawQuad({0.0f, -0.5f}, {1.0f, 1.0f}, m_checkerboardTexture);
         // 旋转矩形
-        Renderer2D::DrawRotatedQuad({2.5f, -1.0f}, /*右移2.5 下移0.5*/
+        Renderer2DDraw::DrawRotatedQuad({2.5f, -1.0f}, /*右移2.5 下移0.5*/
             {2.0f, 0.5f},/*长2倍 宽一半*/
             rotation,/*旋转*/
             m_cppTexture,/*贴图*/
@@ -59,15 +59,15 @@ void Sandbox2D::OnUpdate(Timestep ts) {
             // 变换矩阵
             glm::mat4 transform = glm::translate(glm::mat4(1.0f), {-1.5f, 1.5f, 0.0f}) * /*再平移*/
                                   glm::scale(glm::mat4(1.0f), {1.0f, 1.0f, 1.0f});       /*先缩放*/
-            Renderer2D::DrawCircle(transform, {0.8f, 0.2f, 0.3f, 1.0f}, 1.0f, 0.01f);
+            Renderer2DDraw::DrawCircle(transform, {0.8f, 0.2f, 0.3f, 1.0f}, 1.0f, 0.01f);
         }
         // 矩形框
-        Renderer2D::DrawRect({0.0f, 1.5f, 0.0f}, {1.0f, 1.0f}, {0.2f, 0.8f, 0.2f, 1.0f});
+        Renderer2DDraw::DrawRect({0.0f, 1.5f, 0.0f}, {1.0f, 1.0f}, {0.2f, 0.8f, 0.2f, 1.0f});
         // 旋转的线
         glm::vec3 p0 = {1.5f, 1.0f, 0.0f};
         float r = glm::radians(rotation);
         glm::vec3 p1 = {1.5f + cos(r) * 0.5f, 1.0f + sin(r) * 0.5f, 0.0f};
-        Renderer2D::DrawLine(p0, p1, {0.8f, 0.8f, 0.2f, 1.0f});
+        Renderer2DDraw::DrawLine(p0, p1, {0.8f, 0.8f, 0.2f, 1.0f});
         // 所有图形的VBO数据一起提交给GPU
         Renderer2D::EndScene();
     }

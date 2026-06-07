@@ -15,7 +15,8 @@
 #include <x/math/math.h>
 #include <x/renderer/frame_buffer.h>
 #include <x/renderer/render_command.h>
-#include <x/renderer/renderer_2D.h>
+#include <x/renderer/2d/renderer_2D.h>
+#include <x/renderer/2d/renderer_2D_primitives.h>
 #include <x/renderer/texture.h>
 #include <x/scene/component.h>
 #include <x/scene/scene.h>
@@ -58,7 +59,7 @@ void EditorLayer::OnAttach()
         serializer.Deserialize(sceneFilePath);
     }
     m_editorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
-    Renderer2D::SetLineWidth(4.0f);
+    Renderer2DDraw::SetLineWidth(4.0f);
 }
 
 void EditorLayer::OnDetach()
@@ -456,7 +457,7 @@ void EditorLayer::onOverlayRender()
                 glm::mat4 transform   = glm::translate(glm::mat4(1.0f), translation) *
                                       glm::rotate(glm::mat4(1.0f), tc.Rotation.z, glm::vec3(0.0f, 0.0f, 1.0f)) *
                                       glm::scale(glm::mat4(1.0f), scale);
-                Renderer2D::DrawRect(transform, glm::vec4(0, 1, 0, 1));
+                Renderer2DDraw::DrawRect(transform, glm::vec4(0, 1, 0, 1));
             }
         }
         // Circle colliders
@@ -468,7 +469,7 @@ void EditorLayer::onOverlayRender()
                 glm::vec3 translation = tc.Translation + glm::vec3(cc2d.Offset, 0.001f);
                 glm::vec3 scale       = tc.Scale * glm::vec3(cc2d.Radius * 2.0f);
                 glm::mat4 transform = glm::translate(glm::mat4(1.0f), translation) * glm::scale(glm::mat4(1.0f), scale);
-                Renderer2D::DrawCircle(transform, glm::vec4(0, 1, 0, 1), 0.01f);
+                Renderer2DDraw::DrawCircle(transform, glm::vec4(0, 1, 0, 1), 0.01f);
             }
         }
     }
@@ -476,7 +477,7 @@ void EditorLayer::onOverlayRender()
     if (Entity selectedEntity = m_sceneHierarchyPanel.get_selectedEntity())
     {
         const TransformComponent transform = selectedEntity.GetComponent<TransformComponent>();
-        Renderer2D::DrawRect(transform.GetTransform(), glm::vec4(1.0f, 0.5f, 0.0f, 1));
+        Renderer2DDraw::DrawRect(transform.GetTransform(), glm::vec4(1.0f, 0.5f, 0.0f, 1));
     }
     Renderer2D::EndScene();
 }
