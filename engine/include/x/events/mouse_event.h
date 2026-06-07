@@ -49,6 +49,13 @@ public:
     }
 
 private:
+    /**
+     * 鼠标中键
+     *   - 前后
+     *     - 向前滚 >0
+     *     - 向后滚 <0
+     *   - 左右
+     */
     float m_xOffset, m_yOffset;
 };
 
