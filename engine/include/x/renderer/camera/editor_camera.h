@@ -100,6 +100,8 @@ public:
      */
     glm::quat GetOrientation() const;
 
+    void SetLookDirection(const glm::vec3& direction);
+
     /**
      * @return 相机绕X轴的俯仰角
      */

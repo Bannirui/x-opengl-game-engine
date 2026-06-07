@@ -5,6 +5,7 @@
 #include "solar_system.h"
 
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 #include <x/renderer/3d/generator.h>
 #include <x/renderer/3d/renderer_3D.h>
@@ -249,6 +250,66 @@ void SolarSystem::OnImguiRender() {
     ImGui::Text("Camera Distance: %.1f", m_camera.get_distance());
 
     ImGui::End();
+
+    ImGuiIO& io = ImGui::GetIO();
+    ImVec2 gizmoCenter(io.DisplaySize.x - 70.0f, 90.0f);
+    float gizmoLen = 50.0f;
+
+    glm::quat invOrientation = glm::inverse(m_camera.GetOrientation());
+    auto projectAxis = [&](const glm::vec3& worldDir) -> ImVec2 {
+        glm::vec3 viewDir = glm::rotate(invOrientation, worldDir);
+        return {gizmoCenter.x + viewDir.x * gizmoLen, gizmoCenter.y - viewDir.y * gizmoLen};
+    };
+
+    ImVec2 xEnd = projectAxis({1.0f, 0.0f, 0.0f});
+    ImVec2 yEnd = projectAxis({0.0f, 1.0f, 0.0f});
+    ImVec2 zEnd = projectAxis({0.0f, 0.0f, 1.0f});
+
+    ImDrawList* dl = ImGui::GetForegroundDrawList();
+    dl->AddLine(gizmoCenter, xEnd, IM_COL32(255, 60, 60, 220), 3.0f);
+    dl->AddLine(gizmoCenter, yEnd, IM_COL32(60, 255, 60, 220), 3.0f);
+    dl->AddLine(gizmoCenter, zEnd, IM_COL32(60, 100, 255, 220), 3.0f);
+
+    dl->AddText(ImVec2(xEnd.x + 4, xEnd.y - 8), IM_COL32(255, 60, 60, 255), "X");
+    dl->AddText(ImVec2(yEnd.x + 4, yEnd.y - 8), IM_COL32(60, 255, 60, 255), "Y");
+    dl->AddText(ImVec2(zEnd.x + 4, zEnd.y - 8), IM_COL32(60, 100, 255, 255), "Z");
+
+    // Draw a ring at center for axes pointing toward/away from camera
+    dl->AddCircle(gizmoCenter, 6.0f, IM_COL32(180, 180, 180, 180), 0, 2.0f);
+
+    if (ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
+        ImVec2 mouse = ImGui::GetMousePos();
+        float threshold = 14.0f;
+
+        auto distToSeg = [](ImVec2 p, ImVec2 a, ImVec2 b) -> float {
+            ImVec2 ab(b.x - a.x, b.y - a.y);
+            ImVec2 ap(p.x - a.x, p.y - a.y);
+            float len2 = ab.x * ab.x + ab.y * ab.y;
+            if (len2 < 0.1f) {
+                float dx = p.x - a.x;
+                float dy = p.y - a.y;
+                return std::sqrt(dx * dx + dy * dy);
+            }
+            float t = (ap.x * ab.x + ap.y * ab.y) / len2;
+            if (t < 0.0f) t = 0.0f;
+            if (t > 1.0f) t = 1.0f;
+            float dx = p.x - (a.x + t * ab.x);
+            float dy = p.y - (a.y + t * ab.y);
+            return std::sqrt(dx * dx + dy * dy);
+        };
+
+        float dx = mouse.x - gizmoCenter.x;
+        float dy = mouse.y - gizmoCenter.y;
+        if (std::sqrt(dx * dx + dy * dy) < gizmoLen + 30.0f) {
+            if (distToSeg(mouse, gizmoCenter, xEnd) < threshold) {
+                m_camera.SetLookDirection({-1.0f, 0.0f, 0.0f});
+            } else if (distToSeg(mouse, gizmoCenter, yEnd) < threshold) {
+                m_camera.SetLookDirection({0.0f, -1.0f, 0.0f});
+            } else if (distToSeg(mouse, gizmoCenter, zEnd) < threshold) {
+                m_camera.SetLookDirection({0.0f, 0.0f, -1.0f});
+            }
+        }
+    }
 }
 
 void SolarSystem::OnEvent(Event& e) {

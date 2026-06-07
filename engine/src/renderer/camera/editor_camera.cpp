@@ -73,11 +73,18 @@ glm::vec3 EditorCamera::GetForwardDirection() const {
 }
 
 glm::quat EditorCamera::GetOrientation() const {
-    // 加负号原因是站在相机视角 物体就是相对反方向
-    // 用四元数记录相机欧拉角信息
-    return glm::quat(glm::vec3(-m_pitch, /*绕X轴的俯仰角*/
-                               -m_yaw, /*绕Y轴的偏航角*/
-                               0.0f /*绕Z轴的滚转角*/));
+    return glm::quat(glm::vec3(-m_pitch, /**/
+                                -m_yaw, /**/
+                                0.0f));
+}
+
+void EditorCamera::SetLookDirection(const glm::vec3& direction) {
+    glm::vec3 forward = glm::normalize(direction);
+    glm::quat rotation = glm::rotation(glm::vec3(0.0f, 0.0f, -1.0f), forward);
+    glm::vec3 euler = glm::eulerAngles(rotation);
+    m_pitch = -euler.x;
+    m_yaw = -euler.y;
+    updateView();
 }
 
 void EditorCamera::updateProjection() {
