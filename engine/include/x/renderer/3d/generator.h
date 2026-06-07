@@ -20,4 +20,5 @@ public:
     static X::Ref<Mesh> CreateCube(float size = 1.0f);
 
     static X::Ref<Mesh> CreateSphere(float radius = 0.5f, uint32_t sectors = 36, uint32_t stacks = 18);
+    static X::Ref<Mesh> CreateRing(float innerRadius, float outerRadius, uint32_t segments = 128);
 };

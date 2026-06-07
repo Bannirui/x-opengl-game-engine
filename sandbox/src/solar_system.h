@@ -46,6 +46,9 @@ private:
 
     X::Ref<Shader> m_pbrShader;
     X::Ref<Mesh> m_sphereMesh;
+    X::Ref<Mesh> m_ringMesh;
+    X::Ref<Material> m_ringMaterial;
+    X::Ref<Texture2D> m_whiteTex;
 
     PlanetData m_sun;
     std::array<PlanetData, 8> m_planets;
@@ -54,4 +57,7 @@ private:
     float m_moonOrbitAngle = 0.0f;
 
     float m_timeScale = 1.0f;
+    glm::vec3 m_orbitColor = {0.15f, 0.2f, 0.3f};
+    float m_orbitThickness = 0.006f;
+    glm::vec3 m_bgColor = {0.02f, 0.02f, 0.05f};
 };

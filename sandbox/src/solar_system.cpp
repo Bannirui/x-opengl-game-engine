@@ -118,13 +118,19 @@ void SolarSystem::OnAttach() {
     X_PROFILE_FUNCTION();
 
     m_sphereMesh = GeometryGenerator::CreateSphere(0.5f, 48, 24);
+    m_ringMesh = GeometryGenerator::CreateRing(1.0f - m_orbitThickness, 1.0f + m_orbitThickness, 128);
     m_pbrShader = Shader::Create("asset/shader/Renderer3D_PBR.glsl");
 
-    auto loadTex = [](const std::string& name) -> X::Ref<Texture2D> {
+    m_whiteTex = Texture2D::Create(1, 1);
+    uint32_t whiteData = 0xffffffff;
+    m_whiteTex->SetData(&whiteData, sizeof(uint32_t));
+
+    auto loadTex = [this](const std::string& name) -> X::Ref<Texture2D> {
         std::string path = "asset/texture/" + name + ".jpg";
         X::Ref<Texture2D> tex = Texture2D::Create(path);
         if (!tex->IsLoaded()) {
-            X_CORE_WARN("Failed to load texture: {}", path);
+            X_CORE_WARN("Failed to load texture: {}, using fallback", path);
+            return m_whiteTex;
         }
         return tex;
     };
@@ -140,6 +146,17 @@ void SolarSystem::OnAttach() {
         createPlanetMaterial(planet);
     }
     createPlanetMaterial(m_moon);
+
+    m_ringMaterial = Material::Create(m_pbrShader);
+    m_ringMaterial->SetFloat3("u_Albedo", m_orbitColor);
+    m_ringMaterial->SetFloat("u_Metallic", 0.0f);
+    m_ringMaterial->SetFloat("u_Roughness", 0.6f);
+    m_ringMaterial->SetFloat("u_AO", 1.0f);
+    m_ringMaterial->SetFloat3("u_Emissive", m_orbitColor);
+    m_ringMaterial->SetTexture("u_AlbedoMap", m_whiteTex);
+    m_ringMaterial->SetTexture("u_MetallicMap", m_whiteTex);
+    m_ringMaterial->SetTexture("u_RoughnessMap", m_whiteTex);
+    m_ringMaterial->SetTexture("u_AOMap", m_whiteTex);
 }
 
 void SolarSystem::createPlanetMaterial(PlanetData& planet) {
@@ -160,6 +177,9 @@ void SolarSystem::OnDetach() {
 
     m_pbrShader.reset();
     m_sphereMesh.reset();
+    m_ringMesh.reset();
+    m_ringMaterial.reset();
+    m_whiteTex.reset();
 
     auto resetPlanet = [](PlanetData& p) {
         p.Mat.reset();
@@ -187,7 +207,7 @@ void SolarSystem::OnUpdate(Timestep ts) {
 
     m_moonOrbitAngle += m_moon.OrbitSpeed * dt;
 
-    RenderCommand::SetClearColor({0.02f, 0.02f, 0.05f, 1.0f});
+    RenderCommand::SetClearColor({m_bgColor.r, m_bgColor.g, m_bgColor.b, 1.0f});
     RenderCommand::Clear();
 
     Renderer3D::ResetStats();
@@ -209,6 +229,12 @@ void SolarSystem::OnUpdate(Timestep ts) {
             Renderer3D::DrawMesh(m_sphereMesh, m_sun.Mat, sunTransform);
         }
 
+        // Orbit rings
+        for (auto& planet : m_planets) {
+            glm::mat4 ringTransform = glm::scale(glm::mat4(1.0f), glm::vec3(planet.OrbitRadius));
+            Renderer3D::DrawMesh(m_ringMesh, m_ringMaterial, ringTransform);
+        }
+
         // Planets
         for (auto& planet : m_planets) {
             glm::vec3 orbitPos = {std::cos(planet.OrbitAngle) * planet.OrbitRadius, 0.0f,
@@ -222,6 +248,10 @@ void SolarSystem::OnUpdate(Timestep ts) {
             Renderer3D::DrawMesh(m_sphereMesh, planet.Mat, planetTransform);
 
             if (&planet == &m_planets[2]) {
+                glm::mat4 moonRingTransform = glm::translate(glm::mat4(1.0f), orbitPos) *
+                                              glm::scale(glm::mat4(1.0f), glm::vec3(m_moon.OrbitRadius));
+                Renderer3D::DrawMesh(m_ringMesh, m_ringMaterial, moonRingTransform);
+
                 glm::vec3 moonOrbitPos = {std::cos(m_moonOrbitAngle) * m_moon.OrbitRadius, 0.0f,
                                           std::sin(m_moonOrbitAngle) * m_moon.OrbitRadius};
 
@@ -248,6 +278,14 @@ void SolarSystem::OnImguiRender() {
     ImGui::SliderFloat("Time Scale", &m_timeScale, 0.1f, 5.0f, "%.1f");
     ImGui::Separator();
     ImGui::Text("Camera Distance: %.1f", m_camera.get_distance());
+    if (ImGui::ColorEdit3("Orbit Color", glm::value_ptr(m_orbitColor))) {
+        m_ringMaterial->SetFloat3("u_Albedo", m_orbitColor);
+        m_ringMaterial->SetFloat3("u_Emissive", m_orbitColor);
+    }
+    if (ImGui::SliderFloat("Orbit Thickness", &m_orbitThickness, 0.002f, 0.05f, "%.3f")) {
+        m_ringMesh = GeometryGenerator::CreateRing(1.0f - m_orbitThickness, 1.0f + m_orbitThickness, 128);
+    }
+    ImGui::ColorEdit3("Background", glm::value_ptr(m_bgColor));
 
     ImGui::End();
 
