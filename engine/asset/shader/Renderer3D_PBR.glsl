@@ -74,10 +74,14 @@ layout(std140, binding = 0) uniform Camera {
 // ---- UBO: Light (binding=2) ----
 // 方向光数据 (太阳光/主光源)
 layout(std140, binding = 2) uniform Light {
-    vec3 u_LightDirection; // 光照方向 (指向光源的反方向 即光线来的方向)
-    vec3 u_LightAmbient; // 环境光颜色 (PBR中未使用 保留兼容)
-    vec3 u_LightDiffuse; // 光照颜色/强度 (RGB × 强度)
-    vec3 u_LightSpecular; // 镜面光颜色 (PBR中未使用)
+    vec3 u_LightDirection;
+    vec3 u_LightAmbient;
+    vec3 u_LightDiffuse;
+    vec3 u_LightSpecular;
+    vec3 u_PointLightPosition;
+    float u_PointLightRange;
+    vec3 u_PointLightColor;
+    float u_PointLightIntensity;
 };
 
 // ---- UBO: PBR Settings (binding=3) ----
@@ -118,6 +122,7 @@ uniform vec3 u_Albedo; // 反照率基色 (与贴图相乘)
 uniform float u_Metallic; // 金属度 0=非金属 1=完全金属
 uniform float u_Roughness; // 粗糙度 0=完美镜面 1=完全漫反射
 uniform float u_AO; // 环境遮蔽强度
+uniform vec3 u_Emissive; // 自发光颜色 (不受光照影响 直接叠加)
 // 贴图使用开关 (1.0=使用贴图 0.0=仅用uniform值)
 uniform float u_UseAlbedoMap;
 uniform float u_UseNormalMap;
@@ -283,48 +288,47 @@ void main() {
 
     // =======================================================================
     // 第1部分: 直接光照 (Direct Lighting)
-    // BRDF = 漫反射(Diffuse) + 镜面反射(Specular)  — Cook-Torrance模型
+    // 平行光 (Directional light) + 点光源 (Point light)
     // =======================================================================
 
-    // 光照方向向量
-    vec3 L = normalize(-u_LightDirection); // 片段→光源 (u_LightDirection是光源→片段)
-    vec3 H = normalize(V + L); // 半向量 (Half vector)
-    // 半向量的物理含义: 如果微面元的法线=H，则入射光恰好反射到视线方向
-    // 即 只有法线等于H的微面元才对观察者可见的镜面反射有贡献
+    // ---- 平行光 ----
+    vec3 L_dir = normalize(-u_LightDirection);
+    vec3 H_dir = normalize(V + L_dir);
+    float NdotL_dir = max(dot(N, L_dir), 0.0);
 
-    vec3 radiance = u_LightDiffuse; // 入射辐射度 (光源颜色×强度)
+    vec3 radiance_dir = u_LightDiffuse;
+    float NDF_dir = DistributionGGX(N, H_dir, roughness);
+    float G_dir = GeometrySmith(N, V, L_dir, roughness);
+    vec3 F_dir = FresnelSchlick(max(dot(H_dir, V), 0.0), F0);
+    vec3 kS_dir = F_dir;
+    vec3 kD_dir = (1.0 - kS_dir) * (1.0 - metallic);
+    vec3 numerator_dir = NDF_dir * G_dir * F_dir;
+    float denominator_dir = 4.0 * max(dot(N, V), 0.0) * NdotL_dir + 0.0001;
+    vec3 specular_dir = numerator_dir / denominator_dir;
 
-    // Cook-Torrance BRDF 的三个分量:
-    //   f_brdf = D·G·F / (4·(N·V)·(N·L))
-    //
-    //   D (法线分布) — 多少微面元朝向半向量H
-    //   G (几何衰减) — 多少微面元互不遮挡
-    //   F (菲涅尔反射) — 多少光被反射(vs折射)
-    //   分母 (归一化因子) — 从微面元模型推导出来的Jacobian变换项
-    float NDF = DistributionGGX(N, H, roughness); // D项: GGX分布
-    float G = GeometrySmith(N, V, L, roughness); // G项: Smith联合遮蔽
-    vec3 F = FresnelSchlick(max(dot(H, V), 0.0), F0); // F项: Schlick近似
+    float shadow = CascadedShadowCalculation(v_WorldPos, NdotL_dir);
+    vec3 Lo_dir = (kD_dir * albedo / PI + specular_dir) * radiance_dir * NdotL_dir * (1.0 - shadow);
 
-    vec3 kS = F; // 镜面反射比例 = F
-    vec3 kD = (1.0 - kS) * (1.0 - metallic); // 漫反射比例
-    // kD为什么乘以(1-metallic)?
-    //   金属几乎100%反射 没有漫反射 (入射光要么直接被反射 要么被完全吸收)
-    //   非金属先有Fresnel反射折射分光 折射部分再参与漫反射
+    // ---- 点光源 ----
+    vec3 L_pt = normalize(u_PointLightPosition - v_WorldPos);
+    vec3 H_pt = normalize(V + L_pt);
+    float NdotL_pt = max(dot(N, L_pt), 0.0);
+    float dist_pt = length(u_PointLightPosition - v_WorldPos);
+    float attenuation = 1.0 / (1.0 + dist_pt * dist_pt / max(u_PointLightRange * u_PointLightRange, 0.0001));
+    vec3 radiance_pt = u_PointLightColor * u_PointLightIntensity * attenuation;
 
-    vec3 numerator = NDF * G * F;
-    // 分母加0.0001防止除零 (e.g. NdotV或NdotL同时接近0时)
-    float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.0001;
-    vec3 specular = numerator / denominator; // 镜面反射项
+    float NDF_pt = DistributionGGX(N, H_pt, roughness);
+    float G_pt = GeometrySmith(N, V, L_pt, roughness);
+    vec3 F_pt = FresnelSchlick(max(dot(H_pt, V), 0.0), F0);
+    vec3 kS_pt = F_pt;
+    vec3 kD_pt = (1.0 - kS_pt) * (1.0 - metallic);
+    vec3 numerator_pt = NDF_pt * G_pt * F_pt;
+    float denominator_pt = 4.0 * max(dot(N, V), 0.0) * NdotL_pt + 0.0001;
+    vec3 specular_pt = numerator_pt / denominator_pt;
 
-    // Lambertian 漫反射: diffuse = albedo / π
-    // 除以π的原因: 漫反射BRDF在半球上积分等于albedo (能量守恒)
-    // ∫_Ω (albedo/π)·cosθ dω = albedo
-    float NdotL = max(dot(N, L), 0.0); // 光线与法线的夹角
-    float shadow = CascadedShadowCalculation(v_WorldPos, NdotL);
+    vec3 Lo_pt = (kD_pt * albedo / PI + specular_pt) * radiance_pt * NdotL_pt;
 
-    // 直接光照的出射辐射度
-    // Lo = (漫反射项 + 镜面反射项) × 光照颜色 × NdotL × (1-阴影)
-    vec3 Lo = (kD * albedo / PI + specular) * radiance * NdotL * (1.0 - shadow);
+    vec3 Lo = Lo_dir + Lo_pt;
 
     // =======================================================================
     // 第2部分: 间接光照 — IBL (Image Based Lighting)
@@ -376,6 +380,9 @@ void main() {
 
     // ---- 合并直接光 + 间接光 ----
     vec3 color = ambient + Lo;
+
+    // ---- 自发光 (Emissive) ----
+    color += albedo * u_Emissive;
 
     // =======================================================================
     // 第3部分: HDR Tone Mapping (色调映射)

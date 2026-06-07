@@ -60,6 +60,10 @@ public:
     // Light
     static void SetLightDirection(const glm::vec3& direction);
     static void SetLightColor(const glm::vec3& color);
+    static void SetPointLightPosition(const glm::vec3& position);
+    static void SetPointLightColor(const glm::vec3& color);
+    static void SetPointLightRange(float range);
+    static void SetPointLightIntensity(float intensity);
 
     struct Statistics {
         uint32_t DrawCalls = 0;

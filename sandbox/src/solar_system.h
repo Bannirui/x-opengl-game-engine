@@ -22,6 +22,7 @@ struct PlanetData {
     float RotationSpeed;
     float Metallic;
     float Roughness;
+    glm::vec3 Emissive;
     X::Ref<Material> Mat;
     X::Ref<Texture2D> AlbedoTexture;
     float OrbitAngle = 0.0f;

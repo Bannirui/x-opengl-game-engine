@@ -24,7 +24,8 @@ SolarSystem::SolarSystem() : Layer("SolarSystem"), m_camera(45.0f, 1280.0f / 720
              .OrbitSpeed = 0.0f,
              .RotationSpeed = 10.0f,
              .Metallic = 0.0f,
-             .Roughness = 0.3f};
+             .Roughness = 0.3f,
+             .Emissive = {1.0f, 0.8f, 0.2f}};
 
     m_planets = {{
         {.Name = "mercury",
@@ -34,7 +35,8 @@ SolarSystem::SolarSystem() : Layer("SolarSystem"), m_camera(45.0f, 1280.0f / 720
          .OrbitSpeed = 4.0f,
          .RotationSpeed = 20.0f,
          .Metallic = 0.1f,
-         .Roughness = 0.8f},
+         .Roughness = 0.8f,
+         .Emissive = {0.0f, 0.0f, 0.0f}},
         {.Name = "venus",
          .Albedo = {0.9f, 0.75f, 0.35f},
          .Size = 0.25f,
@@ -42,7 +44,8 @@ SolarSystem::SolarSystem() : Layer("SolarSystem"), m_camera(45.0f, 1280.0f / 720
          .OrbitSpeed = 3.0f,
          .RotationSpeed = 15.0f,
          .Metallic = 0.0f,
-         .Roughness = 0.7f},
+         .Roughness = 0.7f,
+         .Emissive = {0.0f, 0.0f, 0.0f}},
         {.Name = "earth",
          .Albedo = {0.2f, 0.4f, 0.8f},
          .Size = 0.27f,
@@ -50,7 +53,8 @@ SolarSystem::SolarSystem() : Layer("SolarSystem"), m_camera(45.0f, 1280.0f / 720
          .OrbitSpeed = 2.0f,
          .RotationSpeed = 25.0f,
          .Metallic = 0.0f,
-         .Roughness = 0.5f},
+         .Roughness = 0.5f,
+         .Emissive = {0.0f, 0.0f, 0.0f}},
         {.Name = "mars",
          .Albedo = {0.8f, 0.3f, 0.2f},
          .Size = 0.15f,
@@ -58,7 +62,8 @@ SolarSystem::SolarSystem() : Layer("SolarSystem"), m_camera(45.0f, 1280.0f / 720
          .OrbitSpeed = 1.6f,
          .RotationSpeed = 22.0f,
          .Metallic = 0.0f,
-         .Roughness = 0.9f},
+         .Roughness = 0.9f,
+         .Emissive = {0.0f, 0.0f, 0.0f}},
         {.Name = "jupiter",
          .Albedo = {0.7f, 0.5f, 0.3f},
          .Size = 1.0f,
@@ -66,7 +71,8 @@ SolarSystem::SolarSystem() : Layer("SolarSystem"), m_camera(45.0f, 1280.0f / 720
          .OrbitSpeed = 0.8f,
          .RotationSpeed = 30.0f,
          .Metallic = 0.0f,
-         .Roughness = 0.6f},
+         .Roughness = 0.6f,
+         .Emissive = {0.0f, 0.0f, 0.0f}},
         {.Name = "saturn",
          .Albedo = {0.85f, 0.75f, 0.5f},
          .Size = 0.85f,
@@ -74,7 +80,8 @@ SolarSystem::SolarSystem() : Layer("SolarSystem"), m_camera(45.0f, 1280.0f / 720
          .OrbitSpeed = 0.6f,
          .RotationSpeed = 28.0f,
          .Metallic = 0.0f,
-         .Roughness = 0.5f},
+         .Roughness = 0.5f,
+         .Emissive = {0.0f, 0.0f, 0.0f}},
         {.Name = "uranus",
          .Albedo = {0.3f, 0.7f, 0.8f},
          .Size = 0.5f,
@@ -82,7 +89,8 @@ SolarSystem::SolarSystem() : Layer("SolarSystem"), m_camera(45.0f, 1280.0f / 720
          .OrbitSpeed = 0.4f,
          .RotationSpeed = 20.0f,
          .Metallic = 0.0f,
-         .Roughness = 0.4f},
+         .Roughness = 0.4f,
+         .Emissive = {0.0f, 0.0f, 0.0f}},
         {.Name = "neptune",
          .Albedo = {0.2f, 0.3f, 0.9f},
          .Size = 0.48f,
@@ -90,7 +98,8 @@ SolarSystem::SolarSystem() : Layer("SolarSystem"), m_camera(45.0f, 1280.0f / 720
          .OrbitSpeed = 0.3f,
          .RotationSpeed = 18.0f,
          .Metallic = 0.0f,
-         .Roughness = 0.4f},
+         .Roughness = 0.4f,
+         .Emissive = {0.0f, 0.0f, 0.0f}},
     }};
 
     m_moon = {.Name = "moon",
@@ -100,7 +109,8 @@ SolarSystem::SolarSystem() : Layer("SolarSystem"), m_camera(45.0f, 1280.0f / 720
               .OrbitSpeed = 10.0f,
               .RotationSpeed = 5.0f,
               .Metallic = 0.0f,
-              .Roughness = 0.9f};
+              .Roughness = 0.9f,
+              .Emissive = {0.0f, 0.0f, 0.0f}};
 }
 
 void SolarSystem::OnAttach() {
@@ -137,6 +147,7 @@ void SolarSystem::createPlanetMaterial(PlanetData& planet) {
     planet.Mat->SetFloat("u_Metallic", planet.Metallic);
     planet.Mat->SetFloat("u_Roughness", planet.Roughness);
     planet.Mat->SetFloat("u_AO", 1.0f);
+    planet.Mat->SetFloat3("u_Emissive", planet.Emissive);
     planet.Mat->SetTexture("u_AlbedoMap", planet.AlbedoTexture);
     planet.Mat->SetTexture("u_MetallicMap", planet.AlbedoTexture);
     planet.Mat->SetTexture("u_RoughnessMap", planet.AlbedoTexture);
@@ -181,7 +192,11 @@ void SolarSystem::OnUpdate(Timestep ts) {
     Renderer3D::ResetStats();
 
     Renderer3D::SetLightDirection({-0.2f, -0.8f, -0.3f});
-    Renderer3D::SetLightColor({1.0f, 0.95f, 0.85f});
+    Renderer3D::SetLightColor({0.0f, 0.0f, 0.0f});
+    Renderer3D::SetPointLightPosition({0.0f, 0.0f, 0.0f});
+    Renderer3D::SetPointLightColor({1.0f, 0.95f, 0.85f});
+    Renderer3D::SetPointLightRange(60.0f);
+    Renderer3D::SetPointLightIntensity(2.5f);
     Renderer3D::SetExposure(1.0f);
 
     Renderer3D::BeginScene(m_camera);

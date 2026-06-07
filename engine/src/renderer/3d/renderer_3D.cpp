@@ -86,10 +86,14 @@ void Renderer3D::Init() {
     s_data.ModelUBO = UniformBuffer::Create(sizeof(glm::mat4), UBOBinding::Model);
     // 7 默认光源参数
     LightData defaultLight{};
-    defaultLight.Direction = glm::vec3(-0.5f, -1.0f, -0.3f);  // 斜上方平行光
-    defaultLight.Ambient = glm::vec3(0.05f);                  // 微弱环境光
-    defaultLight.Diffuse = glm::vec3(1.0f);                   // 白光漫反射
-    defaultLight.Specular = glm::vec3(1.0f);                  // 白光镜面反射
+    defaultLight.Direction = glm::vec3(-0.5f, -1.0f, -0.3f);
+    defaultLight.Ambient = glm::vec3(0.05f);
+    defaultLight.Diffuse = glm::vec3(1.0f);
+    defaultLight.Specular = glm::vec3(1.0f);
+    defaultLight.PointPosition = glm::vec3(0.0f);
+    defaultLight.PointRange = 100.0f;
+    defaultLight.PointColor = glm::vec3(1.0f);
+    defaultLight.PointIntensity = 0.0f;
     s_data.LightBuffer = defaultLight;
     s_data.LightUBO = UniformBuffer::Create(sizeof(LightData), UBOBinding::Light);
     // 8 PBR 默认参数
@@ -440,6 +444,22 @@ void Renderer3D::SetLightDirection(const glm::vec3& direction) {
 
 void Renderer3D::SetLightColor(const glm::vec3& color) {
     s_data.LightBuffer.Diffuse = color;
+}
+
+void Renderer3D::SetPointLightPosition(const glm::vec3& position) {
+    s_data.LightBuffer.PointPosition = position;
+}
+
+void Renderer3D::SetPointLightColor(const glm::vec3& color) {
+    s_data.LightBuffer.PointColor = color;
+}
+
+void Renderer3D::SetPointLightRange(float range) {
+    s_data.LightBuffer.PointRange = range;
+}
+
+void Renderer3D::SetPointLightIntensity(float intensity) {
+    s_data.LightBuffer.PointIntensity = intensity;
 }
 
 Renderer3D::Statistics Renderer3D::GetStats() {

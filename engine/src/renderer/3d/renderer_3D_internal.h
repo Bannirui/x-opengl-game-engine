@@ -48,22 +48,18 @@ struct MaterialBucket {
  *   };
  */
 struct LightData {
-    // 光照方向 指向光源 shader中取u_LightDirection得到光线向量
     glm::vec3 Direction;
-    // std140对齐填充
     float Padding0;
-    // 环境光颜色 所有片段均匀叠加
     glm::vec3 Ambient;
-    // std140对齐填充
     float Padding1;
-    // 漫反射颜色 Lambert项乘以该值
     glm::vec3 Diffuse;
-    // std140对齐填充
     float Padding2;
-    // 镜面反射颜色 Blinn-Phong高光颜色
     glm::vec3 Specular;
-    // std140对齐填充
     float Padding3;
+    glm::vec3 PointPosition;
+    float PointRange;
+    glm::vec3 PointColor;
+    float PointIntensity;
 };
 
 struct PBRSettingsData {

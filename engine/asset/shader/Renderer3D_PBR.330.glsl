@@ -49,6 +49,10 @@ layout(std140, binding = 2) uniform Light {
     vec3 u_LightAmbient;
     vec3 u_LightDiffuse;
     vec3 u_LightSpecular;
+    vec3 u_PointLightPosition;
+    float u_PointLightRange;
+    vec3 u_PointLightColor;
+    float u_PointLightIntensity;
 };
 
 layout(std140, binding = 3) uniform PBRSettings {
@@ -79,6 +83,7 @@ uniform vec3 u_Albedo;
 uniform float u_Metallic;
 uniform float u_Roughness;
 uniform float u_AO;
+uniform vec3 u_Emissive;
 uniform float u_UseAlbedoMap;
 uniform float u_UseNormalMap;
 uniform float u_UseMetallicMap;
@@ -152,23 +157,44 @@ void main() {
 
     vec3 F0 = mix(vec3(0.04), albedo, metallic);
 
-    vec3 L = normalize(-u_LightDirection);
-    vec3 H = normalize(V + L);
-    vec3 radiance = u_LightDiffuse;
+    // Directional light
+    vec3 L_dir = normalize(-u_LightDirection);
+    vec3 H_dir = normalize(V + L_dir);
+    vec3 radiance_dir = u_LightDiffuse;
 
-    float NDF = DistributionGGX(N, H, roughness);
-    float G = GeometrySmith(N, V, L, roughness);
-    vec3 F = FresnelSchlick(max(dot(H, V), 0.0), F0);
+    float NDF_dir = DistributionGGX(N, H_dir, roughness);
+    float G_dir = GeometrySmith(N, V, L_dir, roughness);
+    vec3 F_dir = FresnelSchlick(max(dot(H_dir, V), 0.0), F0);
 
-    vec3 kS = F;
-    vec3 kD = (1.0 - kS) * (1.0 - metallic);
-    vec3 numerator = NDF * G * F;
-    float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.0001;
-    vec3 specular = numerator / denominator;
+    vec3 kS_dir = F_dir;
+    vec3 kD_dir = (1.0 - kS_dir) * (1.0 - metallic);
+    vec3 numerator_dir = NDF_dir * G_dir * F_dir;
+    float denominator_dir = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L_dir), 0.0) + 0.0001;
+    vec3 specular_dir = numerator_dir / denominator_dir;
 
-    float NdotL = max(dot(N, L), 0.0);
-    float shadow = CSMShadow(v_WorldPos, NdotL);
-    vec3 Lo = (kD * albedo / PI + specular) * radiance * NdotL * (1.0 - shadow);
+    float NdotL_dir = max(dot(N, L_dir), 0.0);
+    float shadow = CSMShadow(v_WorldPos, NdotL_dir);
+    vec3 Lo = (kD_dir * albedo / PI + specular_dir) * radiance_dir * NdotL_dir * (1.0 - shadow);
+
+    // Point light
+    vec3 L_pt = normalize(u_PointLightPosition - v_WorldPos);
+    vec3 H_pt = normalize(V + L_pt);
+    float NdotL_pt = max(dot(N, L_pt), 0.0);
+    float dist_pt = length(u_PointLightPosition - v_WorldPos);
+    float attenuation = 1.0 / (1.0 + dist_pt * dist_pt / max(u_PointLightRange * u_PointLightRange, 0.0001));
+    vec3 radiance_pt = u_PointLightColor * u_PointLightIntensity * attenuation;
+
+    float NDF_pt = DistributionGGX(N, H_pt, roughness);
+    float G_pt = GeometrySmith(N, V, L_pt, roughness);
+    vec3 F_pt = FresnelSchlick(max(dot(H_pt, V), 0.0), F0);
+
+    vec3 kS_pt = F_pt;
+    vec3 kD_pt = (1.0 - kS_pt) * (1.0 - metallic);
+    vec3 numerator_pt = NDF_pt * G_pt * F_pt;
+    float denominator_pt = 4.0 * max(dot(N, V), 0.0) * NdotL_pt + 0.0001;
+    vec3 specular_pt = numerator_pt / denominator_pt;
+
+    Lo += (kD_pt * albedo / PI + specular_pt) * radiance_pt * NdotL_pt;
 
     vec3 kS_ibl = FresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
     vec3 kD_ibl = (1.0 - kS_ibl) * (1.0 - metallic);
@@ -183,7 +209,7 @@ void main() {
     vec3 specularIBL = prefilteredColor * (kS_ibl * envBRDF.x + envBRDF.y);
 
     vec3 ambient = (kD_ibl * diffuse + specularIBL) * ao;
-    vec3 color = ambient + Lo;
+    vec3 color = ambient + Lo + albedo * u_Emissive;
 
     color = vec3(1.0) - exp(-color * u_Exposure);
     color = pow(color, vec3(1.0 / 2.2));
