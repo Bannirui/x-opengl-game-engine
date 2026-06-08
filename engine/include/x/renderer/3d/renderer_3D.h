@@ -16,6 +16,19 @@ class Mesh;
 class Material;
 class TextureCube;
 
+static constexpr uint32_t MAX_GPU_LIGHTS = 8;
+
+enum class GPULightType : int { Directional = 0, Point = 1, Spot = 2 };
+
+struct GPULight {
+    glm::vec4 ColorAndIntensity;  // xyz=颜色, w=强度
+    glm::vec4 PositionAndRange;   // xyz=方向(平行光)/位置(点光), w=范围
+    int Type;                     // GPULightType (0=平行光, 1=点光)
+    float SpotInnerCone;          // 聚光灯内锥角cos, 未来扩展
+    float SpotOuterCone;          // 聚光灯外锥角cos, 未来扩展
+    float _pad;                   // std140 对齐
+};
+
 class Renderer3D {
 public:
     static void Init();
@@ -58,12 +71,20 @@ public:
     static const X::Ref<TextureCube>& GetEnvironmentMap();
 
     // Light
-    static void SetLightDirection(const glm::vec3& direction);
-    static void SetLightColor(const glm::vec3& color);
-    static void SetPointLightPosition(const glm::vec3& position);
-    static void SetPointLightColor(const glm::vec3& color);
-    static void SetPointLightRange(float range);
-    static void SetPointLightIntensity(float intensity);
+    static void SetLightAmbient(const glm::vec3& ambient, uint32_t lightGroupId = 0);
+    static void SetDirectionalLight(const glm::vec3& direction, const glm::vec3& color, float intensity,
+                                    uint32_t lightGroupId = 0, uint32_t lightIndex = 0);
+    static void SetPointLight(const glm::vec3& position, const glm::vec3& color, float range, float intensity,
+                              uint32_t lightGroupId = 0, uint32_t lightIndex = 0);
+    static void SetLightCount(uint32_t count, uint32_t lightGroupId = 0);
+
+    // 便捷方法 操作group的Lights[0]
+    static void SetLightDirection(const glm::vec3& direction, uint32_t lightGroupId = 0);
+    static void SetLightColor(const glm::vec3& color, uint32_t lightGroupId = 0);
+    static void SetPointLightPosition(const glm::vec3& position, uint32_t lightGroupId = 0);
+    static void SetPointLightColor(const glm::vec3& color, uint32_t lightGroupId = 0);
+    static void SetPointLightRange(float range, uint32_t lightGroupId = 0);
+    static void SetPointLightIntensity(float intensity, uint32_t lightGroupId = 0);
 
     struct Statistics {
         uint32_t DrawCalls = 0;

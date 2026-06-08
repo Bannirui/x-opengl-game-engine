@@ -39,6 +39,7 @@ void Renderer3D::Init() {
     s_data.DefaultShader = Shader::Create("asset/shader/Renderer3D_Phong.glsl");
     s_data.PBRShader = Shader::Create("asset/shader/Renderer3D_PBR.glsl");
     s_data.SkyboxShader = Shader::Create("asset/shader/Skybox.glsl");
+
     /**
      * 4 显式绑定UBO Block到binding slot 为什么需要这一步
      *   - 1 虽然GLSL源码中已声明layout(std140, binding=N)
@@ -50,10 +51,14 @@ void Renderer3D::Init() {
         const char* Name;  // UBO的名称
         uint32_t Binding;  // UBO在shader里面对应的binding
     } s_UBODefs[] = {
-        {"Camera", UBOBinding::Camera},         {"Model", UBOBinding::Model},
-        {"Light", UBOBinding::Light},           {"PBRSettings", UBOBinding::PBRSettings},
-        {"LightSpace", UBOBinding::LightSpace}, {"CSMData", UBOBinding::CSMData},
+        {"Camera", UBOBinding::Camera},
+        {"Model", UBOBinding::Model},
+        {"LightBlock", UBOBinding::Light},
+        {"PBRSettings", UBOBinding::PBRSettings},
+        {"LightSpace", UBOBinding::LightSpace},
+        {"CSMData", UBOBinding::CSMData},
     };
+
     // 手动绑定UBO的block跟binding
     auto setupBlockBindings = [](const X::Ref<Shader>& shader) {
         // OpenGL维护的shader object
@@ -85,17 +90,14 @@ void Renderer3D::Init() {
     // Model UBO (binding=1) 每个物体不同 Flush 时每物体更新
     s_data.ModelUBO = UniformBuffer::Create(sizeof(glm::mat4), UBOBinding::Model);
     // 7 默认光源参数
-    LightData defaultLight{};
-    defaultLight.Direction = glm::vec3(-0.5f, -1.0f, -0.3f);
+    LightGroupData defaultLight{};
     defaultLight.Ambient = glm::vec3(0.05f);
-    defaultLight.Diffuse = glm::vec3(1.0f);
-    defaultLight.Specular = glm::vec3(1.0f);
-    defaultLight.PointPosition = glm::vec3(0.0f);
-    defaultLight.PointRange = 100.0f;
-    defaultLight.PointColor = glm::vec3(1.0f);
-    defaultLight.PointIntensity = 0.0f;
-    s_data.LightBuffer = defaultLight;
-    s_data.LightUBO = UniformBuffer::Create(sizeof(LightData), UBOBinding::Light);
+    defaultLight.LightCount = 1;
+    defaultLight.Lights[0].PositionAndRange = glm::vec4(-0.5f, -1.0f, -0.3f, 0.0f);
+    defaultLight.Lights[0].ColorAndIntensity = glm::vec4(1.0f, 0.95f, 0.9f, 1.0f);
+    defaultLight.Lights[0].Type = static_cast<int>(GPULightType::Directional);
+    s_data.LightGroups[0] = defaultLight;
+    s_data.LightUBO = UniformBuffer::Create(sizeof(LightGroupData), UBOBinding::Light);
     // 8 PBR 默认参数
     s_data.PBRBuffer.CameraPosition = glm::vec3(0.0f);
     s_data.PBRBuffer.Exposure = 1.0f;
@@ -191,7 +193,7 @@ void Renderer3D::BeginScene(const Camera& camera, const glm::mat4& viewMatrix) {
     s_data.CameraUBO->Bind();
     s_data.CameraBuffer.ViewProjection = s_data.CurrentProjectionMatrix * viewMatrix;
     s_data.CameraUBO->SetData(&s_data.CameraBuffer, sizeof(Renderer3DData::CameraData));
-    s_data.LightUBO->SetData(&s_data.LightBuffer, sizeof(LightData));
+    s_data.LightUBO->SetData(&s_data.LightGroups[0], sizeof(LightGroupData));
     s_data.PBRBuffer.CameraPosition = glm::vec3(glm::inverse(viewMatrix)[3]);
     s_data.PBRUBO->SetData(&s_data.PBRBuffer, sizeof(PBRSettingsData));
     s_data.Buckets.clear();
@@ -205,7 +207,7 @@ void Renderer3D::BeginScene(const EditorCamera& camera) {
     s_data.CameraUBO->Bind();
     s_data.CameraBuffer.ViewProjection = camera.GetViewProjection();
     s_data.CameraUBO->SetData(&s_data.CameraBuffer, sizeof(Renderer3DData::CameraData));
-    s_data.LightUBO->SetData(&s_data.LightBuffer, sizeof(LightData));
+    s_data.LightUBO->SetData(&s_data.LightGroups[0], sizeof(LightGroupData));
     s_data.PBRBuffer.CameraPosition = camera.get_position();
     s_data.PBRUBO->SetData(&s_data.PBRBuffer, sizeof(PBRSettingsData));
     s_data.Buckets.clear();
@@ -256,33 +258,44 @@ void Renderer3D::Flush() {
         glBindTexture(GL_TEXTURE_2D, s_data.DefaultShadowMap);
     }
 
-    // 按shader地址排序Buckets 减少shader状态切换
+    // 按(lightGroup, shader)排序Buckets 减少状态切换
     std::sort(s_data.Buckets.begin(), s_data.Buckets.end(), [](const MaterialBucket& a, const MaterialBucket& b) {
+        uint32_t groupA = a.MaterialAsset->GetLightGroup();
+        uint32_t groupB = b.MaterialAsset->GetLightGroup();
+        if (groupA != groupB) return groupA < groupB;
         return a.MaterialAsset->GetShader().get() < b.MaterialAsset->GetShader().get();
     });
 
+    uint32_t currentLightGroup = UINT32_MAX;
+
     // 遍历每个Material Bucket
     for (auto& bucket : s_data.Buckets) {
+        uint32_t bucketGroup = bucket.MaterialAsset->GetLightGroup();
+        if (bucketGroup != currentLightGroup) {
+            currentLightGroup = bucketGroup;
+            auto it = s_data.LightGroups.find(bucketGroup);
+            if (it != s_data.LightGroups.end()) {
+                s_data.LightUBO->SetData(&it->second, sizeof(LightGroupData));
+            }
+        }
         // 激活shader 绑定纹理
         bucket.MaterialAsset->Bind();
+
+        auto& shader = bucket.MaterialAsset->GetShader();
+        if (shader->HasUniform("u_IrradianceMap")) shader->SetInt("u_IrradianceMap", 4);
+        if (shader->HasUniform("u_PrefilterMap")) shader->SetInt("u_PrefilterMap", 5);
+        if (shader->HasUniform("u_BRDFLUT")) shader->SetInt("u_BRDFLUT", 6);
+        if (shader->HasUniform("u_ShadowMap0")) shader->SetInt("u_ShadowMap0", 7);
+        if (shader->HasUniform("u_ShadowMap1")) shader->SetInt("u_ShadowMap1", 8);
+        if (shader->HasUniform("u_ShadowMap2")) shader->SetInt("u_ShadowMap2", 9);
+        if (shader->HasUniform("u_ShadowMap3")) shader->SetInt("u_ShadowMap3", 10);
 
         // 遍历该Material下的每个绘制命令
         for (auto& cmd : bucket.Commands) {
             // 更新UBO 模型矩阵 负责把本地坐标转换成世界坐标
             s_data.ModelUBO->SetData(glm::value_ptr(cmd.Transform), sizeof(glm::mat4));
             // 设置EntityID 用于帧缓冲读回实现鼠标拾取
-            bucket.MaterialAsset->GetShader()->SetInt("u_EntityID", cmd.EntityID);
-
-            // 设置IBL采样器绑定 告诉shader从哪个纹理单元采样
-            auto& shader = bucket.MaterialAsset->GetShader();
-            shader->SetInt("u_IrradianceMap", 4);
-            shader->SetInt("u_PrefilterMap", 5);
-            shader->SetInt("u_BRDFLUT", 6);
-            // 设置Shadow Map采样器绑定
-            shader->SetInt("u_ShadowMap0", 7);
-            shader->SetInt("u_ShadowMap1", 8);
-            shader->SetInt("u_ShadowMap2", 9);
-            shader->SetInt("u_ShadowMap3", 10);
+            shader->SetInt("u_EntityID", cmd.EntityID);
 
             // 提交GPU绘制
             auto& vao = cmd.MeshAsset->GetVertexArray();
@@ -379,10 +392,10 @@ void Renderer3D::DrawSkybox() {
         glBufferData(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
         // 告诉GPU怎么解读attriburte0的顶点数据
         glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3,      // 每个顶点3个float
+        glVertexAttribPointer(0, 3,  // 每个顶点3个float
                               GL_FLOAT,  // 顶点数据是float类型
                               GL_FALSE,  // 不是归一化
-                              0,         // 偏移0
+                              0,  // 偏移0
                               nullptr);
     }
 
@@ -402,7 +415,7 @@ void Renderer3D::DrawSkybox() {
     glBindVertexArray(skyboxVAO);
     // 用36个顶点画天空盒
     glDrawArrays(GL_TRIANGLES, 0,  // 从0号顶点开始画
-                 36                // 用36个顶点画
+                 36  // 用36个顶点画
     );
     // 恢复默认深度测试
     glDepthFunc(GL_LESS);
@@ -413,8 +426,8 @@ void Renderer3D::SetEnvironmentMap(const X::Ref<TextureCube>& envMap) {
     if (envMap) {
         // 从天空盒HDR Cubemap预计算IBL数据
         s_data.IrradianceMap = PBREnvironment::BakeIrradiance(envMap);  // 漫反射IBL
-        s_data.PrefilterMap = PBREnvironment::BakePrefilter(envMap);    // 镜面反射IBL 多级roughness
-        s_data.BRDFLUTTexture = PBREnvironment::BakeBRDFLUT();          // BRDF积分查找表
+        s_data.PrefilterMap = PBREnvironment::BakePrefilter(envMap);  // 镜面反射IBL 多级roughness
+        s_data.BRDFLUTTexture = PBREnvironment::BakeBRDFLUT();  // BRDF积分查找表
     }
 }
 
@@ -434,32 +447,61 @@ const X::Ref<TextureCube>& Renderer3D::GetEnvironmentMap() {
     return s_data.EnvironmentMap;
 }
 
-/**
- * 设置平行光
- * @param direction 指向光源
- */
-void Renderer3D::SetLightDirection(const glm::vec3& direction) {
-    s_data.LightBuffer.Direction = direction;
+void Renderer3D::SetLightAmbient(const glm::vec3& ambient, uint32_t lightGroupId) {
+    s_data.LightGroups[lightGroupId].Ambient = ambient;
 }
 
-void Renderer3D::SetLightColor(const glm::vec3& color) {
-    s_data.LightBuffer.Diffuse = color;
+void Renderer3D::SetLightCount(uint32_t count, uint32_t lightGroupId) {
+    s_data.LightGroups[lightGroupId].LightCount = static_cast<int>(std::min(count, MAX_GPU_LIGHTS));
 }
 
-void Renderer3D::SetPointLightPosition(const glm::vec3& position) {
-    s_data.LightBuffer.PointPosition = position;
+void Renderer3D::SetDirectionalLight(const glm::vec3& direction, const glm::vec3& color, float intensity,
+                                     uint32_t lightGroupId, uint32_t lightIndex) {
+    auto& light = s_data.LightGroups[lightGroupId].Lights[lightIndex];
+    light.PositionAndRange = glm::vec4(direction, 0.0f);
+    light.ColorAndIntensity = glm::vec4(color, intensity);
+    light.Type = static_cast<int>(GPULightType::Directional);
 }
 
-void Renderer3D::SetPointLightColor(const glm::vec3& color) {
-    s_data.LightBuffer.PointColor = color;
+void Renderer3D::SetPointLight(const glm::vec3& position, const glm::vec3& color, float range, float intensity,
+                               uint32_t lightGroupId, uint32_t lightIndex) {
+    auto& light = s_data.LightGroups[lightGroupId].Lights[lightIndex];
+    light.PositionAndRange = glm::vec4(position, range);
+    light.ColorAndIntensity = glm::vec4(color, intensity);
+    light.Type = static_cast<int>(GPULightType::Point);
 }
 
-void Renderer3D::SetPointLightRange(float range) {
-    s_data.LightBuffer.PointRange = range;
+void Renderer3D::SetLightDirection(const glm::vec3& direction, uint32_t lightGroupId) {
+    s_data.LightGroups[lightGroupId].Lights[0].PositionAndRange.x = direction.x;
+    s_data.LightGroups[lightGroupId].Lights[0].PositionAndRange.y = direction.y;
+    s_data.LightGroups[lightGroupId].Lights[0].PositionAndRange.z = direction.z;
 }
 
-void Renderer3D::SetPointLightIntensity(float intensity) {
-    s_data.LightBuffer.PointIntensity = intensity;
+void Renderer3D::SetLightColor(const glm::vec3& color, uint32_t lightGroupId) {
+    s_data.LightGroups[lightGroupId].Lights[0].ColorAndIntensity.x = color.x;
+    s_data.LightGroups[lightGroupId].Lights[0].ColorAndIntensity.y = color.y;
+    s_data.LightGroups[lightGroupId].Lights[0].ColorAndIntensity.z = color.z;
+}
+
+void Renderer3D::SetPointLightPosition(const glm::vec3& position, uint32_t lightGroupId) {
+    s_data.LightGroups[lightGroupId].Lights[0].PositionAndRange.x = position.x;
+    s_data.LightGroups[lightGroupId].Lights[0].PositionAndRange.y = position.y;
+    s_data.LightGroups[lightGroupId].Lights[0].PositionAndRange.z = position.z;
+    s_data.LightGroups[lightGroupId].Lights[0].Type = static_cast<int>(GPULightType::Point);
+}
+
+void Renderer3D::SetPointLightColor(const glm::vec3& color, uint32_t lightGroupId) {
+    s_data.LightGroups[lightGroupId].Lights[0].ColorAndIntensity.x = color.x;
+    s_data.LightGroups[lightGroupId].Lights[0].ColorAndIntensity.y = color.y;
+    s_data.LightGroups[lightGroupId].Lights[0].ColorAndIntensity.z = color.z;
+}
+
+void Renderer3D::SetPointLightRange(float range, uint32_t lightGroupId) {
+    s_data.LightGroups[lightGroupId].Lights[0].PositionAndRange.w = range;
+}
+
+void Renderer3D::SetPointLightIntensity(float intensity, uint32_t lightGroupId) {
+    s_data.LightGroups[lightGroupId].Lights[0].ColorAndIntensity.w = intensity;
 }
 
 Renderer3D::Statistics Renderer3D::GetStats() {

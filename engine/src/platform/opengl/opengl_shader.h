@@ -58,6 +58,7 @@ public:
     void SetFloat3(const std::string& name, const glm::vec3& value) override;
     void SetFloat4(const std::string& name, const glm::vec4& value) override;
     void SetMat4(const std::string& name, const glm::mat4& value) override;
+    bool HasUniform(const std::string& name) const override;
     // --- 开放的接口 传递uniform变量---
 
 private:
@@ -93,4 +94,6 @@ private:
     std::string m_name;
     // GLSL源码 已经经过了预处理
     std::unordered_map<GLenum, std::string> m_glslSources;
+    // uniform location缓存 key=uniform名称 value=location(-1=不存在)
+    mutable std::unordered_map<std::string, GLint> m_uniformLocationCache;
 };

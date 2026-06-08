@@ -266,22 +266,46 @@ void OpenGLShader::SetMat4(const std::string& name, const glm::mat4& value) {
     uploadUniformMat4(name, value);
 }
 
-void OpenGLShader::uploadUniformInt(const std::string& name, int value) const {
+bool OpenGLShader::HasUniform(const std::string& name) const {
+    auto it = m_uniformLocationCache.find(name);
+    if (it != m_uniformLocationCache.end()) return it->second != -1;
     GLint location = glGetUniformLocation(m_rendererId, name.c_str());
+    m_uniformLocationCache[name] = location;
+    return location != -1;
+}
+
+void OpenGLShader::uploadUniformInt(const std::string& name, int value) const {
+    GLint location = -1;
+    auto it = m_uniformLocationCache.find(name);
+    if (it != m_uniformLocationCache.end()) {
+        location = it->second;
+    } else {
+        location = glGetUniformLocation(m_rendererId, name.c_str());
+        m_uniformLocationCache[name] = location;
+        if (location == -1) {
+            X_CORE_WARN("shader[{}] 中拿不到uniform[{}]的location (可能被GLSL编译器优化掉了)", m_name, name);
+        }
+    }
     if (location != -1) {
         glUniform1i(location, value);
-        return;
     }
-    X_CORE_WARN("shader[{}] 中拿不到uniform[{}]的location (可能被GLSL编译器优化掉了)", m_name, name);
 }
 
 void OpenGLShader::uploadUniformIntArray(const std::string& name, int* values, uint32_t count) const {
-    GLint location = glGetUniformLocation(m_rendererId, name.c_str());
+    GLint location = -1;
+    auto it = m_uniformLocationCache.find(name);
+    if (it != m_uniformLocationCache.end()) {
+        location = it->second;
+    } else {
+        location = glGetUniformLocation(m_rendererId, name.c_str());
+        m_uniformLocationCache[name] = location;
+        if (location == -1) {
+            X_CORE_WARN("shader[{}] 中拿不到uniform[{}]的location (可能被GLSL编译器优化掉了)", m_name, name);
+        }
+    }
     if (location != -1) {
         glUniform1iv(location, count, values);
-        return;
     }
-    X_CORE_WARN("shader[{}] 中拿不到uniform[{}]的location (可能被GLSL编译器优化掉了)", m_name, name);
 }
 
 void OpenGLShader::uploadUniformFloat(const std::string& name, float value) const {

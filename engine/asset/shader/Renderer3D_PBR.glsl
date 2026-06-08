@@ -71,17 +71,27 @@ layout(std140, binding = 0) uniform Camera {
     mat4 u_ViewProjection;
 };
 
-// ---- UBO: Light (binding=2) ----
-// 方向光数据 (太阳光/主光源)
-layout(std140, binding = 2) uniform Light {
-    vec3 u_LightDirection;
-    vec3 u_LightAmbient;
-    vec3 u_LightDiffuse;
-    vec3 u_LightSpecular;
-    vec3 u_PointLightPosition;
-    float u_PointLightRange;
-    vec3 u_PointLightColor;
-    float u_PointLightIntensity;
+// ---- UBO: LightBlock (binding=2) ----
+// 多光源数组 每帧按Material::lightGroupId切换对应的光源组
+#define MAX_LIGHTS 8
+
+#define LIGHT_TYPE_DIRECTIONAL 0
+#define LIGHT_TYPE_POINT 1
+#define LIGHT_TYPE_SPOT 2
+
+struct GPULight {
+    vec4 ColorAndIntensity;    // xyz = 颜色, w = 强度
+    vec4 PositionAndRange;     // xyz = 平行光方向(指向光源)/点光世界位置, w = 范围
+    int Type;                  // 0=平行光, 1=点光
+    float SpotInnerCone;       // 聚光灯内锥角cos (未来扩展)
+    float SpotOuterCone;       // 聚光灯外锥角cos (未来扩展)
+    float _pad;                // std140 对齐填充
+};
+
+layout(std140, binding = 2) uniform LightBlock {
+    vec3 u_Ambient;             // 全局环境光 (与IBL相乘)
+    int u_LightCount;           // 当前光源组活跃灯光数
+    GPULight u_Lights[MAX_LIGHTS];
 };
 
 // ---- UBO: PBR Settings (binding=3) ----
@@ -288,47 +298,55 @@ void main() {
 
     // =======================================================================
     // 第1部分: 直接光照 (Direct Lighting)
-    // 平行光 (Directional light) + 点光源 (Point light)
+    // 遍历当前光源组的所有灯光
     // =======================================================================
 
-    // ---- 平行光 ----
-    vec3 L_dir = normalize(-u_LightDirection);
-    vec3 H_dir = normalize(V + L_dir);
-    float NdotL_dir = max(dot(N, L_dir), 0.0);
+    vec3 Lo = vec3(0.0);
+    bool shadowCalculated = false;
+    float shadow = 0.0;
 
-    vec3 radiance_dir = u_LightDiffuse;
-    float NDF_dir = DistributionGGX(N, H_dir, roughness);
-    float G_dir = GeometrySmith(N, V, L_dir, roughness);
-    vec3 F_dir = FresnelSchlick(max(dot(H_dir, V), 0.0), F0);
-    vec3 kS_dir = F_dir;
-    vec3 kD_dir = (1.0 - kS_dir) * (1.0 - metallic);
-    vec3 numerator_dir = NDF_dir * G_dir * F_dir;
-    float denominator_dir = 4.0 * max(dot(N, V), 0.0) * NdotL_dir + 0.0001;
-    vec3 specular_dir = numerator_dir / denominator_dir;
+    for (int i = 0; i < u_LightCount && i < MAX_LIGHTS; i++) {
+        vec3 lightColor = u_Lights[i].ColorAndIntensity.rgb;
+        float intensity = u_Lights[i].ColorAndIntensity.w;
+        vec3 lightPosOrDir = u_Lights[i].PositionAndRange.xyz;
+        float range = u_Lights[i].PositionAndRange.w;
+        bool isPoint = u_Lights[i].Type == LIGHT_TYPE_POINT;
 
-    float shadow = CascadedShadowCalculation(v_WorldPos, NdotL_dir);
-    vec3 Lo_dir = (kD_dir * albedo / PI + specular_dir) * radiance_dir * NdotL_dir * (1.0 - shadow);
+        vec3 L, radiance;
+        float NdotL;
 
-    // ---- 点光源 ----
-    vec3 L_pt = normalize(u_PointLightPosition - v_WorldPos);
-    vec3 H_pt = normalize(V + L_pt);
-    float NdotL_pt = max(dot(N, L_pt), 0.0);
-    float dist_pt = length(u_PointLightPosition - v_WorldPos);
-    float attenuation = 1.0 / (1.0 + dist_pt * dist_pt / max(u_PointLightRange * u_PointLightRange, 0.0001));
-    vec3 radiance_pt = u_PointLightColor * u_PointLightIntensity * attenuation;
+        if (isPoint) {
+            L = normalize(lightPosOrDir - v_WorldPos);
+            NdotL = max(dot(N, L), 0.0);
+            float dist = length(lightPosOrDir - v_WorldPos);
+            float attenuation = 1.0 / (1.0 + dist * dist / max(range * range, 0.0001));
+            radiance = lightColor * intensity * attenuation;
+        } else {
+            L = normalize(-lightPosOrDir);
+            NdotL = max(dot(N, L), 0.0);
+            radiance = lightColor * intensity;
+            if (!shadowCalculated) {
+                shadow = CascadedShadowCalculation(v_WorldPos, NdotL);
+                shadowCalculated = true;
+            }
+        }
 
-    float NDF_pt = DistributionGGX(N, H_pt, roughness);
-    float G_pt = GeometrySmith(N, V, L_pt, roughness);
-    vec3 F_pt = FresnelSchlick(max(dot(H_pt, V), 0.0), F0);
-    vec3 kS_pt = F_pt;
-    vec3 kD_pt = (1.0 - kS_pt) * (1.0 - metallic);
-    vec3 numerator_pt = NDF_pt * G_pt * F_pt;
-    float denominator_pt = 4.0 * max(dot(N, V), 0.0) * NdotL_pt + 0.0001;
-    vec3 specular_pt = numerator_pt / denominator_pt;
+        vec3 H = normalize(V + L);
+        float NDF = DistributionGGX(N, H, roughness);
+        float G = GeometrySmith(N, V, L, roughness);
+        vec3 F = FresnelSchlick(max(dot(H, V), 0.0), F0);
+        vec3 kS = F;
+        vec3 kD = (1.0 - kS) * (1.0 - metallic);
+        vec3 numerator = NDF * G * F;
+        float denominator = 4.0 * max(dot(N, V), 0.0) * NdotL + 0.0001;
+        vec3 specular = numerator / denominator;
 
-    vec3 Lo_pt = (kD_pt * albedo / PI + specular_pt) * radiance_pt * NdotL_pt;
-
-    vec3 Lo = Lo_dir + Lo_pt;
+        vec3 Li = (kD * albedo / PI + specular) * radiance * NdotL;
+        if (!isPoint && shadowCalculated) {
+            Li *= (1.0 - shadow);
+        }
+        Lo += Li;
+    }
 
     // =======================================================================
     // 第2部分: 间接光照 — IBL (Image Based Lighting)

@@ -31,4 +31,5 @@ private:
     X::Ref<Shader> m_cubeShader;
     X::Ref<Mesh> m_cubeMesh;
     X::Ref<Material> m_cubeMaterial;
+    X::Ref<Material> m_cubeMaterialBlue;
 };

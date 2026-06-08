@@ -40,11 +40,24 @@ flat in int v_EntityID;
 layout(location = 0) out vec4 o_Color;
 layout(location = 1) out int o_EntityID;
 
-layout(std140) uniform Light {
-    vec3 u_LightDirection;
-    vec3 u_LightAmbient;
-    vec3 u_LightDiffuse;
-    vec3 u_LightSpecular;
+#define MAX_LIGHTS 8
+#define LIGHT_TYPE_DIRECTIONAL 0
+#define LIGHT_TYPE_POINT 1
+#define LIGHT_TYPE_SPOT 2
+
+struct GPULight {
+    vec4 ColorAndIntensity;
+    vec4 PositionAndRange;
+    int Type;
+    float SpotInnerCone;
+    float SpotOuterCone;
+    float _pad;
+};
+
+layout(std140) uniform LightBlock {
+    vec3 u_Ambient;
+    int u_LightCount;
+    GPULight u_Lights[MAX_LIGHTS];
 };
 
 uniform sampler2D u_DiffuseMap;
@@ -54,21 +67,40 @@ uniform vec3 u_MaterialSpecular;
 
 void main() {
     vec3 normal = normalize(v_WorldNormal);
-    vec3 lightDir = normalize(-u_LightDirection);
     vec3 viewDir = normalize(-v_WorldPosition);
 
-    vec3 ambient = u_LightAmbient;
+    vec3 ambient = u_Ambient;
+    vec3 diffuseSum = vec3(0.0);
+    vec3 specularSum = vec3(0.0);
 
-    float diff = max(dot(normal, lightDir), 0.0);
-    vec3 diffuse = u_LightDiffuse * diff;
+    for (int i = 0; i < u_LightCount && i < MAX_LIGHTS; i++) {
+        vec3 lightColor = u_Lights[i].ColorAndIntensity.rgb;
+        float intensity = u_Lights[i].ColorAndIntensity.w;
+        vec3 lightPosOrDir = u_Lights[i].PositionAndRange.xyz;
+        float range = u_Lights[i].PositionAndRange.w;
+        bool isPoint = u_Lights[i].Type == LIGHT_TYPE_POINT;
 
-    vec3 halfwayDir = normalize(lightDir + viewDir);
-    float spec = pow(max(dot(normal, halfwayDir), 0.0), u_Shininess);
-    vec3 specular = u_LightSpecular * spec * u_MaterialSpecular;
+        vec3 lightDir;
+        float attenuation = 1.0;
+
+        if (isPoint) {
+            lightDir = normalize(lightPosOrDir - v_WorldPosition);
+            float dist = length(lightPosOrDir - v_WorldPosition);
+            attenuation = 1.0 / (1.0 + dist * dist / max(range * range, 0.0001));
+        } else {
+            lightDir = normalize(-lightPosOrDir);
+        }
+
+        float diff = max(dot(normal, lightDir), 0.0);
+        diffuseSum += lightColor * intensity * diff * attenuation;
+
+        vec3 halfwayDir = normalize(lightDir + viewDir);
+        float spec = pow(max(dot(normal, halfwayDir), 0.0), u_Shininess);
+        specularSum += lightColor * intensity * spec * attenuation;
+    }
 
     vec4 texColor = texture(u_DiffuseMap, v_TexCoord);
-
-    vec3 result = (ambient + diffuse) * texColor.rgb * u_MaterialDiffuse + specular;
+    vec3 result = (ambient + diffuseSum) * texColor.rgb * u_MaterialDiffuse + specularSum * u_MaterialSpecular;
     o_Color = vec4(result, texColor.a);
     o_EntityID = v_EntityID;
 }

@@ -38,10 +38,27 @@ layout(location = 1) out int o_EntityID;
 layout(std140) uniform Camera {
     mat4 u_ViewProjection;
 };
-layout(std140) uniform Light {
-    vec3 u_LightDirection; vec3 u_LightAmbient; vec3 u_LightDiffuse; vec3 u_LightSpecular;
-    vec3 u_PointLightPosition; float u_PointLightRange; vec3 u_PointLightColor; float u_PointLightIntensity;
+
+#define MAX_LIGHTS 8
+#define LIGHT_TYPE_DIRECTIONAL 0
+#define LIGHT_TYPE_POINT 1
+#define LIGHT_TYPE_SPOT 2
+
+struct GPULight {
+    vec4 ColorAndIntensity;
+    vec4 PositionAndRange;
+    int Type;
+    float SpotInnerCone;
+    float SpotOuterCone;
+    float _pad;
 };
+
+layout(std140) uniform LightBlock {
+    vec3 u_Ambient;
+    int u_LightCount;
+    GPULight u_Lights[MAX_LIGHTS];
+};
+
 layout(std140) uniform PBRSettings {
     vec3 u_CameraPosition; float u_Exposure;
 };
@@ -102,31 +119,52 @@ void main() {
     float ao = texture(u_AOMap, v_TexCoord).r * u_AO;
     vec3 F0 = mix(vec3(0.04), albedo, metallic);
 
-    // Directional light
-    vec3 Ld = normalize(-u_LightDirection);
-    vec3 Hd = normalize(V+Ld);
-    float NdotLd = max(dot(N,Ld),0.0);
-    float Nd = DistributionGGX(N,Hd,roughness);
-    float Gd = GeometrySmith(N,V,Ld,roughness);
-    vec3 Fd = FresnelSchlick(max(dot(Hd,V),0.0),F0);
-    vec3 kSd = Fd; vec3 kDd = (1.0-kSd)*(1.0-metallic);
-    vec3 sd = (Nd*Gd*Fd)/max(4.0*max(dot(N,V),0.0)*NdotLd,0.0001);
-    float shadow = CSMShadow(v_WorldPos, NdotLd);
-    vec3 Lo = (kDd*albedo/PI+sd)*u_LightDiffuse*NdotLd*(1.0-shadow);
+    vec3 Lo = vec3(0.0);
+    bool shadowCalculated = false;
+    float shadow = 0.0;
 
-    // Point light
-    vec3 Lp = normalize(u_PointLightPosition - v_WorldPos);
-    vec3 Hp = normalize(V+Lp);
-    float NdotLp = max(dot(N,Lp),0.0);
-    float d = length(u_PointLightPosition - v_WorldPos);
-    float att = 1.0/(1.0+d*d/max(u_PointLightRange*u_PointLightRange,0.0001));
-    vec3 rp = u_PointLightColor*u_PointLightIntensity*att;
-    float Np = DistributionGGX(N,Hp,roughness);
-    float Gp = GeometrySmith(N,V,Lp,roughness);
-    vec3 Fp = FresnelSchlick(max(dot(Hp,V),0.0),F0);
-    vec3 kSp=Fp; vec3 kDp=(1.0-kSp)*(1.0-metallic);
-    vec3 sp = (Np*Gp*Fp)/max(4.0*max(dot(N,V),0.0)*NdotLp,0.0001);
-    Lo += (kDp*albedo/PI+sp)*rp*NdotLp;
+    for (int i = 0; i < u_LightCount && i < MAX_LIGHTS; i++) {
+        vec3 lightColor = u_Lights[i].ColorAndIntensity.rgb;
+        float intensity = u_Lights[i].ColorAndIntensity.w;
+        vec3 lightPosOrDir = u_Lights[i].PositionAndRange.xyz;
+        float range = u_Lights[i].PositionAndRange.w;
+        bool isPoint = u_Lights[i].Type == LIGHT_TYPE_POINT;
+
+        vec3 L, radiance;
+        float NdotL;
+
+        if (isPoint) {
+            L = normalize(lightPosOrDir - v_WorldPos);
+            NdotL = max(dot(N, L), 0.0);
+            float dist = length(lightPosOrDir - v_WorldPos);
+            float attenuation = 1.0 / (1.0 + dist * dist / max(range * range, 0.0001));
+            radiance = lightColor * intensity * attenuation;
+        } else {
+            L = normalize(-lightPosOrDir);
+            NdotL = max(dot(N, L), 0.0);
+            radiance = lightColor * intensity;
+            if (!shadowCalculated) {
+                shadow = CSMShadow(v_WorldPos, NdotL);
+                shadowCalculated = true;
+            }
+        }
+
+        vec3 H = normalize(V + L);
+        float NDF = DistributionGGX(N, H, roughness);
+        float G = GeometrySmith(N, V, L, roughness);
+        vec3 F = FresnelSchlick(max(dot(H, V), 0.0), F0);
+        vec3 kS = F;
+        vec3 kD = (1.0 - kS) * (1.0 - metallic);
+        vec3 numerator = NDF * G * F;
+        float denominator = 4.0 * max(dot(N, V), 0.0) * NdotL + 0.0001;
+        vec3 specular = numerator / denominator;
+
+        vec3 Li = (kD * albedo / PI + specular) * radiance * NdotL;
+        if (!isPoint && shadowCalculated) {
+            Li *= (1.0 - shadow);
+        }
+        Lo += Li;
+    }
 
     vec3 kSr = FresnelSchlickRoughness(max(dot(N,V),0.0), F0, roughness);
     vec3 kDr = (1.0-kSr)*(1.0-metallic);

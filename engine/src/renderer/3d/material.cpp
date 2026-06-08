@@ -60,6 +60,7 @@ void Material::SetFloat4(const std::string& name, const glm::vec4& value) {
 }
 
 bool Material::operator==(const Material& other) const {
+    if (m_lightGroupId != other.m_lightGroupId) return false;
     if (m_shader.get() != other.m_shader.get()) return false;
     if (m_textures.size() != other.m_textures.size()) return false;
     for (const auto& [name, texture] : m_textures) {

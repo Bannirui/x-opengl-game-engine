@@ -14,6 +14,7 @@
 
 #include <glm/glm.hpp>
 
+#include <unordered_map>
 #include <vector>
 
 // 封装单次的绘制命令
@@ -35,31 +36,29 @@ struct MaterialBucket {
 };
 
 /**
- * 光照参数 与GPU的UBO一一对应
- * C++端布局要求
- *   - 1 std140规则是 vec3的基准对齐和对齐偏移都是16字节 等同vec4
- *   - 2 因此每个vec3后面必须手动填充1个float 4字节 来让下一个vec3起始地址对齐到16字节边界
- * 对应的GLSL是
- *   layout(std140, binding = 2) uniform Light {
- *      vec3 u_LightDirection;   // offset 0
- *      vec3 u_LightAmbient;     // offset 16
- *      vec3 u_LightDiffuse;     // offset 32
- *      vec3 u_LightSpecular;    // offset 48
- *   };
+ * GPU端灯光布局 std140 与GLSL LightBlock一一对应
+ *
+ * layout(std140, binding = 2) uniform LightBlock {
+ *     vec3  u_Ambient;                           // offset 0
+ *     int   u_LightCount;                        // offset 12 (packed in vec3 tail)
+ *     GPULight u_Lights[MAX_GPU_LIGHTS];         // offset 16, 48 bytes each
+ * };
+ *
+ * struct GPULight {
+ *     vec4  ColorAndIntensity;                   // offset 0  (xyz=color, w=intensity)
+ *     vec4  PositionAndRange;                    // offset 16 (xyz=pos/dir, w=range)
+ *     int   Type;                                // offset 32 (0=Dir, 1=Point)
+ *     float SpotInnerCone;                       // offset 36
+ *     float SpotOuterCone;                       // offset 40
+ *     float _pad;                                // offset 44 (std140 align)
+ * };
+ *
+ * Total: 16 + MAX_GPU_LIGHTS*48 = 400 bytes
  */
-struct LightData {
-    glm::vec3 Direction;
-    float Padding0;
-    glm::vec3 Ambient;
-    float Padding1;
-    glm::vec3 Diffuse;
-    float Padding2;
-    glm::vec3 Specular;
-    float Padding3;
-    glm::vec3 PointPosition;
-    float PointRange;
-    glm::vec3 PointColor;
-    float PointIntensity;
+struct LightGroupData {
+    glm::vec3 Ambient;  // offset 0, 全局环境光
+    int LightCount;  // offset 12, 当前活跃灯光数
+    GPULight Lights[MAX_GPU_LIGHTS];  // offset 16, 灯光数组
 };
 
 struct PBRSettingsData {
@@ -82,10 +81,13 @@ struct Renderer3DData {
     X::Ref<UniformBuffer> CameraUBO;
     // slot1 模型矩阵M 负责把本地坐标转换世界
     X::Ref<UniformBuffer> ModelUBO;
-    X::Ref<UniformBuffer> LightUBO;  // slot2 光照 每帧更新
-    X::Ref<UniformBuffer> PBRUBO;  // slot3 相机位置+曝光度 每帧更新
+    // slot2 光照 每帧更新 按light group切换时重新上传
+    X::Ref<UniformBuffer> LightUBO;
+    // slot3 相机位置+曝光度 每帧更新
+    X::Ref<UniformBuffer> PBRUBO;
 
-    // 纹理贴图
+    // 每个light group的CPU端光照参数 只有在真正渲染的时候才会将数据通过UBO传给着色器
+    std::unordered_map<uint32_t, LightGroupData> LightGroups;
     X::Ref<Texture2D> WhiteTexture;  // 1*1白色纹理 没有贴图时作为兜底使用
     X::Ref<TextureCube> EnvironmentMap;  // HDR环境光 天空盒原始图
     X::Ref<TextureCube> IrradianceMap;  // 漫反射辐照度图
@@ -108,7 +110,6 @@ struct Renderer3DData {
     glm::mat4 CurrentViewMatrix;  // 当前帧的View矩阵 供天空盒剥离位移用
     glm::mat4 CurrentProjectionMatrix;  // 当前帧的Projection矩阵 供天空盒用
 
-    LightData LightBuffer;  // 平行光
     PBRSettingsData PBRBuffer;  // 相机+曝光度
 
     Renderer3D::Statistics Stats;

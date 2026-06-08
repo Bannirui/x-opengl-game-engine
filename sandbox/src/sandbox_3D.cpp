@@ -23,21 +23,24 @@ void Sandbox3D::OnAttach() {
     X_PROFILE_FUNCTION();
     m_cubeMesh = GeometryGenerator::CreateCube(2.0f);
 
-    m_cubeShader = Shader::Create("asset/shader/Renderer3D_PBR.glsl");
+    m_cubeShader = Shader::Create("asset/shader/Renderer3D_Phong.glsl");
 
     X::Ref<Texture2D> whiteTex = Texture2D::Create(1, 1);
     uint32_t whiteData = 0xffffffff;
     whiteTex->SetData(&whiteData, sizeof(uint32_t));
 
     m_cubeMaterial = Material::Create(m_cubeShader);
-    m_cubeMaterial->SetFloat3("u_Albedo", glm::vec3(0.8f, 0.3f, 0.3f));
-    m_cubeMaterial->SetFloat("u_Metallic", 0.0f);
-    m_cubeMaterial->SetFloat("u_Roughness", 0.5f);
-    m_cubeMaterial->SetFloat("u_AO", 1.0f);
-    m_cubeMaterial->SetTexture("u_AlbedoMap", whiteTex);
-    m_cubeMaterial->SetTexture("u_MetallicMap", whiteTex);
-    m_cubeMaterial->SetTexture("u_RoughnessMap", whiteTex);
-    m_cubeMaterial->SetTexture("u_AOMap", whiteTex);
+    m_cubeMaterial->SetFloat3("u_MaterialDiffuse", glm::vec3(0.8f, 0.3f, 0.3f));
+    m_cubeMaterial->SetFloat3("u_MaterialSpecular", glm::vec3(1.0f, 1.0f, 1.0f));
+    m_cubeMaterial->SetFloat("u_Shininess", 32.0f);
+    m_cubeMaterial->SetTexture("u_DiffuseMap", whiteTex);
+
+    m_cubeMaterialBlue = Material::Create(m_cubeShader);
+    m_cubeMaterialBlue->SetFloat3("u_MaterialDiffuse", glm::vec3(0.3f, 0.6f, 0.8f));
+    m_cubeMaterialBlue->SetFloat3("u_MaterialSpecular", glm::vec3(0.8f, 0.8f, 1.0f));
+    m_cubeMaterialBlue->SetFloat("u_Shininess", 64.0f);
+    m_cubeMaterialBlue->SetTexture("u_DiffuseMap", whiteTex);
+    m_cubeMaterialBlue->SetLightGroup(1);
 }
 
 void Sandbox3D::OnDetach() {
@@ -45,6 +48,7 @@ void Sandbox3D::OnDetach() {
     m_cubeShader.reset();
     m_cubeMesh.reset();
     m_cubeMaterial.reset();
+    m_cubeMaterialBlue.reset();
 }
 
 void Sandbox3D::OnUpdate(Timestep ts) {
@@ -58,8 +62,13 @@ void Sandbox3D::OnUpdate(Timestep ts) {
 
     Renderer3D::ResetStats();
 
-    Renderer3D::SetLightDirection({-0.5f, -1.0f, -0.3f});
-    Renderer3D::SetLightColor({1.0f, 0.95f, 0.9f});
+    Renderer3D::SetDirectionalLight({-0.5f, -1.0f, -0.3f}, {1.0f, 0.95f, 0.9f}, 1.0f);
+    Renderer3D::SetLightCount(1);
+
+    Renderer3D::SetDirectionalLight({0.3f, -0.8f, -0.5f}, {0.3f, 0.6f, 0.9f}, 0.8f, 1);
+    Renderer3D::SetPointLight({-2.0f, 1.5f, 0.0f}, {0.2f, 0.5f, 1.0f}, 8.0f, 1.5f, 1, 1);
+    Renderer3D::SetLightCount(2, 1);
+
     Renderer3D::SetExposure(1.2f);
 
     Renderer3D::BeginScene(m_camera);
@@ -67,6 +76,11 @@ void Sandbox3D::OnUpdate(Timestep ts) {
         glm::mat4 M = glm::rotate(glm::mat4(1.0f), glm::radians(m_rotation), glm::vec3(0.0f, 1.0f, 0.0f)) *
                       glm::scale(glm::mat4(1.0f), glm::vec3(1.0f));
         Renderer3D::DrawMesh(m_cubeMesh, m_cubeMaterial, M);
+
+        glm::mat4 M2 = glm::rotate(glm::mat4(1.0f), glm::radians(-m_rotation), glm::vec3(0.0f, 1.0f, 0.0f)) *
+                       glm::translate(glm::mat4(1.0f), glm::vec3(2.5f, 0.0f, 0.0f)) *
+                       glm::scale(glm::mat4(1.0f), glm::vec3(0.7f));
+        Renderer3D::DrawMesh(m_cubeMesh, m_cubeMaterialBlue, M2);
     }
     Renderer3D::EndScene();
 }

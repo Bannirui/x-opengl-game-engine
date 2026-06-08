@@ -48,9 +48,27 @@ layout(location = 1) out int o_EntityID;
 layout(std140) uniform Camera {
     mat4 u_ViewProjection;
 };
-layout(std140) uniform Light {
-    vec3 u_LightDirection; vec3 u_LightAmbient; vec3 u_LightDiffuse; vec3 u_LightSpecular;
+
+#define MAX_LIGHTS 8
+#define LIGHT_TYPE_DIRECTIONAL 0
+#define LIGHT_TYPE_POINT 1
+#define LIGHT_TYPE_SPOT 2
+
+struct GPULight {
+    vec4 ColorAndIntensity;
+    vec4 PositionAndRange;
+    int Type;
+    float SpotInnerCone;
+    float SpotOuterCone;
+    float _pad;
 };
+
+layout(std140) uniform LightBlock {
+    vec3 u_Ambient;
+    int u_LightCount;
+    GPULight u_Lights[MAX_LIGHTS];
+};
+
 layout(std140) uniform PBRSettings {
     vec3 u_CameraPosition; float u_Exposure;
 };
@@ -71,6 +89,7 @@ vec3 FresnelSchlickRoughness(float c, vec3 F0, float r) { return F0+(max(vec3(1.
 float D_GGX(vec3 N, vec3 H, float a) { float a2=a*a; float NH=max(dot(N,H),0.0); float d=NH*NH*(a2-1.0)+1.0; return a2/(PI*d*d); }
 float G_Schlick(float NdotV,float r){ float k=(r+1.0)*(r+1.0)/8.0; return NdotV/(NdotV*(1.0-k)+k); }
 float G_Smith(vec3 N,vec3 V,vec3 L,float r){ return G_Schlick(max(dot(N,V),0.0),r)*G_Schlick(max(dot(N,L),0.0),r); }
+
 float CSMShadow(vec3 wp, float NdotL){
     float vz=-(u_ViewProjection*vec4(wp,1.0)).z; int c=0;
     if(vz>u_CascadeSplits[0])c=1; if(vz>u_CascadeSplits[1])c=2; if(vz>u_CascadeSplits[2])c=3;
@@ -87,18 +106,53 @@ float CSMShadow(vec3 wp, float NdotL){
     }
     return s/9.0;
 }
+
 void main(){
     vec3 N=normalize(v_Normal); vec3 V=normalize(u_CameraPosition-v_WorldPos);
     vec3 alb=texture(u_AlbedoMap,v_TexCoord).rgb*u_Albedo;
     float met=texture(u_MetallicMap,v_TexCoord).r*u_Metallic;
     float rou=texture(u_RoughnessMap,v_TexCoord).r*u_Roughness;
     float aoc=texture(u_AOMap,v_TexCoord).r*u_AO;
-    vec3 F0=mix(vec3(0.04),alb,met); vec3 L=normalize(-u_LightDirection); vec3 H=normalize(V+L);
-    float NDF=D_GGX(N,H,rou); float G=G_Smith(N,V,L,rou); vec3 F=FresnelSchlick(max(dot(H,V),0.0),F0);
-    vec3 kS=F; vec3 kD=(1.0-kS)*(1.0-met);
-    vec3 spec=(NDF*G*F)/max(4.0*max(dot(N,V),0.0)*max(dot(N,L),0.0),0.0001);
-    float NdotL=max(dot(N,L),0.0); float sh=CSMShadow(v_WorldPos,NdotL);
-    vec3 Lo=(kD*alb/PI+spec)*u_LightDiffuse*NdotL*(1.0-sh);
+    vec3 F0=mix(vec3(0.04),alb,met);
+
+    vec3 Lo = vec3(0.0);
+    bool shadowCalc = false;
+    float sh = 0.0;
+
+    for (int i = 0; i < u_LightCount && i < MAX_LIGHTS; i++) {
+        vec3 lightColor = u_Lights[i].ColorAndIntensity.rgb;
+        float intensity = u_Lights[i].ColorAndIntensity.w;
+        vec3 lightPosOrDir = u_Lights[i].PositionAndRange.xyz;
+        float range = u_Lights[i].PositionAndRange.w;
+        bool isPt = u_Lights[i].Type == LIGHT_TYPE_POINT;
+
+        vec3 L, rad; float NdotL;
+
+        if (isPt) {
+            L = normalize(lightPosOrDir - v_WorldPos);
+            NdotL = max(dot(N, L), 0.0);
+            float dist = length(lightPosOrDir - v_WorldPos);
+            float att = 1.0 / (1.0 + dist * dist / max(range * range, 0.0001));
+            rad = lightColor * intensity * att;
+        } else {
+            L = normalize(-lightPosOrDir);
+            NdotL = max(dot(N, L), 0.0);
+            rad = lightColor * intensity;
+            if (!shadowCalc) { sh = CSMShadow(v_WorldPos, NdotL); shadowCalc = true; }
+        }
+
+        vec3 H = normalize(V + L);
+        float NDF = D_GGX(N, H, rou);
+        float G = G_Smith(N, V, L, rou);
+        vec3 F = FresnelSchlick(max(dot(H, V), 0.0), F0);
+        vec3 kS = F; vec3 kD = (1.0 - kS) * (1.0 - met);
+        vec3 spec = (NDF * G * F) / max(4.0 * max(dot(N, V), 0.0) * NdotL, 0.0001);
+
+        vec3 Li = (kD * alb / PI + spec) * rad * NdotL;
+        if (!isPt && shadowCalc) Li *= (1.0 - sh);
+        Lo += Li;
+    }
+
     vec3 kSr=FresnelSchlickRoughness(max(dot(N,V),0.0),F0,rou); vec3 kDr=(1.0-kSr)*(1.0-met);
     vec3 diff=texture(u_IrradianceMap,N).rgb*alb;
     vec3 pre=textureLod(u_PrefilterMap,reflect(-V,N),rou*4.0).rgb;

@@ -69,16 +69,22 @@ public:
         return m_textures;
     }
 
+    void SetLightGroup(uint32_t groupId) {
+        m_lightGroupId = groupId;
+    }
+    uint32_t GetLightGroup() const {
+        return m_lightGroupId;
+    }
+
     bool operator==(const Material& other) const;
 
     Material() = default;
 
 public:
-    // 对应的着色器程序
     X::Ref<Shader> m_shader;
-    // 纹理映射表 uniform名->纹理 调用方自己决定顺序 对应的就是shader里面的binding slot顺序
     std::unordered_map<std::string, X::Ref<Texture2D>> m_textures;
     std::unordered_map<std::string, float> m_floats;
     std::unordered_map<std::string, glm::vec3> m_vec3s;
     std::unordered_map<std::string, glm::vec4> m_vec4s;
+    uint32_t m_lightGroupId = 0;
 };

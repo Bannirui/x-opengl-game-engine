@@ -128,6 +128,22 @@ static Rigidbody2DComponent::BodyType RigidBody2DBodyTypeFromString(const std::s
     return Rigidbody2DComponent::BodyType::Static;
 }
 
+static std::string LightTypeToString(LightType type) {
+    switch (type) {
+        case LightType::Directional: return "Directional";
+        case LightType::Point: return "Point";
+    }
+    X_CORE_ERROR("Unknown light type");
+    return {};
+}
+
+static LightType LightTypeFromString(const std::string& typeStr) {
+    if (typeStr == "Directional") return LightType::Directional;
+    if (typeStr == "Point") return LightType::Point;
+    X_CORE_ERROR("Unknown light type={}", typeStr);
+    return LightType::Directional;
+}
+
 static void serializeEntity(YAML::Emitter& out, Entity entity) {
     X_CORE_ASSERT(entity.HasComponent<IDComponent>());
     out << YAML::BeginMap;
@@ -215,6 +231,17 @@ static void serializeEntity(YAML::Emitter& out, Entity entity) {
         out << YAML::Key << "Friction" << YAML::Value << bc2dComponent.Friction;
         out << YAML::Key << "Restitution" << YAML::Value << bc2dComponent.Restitution;
         out << YAML::Key << "RestitutionThreshold" << YAML::Value << bc2dComponent.RestitutionThreshold;
+        out << YAML::EndMap;
+    }
+    if (entity.HasComponent<LightComponent>()) {
+        out << YAML::Key << "LightComponent";
+        out << YAML::BeginMap;
+        auto& lc = entity.GetComponent<LightComponent>();
+        out << YAML::Key << "Type" << YAML::Value << LightTypeToString(lc.Type);
+        out << YAML::Key << "Color" << YAML::Value << lc.Color;
+        out << YAML::Key << "Intensity" << YAML::Value << lc.Intensity;
+        out << YAML::Key << "Range" << YAML::Value << lc.Range;
+        out << YAML::Key << "LightGroupId" << YAML::Value << lc.LightGroupId;
         out << YAML::EndMap;
     }
     out << YAML::EndMap;
@@ -331,6 +358,15 @@ bool SceneSerializer::Deserialize(const std::string& filepath) {
                 bc2d.Friction = circleCollider2DComponent["Friction"].as<float>();
                 bc2d.Restitution = circleCollider2DComponent["Restitution"].as<float>();
                 bc2d.RestitutionThreshold = circleCollider2DComponent["RestitutionThreshold"].as<float>();
+            }
+            auto lightComponent = entity["LightComponent"];
+            if (lightComponent) {
+                auto& lc = deserializeEntity.AddComponent<LightComponent>();
+                lc.Type = LightTypeFromString(lightComponent["Type"].as<std::string>());
+                lc.Color = lightComponent["Color"].as<glm::vec3>();
+                lc.Intensity = lightComponent["Intensity"].as<float>();
+                lc.Range = lightComponent["Range"].as<float>();
+                lc.LightGroupId = lightComponent["LightGroupId"].as<uint32_t>();
             }
         }
     }

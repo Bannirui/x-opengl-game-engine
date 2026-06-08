@@ -182,10 +182,23 @@ struct AnimatorComponent {
     AnimatorComponent& operator=(AnimatorComponent&&) = default;
 };
 
+enum class LightType : uint8_t { Directional = 0, Point = 1 };
+
+struct LightComponent {
+    LightType Type = LightType::Directional;
+    glm::vec3 Color{1.0f};
+    float Intensity = 1.0f;
+    float Range = 10.0f;
+    uint32_t LightGroupId = 0;
+
+    LightComponent() = default;
+    LightComponent(const LightComponent&) = default;
+};
+
 template <typename... Component>
 struct ComponentGroup {};
 
 using AllComponents =
     ComponentGroup<TransformComponent, SpriteRendererComponent, CircleRendererComponent, MeshComponent,
-                   MaterialComponent, CameraComponent, ScriptComponent, NativeScriptComponent, Rigidbody2DComponent,
-                   BoxCollider2DComponent, CircleCollider2DComponent>;
+                   MaterialComponent, LightComponent, CameraComponent, ScriptComponent, NativeScriptComponent,
+                   Rigidbody2DComponent, BoxCollider2DComponent, CircleCollider2DComponent>;

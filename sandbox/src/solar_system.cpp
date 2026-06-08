@@ -212,12 +212,8 @@ void SolarSystem::OnUpdate(Timestep ts) {
 
     Renderer3D::ResetStats();
 
-    Renderer3D::SetLightDirection({-0.2f, -0.8f, -0.3f});
-    Renderer3D::SetLightColor({0.0f, 0.0f, 0.0f});
-    Renderer3D::SetPointLightPosition({0.0f, 0.0f, 0.0f});
-    Renderer3D::SetPointLightColor({1.0f, 0.95f, 0.85f});
-    Renderer3D::SetPointLightRange(60.0f);
-    Renderer3D::SetPointLightIntensity(2.5f);
+    Renderer3D::SetPointLight({0.0f, 0.0f, 0.0f}, {1.0f, 0.95f, 0.85f}, 60.0f, 2.5f);
+    Renderer3D::SetLightCount(1);
     Renderer3D::SetExposure(1.0f);
 
     Renderer3D::BeginScene(m_camera);

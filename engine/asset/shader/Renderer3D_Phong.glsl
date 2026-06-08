@@ -64,12 +64,25 @@ layout(location = 3) flat in int v_EntityID;
 layout(location = 0) out vec4 o_Color;
 layout(location = 1) out int o_EntityID;
 
-// UBO 方向光 binding=2 引擎每帧更新
-layout(std140, binding = 2) uniform Light {
-    vec3 u_LightDirection;         // 光照方向 (指向光源)
-    vec3 u_LightAmbient;           // 环境光分量
-    vec3 u_LightDiffuse;           // 漫反射颜色
-    vec3 u_LightSpecular;          // 镜面反射颜色
+// UBO LightBlock binding=2 引擎每帧更新
+#define MAX_LIGHTS 8
+#define LIGHT_TYPE_DIRECTIONAL 0
+#define LIGHT_TYPE_POINT 1
+#define LIGHT_TYPE_SPOT 2
+
+struct GPULight {
+    vec4 ColorAndIntensity;
+    vec4 PositionAndRange;
+    int Type;
+    float SpotInnerCone;
+    float SpotOuterCone;
+    float _pad;
+};
+
+layout(std140, binding = 2) uniform LightBlock {
+    vec3 u_Ambient;
+    int u_LightCount;
+    GPULight u_Lights[MAX_LIGHTS];
 };
 
 // Opaque型 uniform变量 纹理采样器 不需要location
@@ -81,28 +94,41 @@ uniform vec3 u_MaterialDiffuse;      // 材质漫反射颜色
 uniform vec3 u_MaterialSpecular;     // 材质镜面反射颜色
 
 void main() {
-    // Phong光照模型
-    vec3 normal = normalize(v_WorldNormal);                // 法线归一化
-    vec3 lightDir = normalize(-u_LightDirection);          // 光线方向 (指向光源)
-    vec3 viewDir = normalize(-v_WorldPosition);            // 视线方向 (指向摄像机)
+    vec3 normal = normalize(v_WorldNormal);
+    vec3 viewDir = normalize(-v_WorldPosition);
 
-    // 1 环境光Ambient
-    vec3 ambient = u_LightAmbient;
+    vec3 ambient = u_Ambient;
+    vec3 diffuseSum = vec3(0.0);
+    vec3 specularSum = vec3(0.0);
 
-    // 2 漫反射Diffuse
-    float diff = max(dot(normal, lightDir), 0.0);
-    vec3 diffuse = u_LightDiffuse * diff;
+    for (int i = 0; i < u_LightCount && i < MAX_LIGHTS; i++) {
+        vec3 lightColor = u_Lights[i].ColorAndIntensity.rgb;
+        float intensity = u_Lights[i].ColorAndIntensity.w;
+        vec3 lightPosOrDir = u_Lights[i].PositionAndRange.xyz;
+        float range = u_Lights[i].PositionAndRange.w;
+        bool isPoint = u_Lights[i].Type == LIGHT_TYPE_POINT;
 
-    // 3 镜面反射Specular
-    vec3 halfwayDir = normalize(lightDir + viewDir);       // 半角向量
-    float spec = pow(max(dot(normal, halfwayDir), 0.0), u_Shininess);
-    vec3 specular = u_LightSpecular * spec * u_MaterialSpecular;
+        vec3 lightDir;
+        float attenuation = 1.0;
 
-    // 4 纹理采样
+        if (isPoint) {
+            lightDir = normalize(lightPosOrDir - v_WorldPosition);
+            float dist = length(lightPosOrDir - v_WorldPosition);
+            attenuation = 1.0 / (1.0 + dist * dist / max(range * range, 0.0001));
+        } else {
+            lightDir = normalize(-lightPosOrDir);
+        }
+
+        float diff = max(dot(normal, lightDir), 0.0);
+        diffuseSum += lightColor * intensity * diff * attenuation;
+
+        vec3 halfwayDir = normalize(lightDir + viewDir);
+        float spec = pow(max(dot(normal, halfwayDir), 0.0), u_Shininess);
+        specularSum += lightColor * intensity * spec * attenuation;
+    }
+
     vec4 texColor = texture(u_DiffuseMap, v_TexCoord);
-
-    // 5 合成=环境+漫反射 与纹理/材质颜色混合 再加镜面反射
-    vec3 result = (ambient + diffuse) * texColor.rgb * u_MaterialDiffuse + specular;
+    vec3 result = (ambient + diffuseSum) * texColor.rgb * u_MaterialDiffuse + specularSum * u_MaterialSpecular;
     o_Color = vec4(result, texColor.a);
     o_EntityID = v_EntityID;
 }
