@@ -95,7 +95,7 @@ void Renderer3D::Init() {
     defaultLight.LightCount = 1;
     defaultLight.Lights[0].PositionAndRange = glm::vec4(-0.5f, -1.0f, -0.3f, 0.0f);
     defaultLight.Lights[0].ColorAndIntensity = glm::vec4(1.0f, 0.95f, 0.9f, 1.0f);
-    defaultLight.Lights[0].Type = static_cast<int>(GPULightType::Directional);
+    defaultLight.Lights[0].Type = kDirectional;
     s_data.LightGroups[0] = defaultLight;
     s_data.LightUBO = UniformBuffer::Create(sizeof(LightGroupData), UBOBinding::Light);
     // 8 PBR 默认参数
@@ -460,7 +460,7 @@ void Renderer3D::SetDirectionalLight(const glm::vec3& direction, const glm::vec3
     auto& light = s_data.LightGroups[lightGroupId].Lights[lightIndex];
     light.PositionAndRange = glm::vec4(direction, 0.0f);
     light.ColorAndIntensity = glm::vec4(color, intensity);
-    light.Type = static_cast<int>(GPULightType::Directional);
+    light.Type = kDirectional;
 }
 
 void Renderer3D::SetPointLight(const glm::vec3& position, const glm::vec3& color, float range, float intensity,
@@ -468,7 +468,7 @@ void Renderer3D::SetPointLight(const glm::vec3& position, const glm::vec3& color
     auto& light = s_data.LightGroups[lightGroupId].Lights[lightIndex];
     light.PositionAndRange = glm::vec4(position, range);
     light.ColorAndIntensity = glm::vec4(color, intensity);
-    light.Type = static_cast<int>(GPULightType::Point);
+    light.Type = kPoint;
 }
 
 void Renderer3D::SetLightDirection(const glm::vec3& direction, uint32_t lightGroupId) {
@@ -487,7 +487,7 @@ void Renderer3D::SetPointLightPosition(const glm::vec3& position, uint32_t light
     s_data.LightGroups[lightGroupId].Lights[0].PositionAndRange.x = position.x;
     s_data.LightGroups[lightGroupId].Lights[0].PositionAndRange.y = position.y;
     s_data.LightGroups[lightGroupId].Lights[0].PositionAndRange.z = position.z;
-    s_data.LightGroups[lightGroupId].Lights[0].Type = static_cast<int>(GPULightType::Point);
+    s_data.LightGroups[lightGroupId].Lights[0].Type = kPoint;
 }
 
 void Renderer3D::SetPointLightColor(const glm::vec3& color, uint32_t lightGroupId) {

@@ -36,29 +36,21 @@ struct MaterialBucket {
 };
 
 /**
- * GPU端灯光布局 std140 与GLSL LightBlock一一对应
+ * GPU端灯光布局std140与GLSL LightBlock一一对应
  *
  * layout(std140, binding = 2) uniform LightBlock {
  *     vec3  u_Ambient;                           // offset 0
  *     int   u_LightCount;                        // offset 12 (packed in vec3 tail)
  *     GPULight u_Lights[MAX_GPU_LIGHTS];         // offset 16, 48 bytes each
  * };
- *
- * struct GPULight {
- *     vec4  ColorAndIntensity;                   // offset 0  (xyz=color, w=intensity)
- *     vec4  PositionAndRange;                    // offset 16 (xyz=pos/dir, w=range)
- *     int   Type;                                // offset 32 (0=Dir, 1=Point)
- *     float SpotInnerCone;                       // offset 36
- *     float SpotOuterCone;                       // offset 40
- *     float _pad;                                // offset 44 (std140 align)
- * };
- *
- * Total: 16 + MAX_GPU_LIGHTS*48 = 400 bytes
  */
 struct LightGroupData {
-    glm::vec3 Ambient;  // offset 0, 全局环境光
-    int LightCount;  // offset 12, 当前活跃灯光数
-    GPULight Lights[MAX_GPU_LIGHTS];  // offset 16, 灯光数组
+    // 环境光是全局的
+    glm::vec3 Ambient;
+    // 当前活跃的灯光有几个 从数组里面取
+    int LightCount;
+    // 灯光
+    GPULight Lights[MAX_GPU_LIGHTS];
 };
 
 struct PBRSettingsData {

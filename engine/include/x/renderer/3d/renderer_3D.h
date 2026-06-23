@@ -8,8 +8,6 @@
 
 #include <glm/glm.hpp>
 
-#include <cstdint>
-
 class Camera;
 class EditorCamera;
 class Mesh;
@@ -18,15 +16,25 @@ class TextureCube;
 
 static constexpr uint32_t MAX_GPU_LIGHTS = 8;
 
-enum class GPULightType : int { Directional = 0, Point = 1, Spot = 2 };
+enum GPULightType { kLightNone = 0, kDirectional = 1, kPoint = 1 << 1, kSpot = 1 << 2 };
 
 struct GPULight {
-    glm::vec4 ColorAndIntensity;  // xyz=颜色, w=强度
-    glm::vec4 PositionAndRange;   // xyz=方向(平行光)/位置(点光), w=范围
-    int Type;                     // GPULightType (0=平行光, 1=点光)
-    float SpotInnerCone;          // 聚光灯内锥角cos, 未来扩展
-    float SpotOuterCone;          // 聚光灯外锥角cos, 未来扩展
-    float _pad;                   // std140 对齐
+    // 灯光颜色xyz和光强w
+    glm::vec4 ColorAndIntensity;
+    /**
+     * - 平行光
+     *   - xyz表示方向 w表示范围
+     * - 点光
+     *   - xyz表示位置 w表示范围
+     */
+    glm::vec4 PositionAndRange;
+    // 灯光类型
+    GPULightType Type;
+    // 聚光灯内锥角cos
+    float SpotInnerCone;
+    // 聚光灯外锥角cos
+    float SpotOuterCone;
+    float _pad;  // std140对齐
 };
 
 class Renderer3D {
