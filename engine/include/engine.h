@@ -10,7 +10,7 @@
 #include "x/debug/instrumentor.h"
 
 #include "x/core/x_application.h"
-#include "x/core/x_log.h"
+#include "x/core/log.h"
 #include "x/core/assert.h"
 #include "x/core/layer.h"
 #include "x/core/input.h"

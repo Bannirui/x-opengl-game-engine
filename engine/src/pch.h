@@ -28,6 +28,6 @@
 #include <algorithm>
 
 #include "x/core/base.h"
-#include "x/core/x_log.h"
+#include "x/core/log.h"
 #include "x/debug/instrumentor.h"
 #include "x/events/event_formatter.h"

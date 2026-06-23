@@ -5,7 +5,7 @@
 #pragma once
 
 #include "x/core/base.h"
-#include "x/core/x_log.h"
+#include "x/core/log.h"
 
 #include <filesystem>
 
@@ -61,8 +61,7 @@
 
     // 展开后触发两轮宏替换 第一轮X_CAT拼出X_ASSERT_N 第二轮X_ASSERT_N展开为断言体 支持格式化字符串带变量
     #define X_ASSERT(...) X_EXPAND_MACRO(X_ASSERT_CAT(X_ASSERT_, X_ASSERT_ARG_N(__VA_ARGS__))(__VA_ARGS__))
-    #define X_CORE_ASSERT(...) \
-        X_EXPAND_MACRO(X_ASSERT_CAT(X_CORE_ASSERT_, X_ASSERT_ARG_N(__VA_ARGS__))(__VA_ARGS__))
+    #define X_CORE_ASSERT(...) X_EXPAND_MACRO(X_ASSERT_CAT(X_CORE_ASSERT_, X_ASSERT_ARG_N(__VA_ARGS__))(__VA_ARGS__))
 #else
     #define X_ASSERT(x, ...) ((void)(x))
     #define X_CORE_ASSERT(x, ...) ((void)(x))

@@ -6,7 +6,7 @@
 
 #include "platform/opengl/opengl_texture.h"
 #include "x/core/base.h"
-#include "x/core/x_log.h"
+#include "x/core/log.h"
 #include "x/renderer/renderer.h"
 
 X::Ref<Texture2D> Texture2D::Create(const std::string& path) {
