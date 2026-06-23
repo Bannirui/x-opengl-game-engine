@@ -4,6 +4,7 @@
 
 #include "x/renderer/material.h"
 
+#include "x/core/assert.h"
 #include "x/renderer/shader.h"
 #include "x/renderer/texture.h"
 

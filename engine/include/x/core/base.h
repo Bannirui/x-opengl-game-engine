@@ -23,27 +23,11 @@
     #define X_DEBUGBREAK()
 #endif
 
+#define BIT(n) (1 << n)
+
 // ---------- stringify ----------
 #define X_EXPAND_MACRO(x) x
 #define X_STRINGIFY_MACRO(x) #x
-#define STR(x) X_STRINGIFY_MACRO(x)
-
-#define BIT(x) (1 << x)
-
-#ifndef X_GL_VERSION_MAJOR
-    #define X_GL_VERSION_MAJOR 3
-#endif
-
-#ifndef X_GL_VERSION_MINOR
-    #define X_GL_VERSION_MINOR 3
-#endif
-
-// ---------- GLSL version ----------
-// OpenGL版本拼接成 #version 450 core
-#define X_GL_VERSION_CORE "#version " STR(X_GL_VERSION_MAJOR) STR(X_GL_VERSION_MINOR) "0 core"
-
-// ---------- Shader helper ----------
-#define X_GLSL(src) X_GL_VERSION_CORE "\n" #src
 
 namespace X {
     // 记录OpenGL的版本信息 运行时从机器上读 控制对GLAD的API调用和GLSL的语法版本选择
@@ -84,6 +68,3 @@ namespace X {
         return std::make_shared<T>(std::forward<Args>(args)...);
     }
 }  // namespace X
-
-#include "x/core/x_assert.h"
-#include "x/core/x_log.h"

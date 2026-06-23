@@ -4,6 +4,7 @@
 
 #include "platform/opengl/opengl_texture.h"
 
+#include "x/core/assert.h"
 #include "x/core/base.h"
 #include "x/core/x_log.h"
 
@@ -50,13 +51,13 @@ OpenGLTexture2D::OpenGLTexture2D(const std::string& path) : m_path(path) {
     m_dataFormat = dataFormat;
     X_CORE_ASSERT(internalFormat & dataFormat, "Format not supported!");
     // 用图片生成一个纹理对象贴图 mipmap level设置0代表的是没有给纹理对象设置mipmap 可以在生成纹理对象后再给它设置mipmap
-    glTexImage2D(GL_TEXTURE_2D,   // 纹理对象在上面已经绑定了OpenGL的2d插槽 现在要配置2d插槽就是在配置纹理对象
-                 0,               // mipmap的level 不用mipmap就设置0
+    glTexImage2D(GL_TEXTURE_2D,  // 纹理对象在上面已经绑定了OpenGL的2d插槽 现在要配置2d插槽就是在配置纹理对象
+                 0,  // mipmap的level 不用mipmap就设置0
                  internalFormat,  // 告诉OpenGL图片的格式
-                 m_width,         // 图片宽度
-                 m_height,        // 图片高度
-                 0,               // 为了兼容早期设计导致的 直接设置成0就行
-                 dataFormat,      // 图片数据格式
+                 m_width,  // 图片宽度
+                 m_height,  // 图片高度
+                 0,  // 为了兼容早期设计导致的 直接设置成0就行
+                 dataFormat,  // 图片数据格式
                  GL_UNSIGNED_BYTE,
                  data  // 实际的图片
     );
@@ -133,7 +134,7 @@ void OpenGLTexture2D::SetData(void* data, uint32_t size) {
     glBindTexture(GL_TEXTURE_2D, m_rendererId);
     // 更新数据
     glTexSubImage2D(GL_TEXTURE_2D,
-                    0,     // mip level
+                    0,  // mip level
                     0, 0,  // offset
                     m_width, m_height, m_dataFormat, GL_UNSIGNED_BYTE, data);
     // 解绑

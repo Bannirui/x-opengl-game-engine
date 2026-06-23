@@ -4,6 +4,8 @@
 
 #include "platform/opengl/opengl_framebuffer.h"
 
+#include "x/core/assert.h"
+
 #include <glad/glad.h>
 
 static const uint32_t s_MaxFramebufferSize = 8192;

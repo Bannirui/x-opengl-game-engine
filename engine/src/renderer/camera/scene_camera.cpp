@@ -4,6 +4,8 @@
 
 #include "x/renderer/camera/scene_camera.h"
 
+#include "x/core/assert.h"
+
 #include <glm/ext/matrix_clip_space.hpp>
 
 SceneCamera::SceneCamera() {

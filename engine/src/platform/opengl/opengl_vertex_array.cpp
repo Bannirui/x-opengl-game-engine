@@ -4,6 +4,7 @@
 
 #include "platform/opengl/opengl_vertex_array.h"
 
+#include "x/core/assert.h"
 #include "x/renderer/buffer/buffer.h"
 
 #include <glad/glad.h>

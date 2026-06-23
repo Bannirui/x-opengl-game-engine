@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "x/core/assert.h"
 #include "x/core/base.h"
 #include "x/layer_stack.h"
 

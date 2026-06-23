@@ -4,6 +4,8 @@
 
 #include "x/animation/skeleton.h"
 
+#include "x/core/assert.h"
+
 void Skeleton::AddBone(const Bone& bone) {
     X_CORE_ASSERT(m_bones.size() < MAX_BONES, "Exceeded max bone count");
     m_bones.push_back(bone);
@@ -27,7 +29,7 @@ void Skeleton::ComputeFinalTransforms(std::vector<glm::mat4>& outTransforms) con
 }
 
 void Skeleton::computeBoneTransform(uint32_t index, const glm::mat4& parentTransform,
-                                     std::vector<glm::mat4>& outTransforms) const {
+                                    std::vector<glm::mat4>& outTransforms) const {
     glm::mat4 globalTransform = parentTransform * m_bones[index].LocalTransform;
     outTransforms[index] = globalTransform * m_bones[index].InverseBindMatrix;
 

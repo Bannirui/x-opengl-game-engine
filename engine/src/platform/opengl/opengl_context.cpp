@@ -4,6 +4,7 @@
 
 #include "platform/opengl/opengl_context.h"
 
+#include "x/core/assert.h"
 #include "x/core/base.h"
 #include "x/core/x_log.h"
 
