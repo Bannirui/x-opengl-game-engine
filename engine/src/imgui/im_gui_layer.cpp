@@ -4,8 +4,8 @@
 
 #include "x/imgui/im_gui_layer.h"
 
+#include "x/core/application.h"
 #include "x/core/base.h"
-#include "x/core/x_application.h"
 #include "x/events/event.h"
 #include "x/window.h"
 
@@ -26,7 +26,7 @@ void ImGuiLayer::OnAttach() {
     ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // 不仅支持鼠标操作 还支持键盘操作 键盘导航
     io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;  // 支持更改鼠标形状
-    io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;   // 可以主动设置鼠标位置
+    io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;  // 可以主动设置鼠标位置
     // 字体
     float fontSize = 18.0f;
     io.Fonts->AddFontFromFileTTF("asset/fonts/opensans/OpenSans-Bold.ttf", fontSize);

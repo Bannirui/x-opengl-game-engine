@@ -3,7 +3,7 @@
 //
 #pragma once
 
-#include "x/core/x_application.h"
+#include "x/core/application.h"
 #include "x/debug/instrumentor.h"
 
 extern XApplication* CreateApplication(ApplicationCommandLineArgs args);

@@ -6,8 +6,8 @@
 
 #include "x/core/input.h"
 
+#include "x/core/application.h"
 #include "x/window.h"
-#include "x/core/x_application.h"
 
 bool Input::IsKeyPressed(KeyCode keycode)
 {

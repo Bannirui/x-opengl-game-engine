@@ -2,7 +2,7 @@
 // Created by dingrui on 2/23/26.
 //
 
-#include "x/core/x_application.h"
+#include "x/core/application.h"
 
 #include "x/core/layer.h"
 #include "x/core/timestep.h"
