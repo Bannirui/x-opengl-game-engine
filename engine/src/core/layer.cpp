@@ -5,7 +5,7 @@
 #include "x/core/layer.h"
 #include "x/events/event.h"
 
-Layer::Layer(const std::string &name) : m_debugName(name) {}
+Layer::Layer(const std::string &name) : name(name) {}
 
 bool Layer::IsInterestedIn(const Event& e) const
 {

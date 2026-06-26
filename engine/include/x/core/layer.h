@@ -35,7 +35,7 @@ public:
     virtual void OnDetach() {}
 
     /**
-     * 系统向各模块发布渲染
+     * 系统向各模块发布渲染 每一帧要做什么
      */
     virtual void OnUpdate(Timestep /* ts */) {}
 
@@ -58,11 +58,12 @@ public:
     bool IsInterestedIn(const Event& e) const;
 
     const std::string& get_name() const {
-        return m_debugName;
+        return name;
     }
 
 protected:
-    std::string m_debugName;
-    // 标识当前层对什么事件感兴趣 默认对所有事件都感兴趣
+    // 名称
+    std::string name;
+    // 标识当前层处理什么事件 默认对所有事件都感兴趣
     int m_eventMask = ~0;
 };

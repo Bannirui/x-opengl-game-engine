@@ -26,16 +26,29 @@ public:
     ~LayerStack();
 
     /**
+     * 添加游戏层
      * 插入位置是分割线
      * 添加结束之后的效果是 被放在了分割线左边
      */
     void PushLayer(X::Scope<Layer> layer);
+
     /**
+     * 添加imgui层
      * 插入位置是Vector的最后
      * 添加结束之后的效果是 被放在了分割线右边
      */
     void PushOverlay(X::Scope<Layer> overlay);
+
+    /**
+     * 从分割线左边找到它 移除
+     * @param layer 要移除的游戏层
+     */
     void PopLayer(Layer* layer);
+
+    /**
+     * 从分割线右边找到它 移除
+     * @param overlay 要移除的imgui层
+     */
     void PopOverlay(Layer* overlay);
 
     std::vector<X::Scope<Layer>>::iterator begin() {
@@ -71,8 +84,8 @@ public:
     }
 
 private:
-    // layers的分割线 左边是逻辑层 右边是ImGui层
-    uint32_t m_layerInsertIndex{0};
+    // layers的分割线 前n个是逻辑层 左边是逻辑层[0...n) 右边是ImGui层[n...)
+    uint32_t m_layerCnt{0};
     // 存放所有的层
     std::vector<X::Scope<Layer>> m_layers;
 };
