@@ -10,7 +10,7 @@
 #include <string>
 #include <type_traits>
 
-// 用宏定义事件 在EventTypeName函数里面就不用再手写了
+// 用宏定义事件枚举 传进来的本身也是一个宏
 #define EVENT_TYPE_LIST(X) \
     X(None, = 0)           \
     X(WindowClose)         \
@@ -30,6 +30,7 @@
     X(MouseScrolled)
 
 enum class EventType {
+// 事件枚举前缀k
 #define ENUM_VALUE(name, ...) k##name __VA_ARGS__,
     EVENT_TYPE_LIST(ENUM_VALUE)
 #undef ENUM_VALUE
@@ -48,6 +49,7 @@ enum EventCategory {
 // 每个事件的名称 用来给事件本身去获取 比如打印在日志里面 kWindowClose事件的名称就是WindowClose
 constexpr const char* EventTypeName(EventType type) {
     switch (type) {
+        // 拿到事件枚举的事件名称 去掉前缀k
 #define ENUM_NAME(name, ...) \
     case EventType::k##name: \
         return #name;
@@ -72,18 +74,19 @@ public:
     /**
      * 虚函数版本的拷贝构造 解决两个问题
      *   - 多态拷贝 拿到的是Event&基类引用 直接按值拷贝会切片丢失子类数据
-     * Clone()通过虚函数分发到正确的子类make_unique<KeyPressEvent>(*this)
+     *     Clone()通过虚函数分发到正确的子类make_unique<KeyPressEvent>(*this)
      *   - 生命周期 GLFW回调中事件在栈上临时构造 回调返回即销毁 Clone()将事件拷贝到堆上 所有权转移给事件队列
-     * 在下一帧ProcessEvents中处理
+     *     在下一帧ProcessEvents中处理
      */
     virtual std::unique_ptr<Event> Clone() const = 0;
 
-    // 这个函数的
     virtual std::string ToString() const {
         return GetName();
     }
 
-    // 判断事件属于的类型
+    /**
+     * @param category 每个事件都有归属的分类 看看自己这个事件是不是属于某个类别
+     */
     bool IsInCategory(EventCategory category) const {
         return GetCategory() & category;
     }
@@ -111,6 +114,7 @@ class EventImpl : public Base {
     static_assert(std::is_base_of_v<Event, Base>, "Base must derive from Event");
 
 public:
+    // 继承Base类的所有构造函数
     using Base::Base;
 
     // 事件类型
@@ -139,10 +143,15 @@ class EventDispatcher {
 public:
     EventDispatcher(Event& event) : m_event(event) {}
 
+    /**
+     * @tparam T 要分发的事件是什么事件
+     * @tparam F 事件处理器
+     * @param f 事件处理器 怎么处理事件的逻辑都在这
+     */
     template <typename T, typename F>
-    bool Dispatch(const F& func) {
+    bool Dispatch(const F& f) {
         if (m_event.GetEventType() == T::StaticType) {
-            m_event.Handled |= func(static_cast<T&>(m_event));
+            m_event.Handled |= f(static_cast<T&>(m_event));
             return true;
         }
         return false;
