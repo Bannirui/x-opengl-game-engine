@@ -107,6 +107,8 @@ void LinuxWindow::init(const WindowProps& props) {
                 self->m_data.eventCallback(event);
                 break;
             }
+            default:
+                break;
         }
     });
     glfwSetCharCallback(m_window, [](GLFWwindow* window, uint32_t keycode) {
@@ -127,16 +129,18 @@ void LinuxWindow::init(const WindowProps& props) {
                 self->m_data.eventCallback(event);
                 break;
             }
+            default:
+                break;
         }
     });
     glfwSetScrollCallback(m_window, [](GLFWwindow* window, double xOffset, double yOffset) {
         auto* self = static_cast<LinuxWindow*>(glfwGetWindowUserPointer(window));
-        MouseScrolledEvent event(xOffset, yOffset);
+        MouseScrolledEvent event(static_cast<float>(xOffset), static_cast<float>(yOffset));
         self->m_data.eventCallback(event);
     });
     glfwSetCursorPosCallback(m_window, [](GLFWwindow* window, double xPos, double yPos) {
         auto* self = static_cast<LinuxWindow*>(glfwGetWindowUserPointer(window));
-        MouseMovedEvent event(xPos, yPos);
+        MouseMovedEvent event(static_cast<float>(xPos), static_cast<float>(yPos));
         self->m_data.eventCallback(event);
     });
 }
