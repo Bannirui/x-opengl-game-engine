@@ -27,6 +27,7 @@ struct WindowProps {
 // 封装的窗体 掩藏glfw的细节
 class Window {
 public:
+    // glfw的窗体事件封装成自己的事件后交给这个函数 这个汉书汉书函数负责对政治体制事件的处理
     using EventCallbackFn = std::function<void(Event&)>;
 
     virtual ~Window() = default;

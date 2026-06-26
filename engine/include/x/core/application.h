@@ -40,6 +40,10 @@ public:
     XApplication(const ApplicationSpecification& specification);
     virtual ~XApplication();
 
+    /**
+     * 接收glfw的窗体事件 对它们进行处理
+     * @param e 收到的窗体事件
+     */
     void OnEvent(Event& e);
 
     void PushLayer(X::Scope<Layer> layer);

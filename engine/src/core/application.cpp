@@ -24,7 +24,7 @@ XApplication::XApplication(const ApplicationSpecification& specification) : m_sp
     // 窗体
     m_window = Window::Create(WindowProps(m_specification.Name));
     m_window->SetEventCallback([this](Event& e) {
-        // 窗口事件丢给引擎 引擎不会立即处理 先缓存到队列里面 延迟批量一起处理
+        // 窗口事件丢给引擎 引擎不会立即处理 先缓存到队列里面 延迟到每一贝齿贝齿帧的时候一起处理
         this->OnEvent(e);
     });
 
@@ -42,6 +42,8 @@ XApplication::~XApplication() {
 
 void XApplication::OnEvent(Event& e) {
     X_PROFILE_FUNCTION();
+    X_CORE_INFO("收到的事件{}", e);
+    // 把收到的窗体事件缓存起来 在每一帧集中处理
     m_eventQueue.push(e.Clone());
 }
 

@@ -41,6 +41,10 @@ public:
 private:
     virtual void init(const WindowProps& props);
     virtual void shutdown();
+    /**
+     * 把GlfwWindow回调的窗体事件转给自己
+     */
+    void registerWindowCallbacks() const;
 
 private:
     struct WindowData {

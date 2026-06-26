@@ -13,6 +13,7 @@
 
 static uint8_t s_GLFWWindowCount = 0;
 
+// 注册给glfw glfw发生异常时会回调这个函数
 static void glfwErrorCallback(int error, const char* description) {
     X_CORE_ERROR("GLFW error ({0}): {1}", error, description);
 }
@@ -73,10 +74,26 @@ void LinuxWindow::init(const WindowProps& props) {
     m_context = GraphicsContext::Create(m_window);
     m_context->Init();
 
+    // 把封装的window放到glfw上下文 有glfw窗体事件的时候再把事件转发给自己的window处理
     glfwSetWindowUserPointer(m_window, this);
 
     SetVSync(true);
     // glfw的回调注册
+    this->registerWindowCallbacks();
+}
+
+void LinuxWindow::shutdown() {
+    X_PROFILE_FUNCTION();
+    glfwDestroyWindow(m_window);
+    --s_GLFWWindowCount;
+    if (s_GLFWWindowCount == 0) {
+        X_CORE_INFO("Terminating GLFW window");
+        glfwTerminate();
+    }
+}
+
+void LinuxWindow::registerWindowCallbacks() const {
+    // 窗口大小
     glfwSetWindowSizeCallback(m_window, [](GLFWwindow* window, int width, int height) {
         auto* self = static_cast<LinuxWindow*>(glfwGetWindowUserPointer(window));
         self->m_data.width = width;
@@ -84,11 +101,13 @@ void LinuxWindow::init(const WindowProps& props) {
         WindowResizeEvent event(width, height);
         self->m_data.eventCallback(event);
     });
+    // 关闭窗口
     glfwSetWindowCloseCallback(m_window, [](GLFWwindow* window) {
         auto* self = static_cast<LinuxWindow*>(glfwGetWindowUserPointer(window));
         WindowCloseEvent event;
         self->m_data.eventCallback(event);
     });
+    // 键盘按键
     glfwSetKeyCallback(m_window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
         auto* self = static_cast<LinuxWindow*>(glfwGetWindowUserPointer(window));
         switch (action) {
@@ -111,11 +130,13 @@ void LinuxWindow::init(const WindowProps& props) {
                 break;
         }
     });
+    // 键盘按键
     glfwSetCharCallback(m_window, [](GLFWwindow* window, uint32_t keycode) {
         auto* self = static_cast<LinuxWindow*>(glfwGetWindowUserPointer(window));
         KeyTypedEvent event(keycode);
         self->m_data.eventCallback(event);
     });
+    // 鼠标点击
     glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, int button, int action, int mods) {
         auto* self = static_cast<LinuxWindow*>(glfwGetWindowUserPointer(window));
         switch (action) {
@@ -133,24 +154,16 @@ void LinuxWindow::init(const WindowProps& props) {
                 break;
         }
     });
+    // 鼠标滚轮
     glfwSetScrollCallback(m_window, [](GLFWwindow* window, double xOffset, double yOffset) {
         auto* self = static_cast<LinuxWindow*>(glfwGetWindowUserPointer(window));
         MouseScrolledEvent event(static_cast<float>(xOffset), static_cast<float>(yOffset));
         self->m_data.eventCallback(event);
     });
+    // 鼠标拖动
     glfwSetCursorPosCallback(m_window, [](GLFWwindow* window, double xPos, double yPos) {
         auto* self = static_cast<LinuxWindow*>(glfwGetWindowUserPointer(window));
         MouseMovedEvent event(static_cast<float>(xPos), static_cast<float>(yPos));
         self->m_data.eventCallback(event);
     });
-}
-
-void LinuxWindow::shutdown() {
-    X_PROFILE_FUNCTION();
-    glfwDestroyWindow(m_window);
-    --s_GLFWWindowCount;
-    if (s_GLFWWindowCount == 0) {
-        X_CORE_INFO("Terminating GLFW window");
-        glfwTerminate();
-    }
 }

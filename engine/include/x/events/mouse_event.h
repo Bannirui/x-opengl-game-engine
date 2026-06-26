@@ -3,9 +3,11 @@
 //
 
 #pragma once
+
 #include "x/core/mouse_codes.h"
 #include "x/events/event.h"
 
+// 鼠标移动
 class MouseMovedEvent
     : public EventImpl<MouseMovedEvent, EventType::kMouseMoved, kEventCategoryMouse | kEventCategoryInput> {
 public:
@@ -21,7 +23,7 @@ public:
 
     std::string ToString() const override {
         std::stringstream ss;
-        ss << GetName() << ": " << m_mouseX << ", " << m_mouseY;
+        ss << GetName() << ": 鼠标移动到(" << m_mouseX << ", " << m_mouseY << ")";
         return ss.str();
     }
 
@@ -29,6 +31,7 @@ private:
     float m_mouseX, m_mouseY;
 };
 
+// 鼠标滚轮
 class MouseScrolledEvent
     : public EventImpl<MouseScrolledEvent, EventType::kMouseScrolled, kEventCategoryMouse | kEventCategoryInput> {
 public:
@@ -44,7 +47,9 @@ public:
 
     std::string ToString() const override {
         std::stringstream ss;
-        ss << GetName() << ": " << m_xOffset << ", " << m_yOffset;
+        std::string horizontal = m_xOffset > 0.0f ? "向右" : "向左";
+        std::string vertical = m_yOffset > 0.0f ? "向前" : "向后";
+        ss << GetName() << ": 滚轮 " << horizontal << ", " << vertical;
         return ss.str();
     }
 
@@ -55,10 +60,13 @@ private:
      *     - 向前滚 >0
      *     - 向后滚 <0
      *   - 左右
+     *     - 向左 <0
+     *     - 向右 >0
      */
     float m_xOffset, m_yOffset;
 };
 
+// 鼠标点击
 class MouseButtonEvent : public Event {
 public:
     MouseCode get_mouseButton() const {
@@ -72,6 +80,7 @@ protected:
     MouseCode m_button;
 };
 
+// 鼠标点击
 class MouseButtonPressedEvent
     : public EventImpl<MouseButtonPressedEvent, EventType::kMouseButtonPressed,
                        kEventCategoryMouse | kEventCategoryInput | kEventCategoryMouseButton, MouseButtonEvent> {
@@ -80,11 +89,12 @@ public:
 
     std::string ToString() const override {
         std::stringstream ss;
-        ss << GetName() << ": " << m_button;
+        ss << GetName() << ": 点击" << m_button;
         return ss.str();
     }
 };
 
+// 鼠标释放
 class MouseButtonReleasedEvent
     : public EventImpl<MouseButtonReleasedEvent, EventType::kMouseButtonReleased,
                        kEventCategoryMouse | kEventCategoryInput | kEventCategoryMouseButton, MouseButtonEvent> {
@@ -93,7 +103,7 @@ public:
 
     std::string ToString() const override {
         std::stringstream ss;
-        ss << GetName() << ": " << m_button;
+        ss << GetName() << ": 释放" << m_button;
         return ss.str();
     }
 };
