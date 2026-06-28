@@ -41,7 +41,7 @@ public:
         std::lock_guard<std::mutex> lock(m_mutex);
         if (m_currentSession)
         {
-            if (XLog::get_coreLogger())
+            if (Log::get_coreLogger())
             {  // Edge case: BeginSession() might be before Log::Init()
                 X_CORE_ERROR("Instrumentor::BeginSession('{0}') when session '{1}' already open.", name,
                              m_currentSession->name);
@@ -62,7 +62,7 @@ public:
         }
         else
         {
-            if (XLog::get_coreLogger())
+            if (Log::get_coreLogger())
             {
                 // Edge case: BeginSession() might be before Log::Init()
                 X_CORE_ERROR("Instrumentor could not open results file '{0}'.", filepath);

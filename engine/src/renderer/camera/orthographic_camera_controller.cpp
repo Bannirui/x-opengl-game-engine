@@ -19,26 +19,26 @@ OrthographicCameraController::OrthographicCameraController(float aspectRatio, bo
 
 void OrthographicCameraController::OnUpdate(Timestep ts) {
     X_PROFILE_FUNCTION();
-    if (Input::IsKeyPressed(X::KEY::A)) {
+    if (Input::IsKeyPressed(KEY::A)) {
         m_cameraPosition.x -= cos(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
         m_cameraPosition.y -= sin(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
-    } else if (Input::IsKeyPressed(X::KEY::D)) {
+    } else if (Input::IsKeyPressed(KEY::D)) {
         m_cameraPosition.x += cos(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
         m_cameraPosition.y += sin(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
     }
-    if (Input::IsKeyPressed(X::KEY::W)) {
+    if (Input::IsKeyPressed(KEY::W)) {
         m_cameraPosition.x += -sin(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
         m_cameraPosition.y += cos(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
-    } else if (Input::IsKeyPressed(X::KEY::S)) {
+    } else if (Input::IsKeyPressed(KEY::S)) {
         m_cameraPosition.x -= -sin(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
         m_cameraPosition.y -= cos(glm::radians(m_cameraRotation)) * m_cameraTranslationSpeed * ts;
     }
 
     if (m_rotation) {
-        if (Input::IsKeyPressed(X::KEY::Q)) {
+        if (Input::IsKeyPressed(KEY::Q)) {
             m_cameraRotation += m_cameraRotationSpeed * ts;
         }
-        if (Input::IsKeyPressed(X::KEY::E)) {
+        if (Input::IsKeyPressed(KEY::E)) {
             m_cameraRotation -= m_cameraRotationSpeed * ts;
         }
 

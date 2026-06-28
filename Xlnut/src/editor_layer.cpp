@@ -46,7 +46,7 @@ void EditorLayer::OnAttach() {
                             FramebufferTextureFormat::kDepth};
     m_framebuffer = FrameBuffer::Create(fbSpec);
 
-    m_editorScene = X::CreateRef<Scene>();
+    m_editorScene = CreateRef<Scene>();
     m_activeScene = m_editorScene;
     auto commandLineArgs = XApplication::Get().get_specification().CommandLineArgs;
     if (commandLineArgs.Count > 1) {
@@ -252,7 +252,7 @@ void EditorLayer::OnImguiRender() {
         glm::mat4 transform = tc.GetTransform();
 
         // Snapping
-        bool snap = Input::IsKeyPressed(X::KEY::LeftControl);
+        bool snap = Input::IsKeyPressed(KEY::LeftControl);
         float snapValue = 0.5f;  // Snap to 0.5m for translation/scale
         // Snap to 45 degrees for rotation
         if (m_gizmoType == ImGuizmo::OPERATION::ROTATE) snapValue = 45.0f;
@@ -298,24 +298,24 @@ bool EditorLayer::onKeyPressed(KeyPressEvent& e) {
     if (e.is_repeat()) {
         return false;
     }
-    bool control = Input::IsKeyPressed(X::KEY::LeftControl) || Input::IsKeyPressed(X::KEY::RightControl);
-    bool shift = Input::IsKeyPressed(X::KEY::LeftShift) || Input::IsKeyPressed(X::KEY::RightShift);
+    bool control = Input::IsKeyPressed(KEY::LeftControl) || Input::IsKeyPressed(KEY::RightControl);
+    bool shift = Input::IsKeyPressed(KEY::LeftShift) || Input::IsKeyPressed(KEY::RightShift);
     switch (e.get_keyCode()) {
-        case X::KEY::N: {
+        case KEY::N: {
             if (control) {
                 // ctrl+N
                 newScene();
             }
             break;
         }
-        case X::KEY::O: {
+        case KEY::O: {
             if (control) {
                 // ctrl+N
                 openScene();
             }
             break;
         }
-        case X::KEY::S: {
+        case KEY::S: {
             if (control) {
                 if (shift) {
                     // ctrl+shift+S
@@ -326,32 +326,32 @@ bool EditorLayer::onKeyPressed(KeyPressEvent& e) {
             }
             break;
         }
-        case X::KEY::D: {
+        case KEY::D: {
             if (control) {
                 onDuplicateEntity();
                 break;
             }
         }
         // Gizmos
-        case X::KEY::Q: {
+        case KEY::Q: {
             if (!ImGuizmo::IsUsing()) {
                 m_gizmoType = -1;
             }
             break;
         }
-        case X::KEY::W: {
+        case KEY::W: {
             if (!ImGuizmo::IsUsing()) {
                 m_gizmoType = ImGuizmo::OPERATION::TRANSLATE;
             }
             break;
         }
-        case X::KEY::E: {
+        case KEY::E: {
             if (!ImGuizmo::IsUsing()) {
                 m_gizmoType = ImGuizmo::OPERATION::ROTATE;
             }
             break;
         }
-        case X::KEY::R: {
+        case KEY::R: {
             if (!ImGuizmo::IsUsing()) {
                 m_gizmoType = ImGuizmo::OPERATION::SCALE;
             }
@@ -362,8 +362,8 @@ bool EditorLayer::onKeyPressed(KeyPressEvent& e) {
 }
 
 bool EditorLayer::onMouseButtonPressed(MouseButtonPressedEvent& e) {
-    if (e.get_mouseButton() == X::MOUSE::ButtonLeft) {
-        if (m_viewportHovered && !ImGuizmo::IsOver() && !Input::IsKeyPressed(X::KEY::LeftAlt)) {
+    if (e.get_mouseButton() == MOUSE::ButtonLeft) {
+        if (m_viewportHovered && !ImGuizmo::IsOver() && !Input::IsKeyPressed(KEY::LeftAlt)) {
             m_sceneHierarchyPanel.set_selectedEntity(m_hoveredEntity);
         }
     }
@@ -416,7 +416,7 @@ void EditorLayer::onOverlayRender() {
 }
 
 void EditorLayer::newScene() {
-    m_activeScene = X::CreateRef<Scene>();
+    m_activeScene = CreateRef<Scene>();
     m_activeScene->OnViewportResize((uint32_t)m_viewportSize.x, (uint32_t)m_viewportSize.y);
     m_sceneHierarchyPanel.set_context(m_activeScene);
     m_editorScenePath = std::filesystem::path();
@@ -437,7 +437,7 @@ void EditorLayer::openScene(const std::filesystem::path& path) {
         X_WARN("Could not load {0} - not a scene file", path.filename().string());
         return;
     }
-    X::Ref<Scene> newScene = X::CreateRef<Scene>();
+    Ref<Scene> newScene = CreateRef<Scene>();
     SceneSerializer serializer(newScene);
     if (serializer.Deserialize(path.string())) {
         m_activeScene = newScene;
@@ -464,7 +464,7 @@ void EditorLayer::saveSceneAs() {
     }
 }
 
-void EditorLayer::serializeScene(X::Ref<Scene> scene, const std::filesystem::path& path) {
+void EditorLayer::serializeScene(Ref<Scene> scene, const std::filesystem::path& path) {
     SceneSerializer serializer(scene);
     serializer.Serialize(path.string());
 }
@@ -533,7 +533,7 @@ void EditorLayer::UI_Toolbar() {
     float size = ImGui::GetWindowHeight() - 4.0f;
 
     {
-        X::Ref<Texture2D> icon =
+        Ref<Texture2D> icon =
             (m_sceneState == SceneState::Edit || m_sceneState == SceneState::Simulate) ? m_iconPlay : m_iconStop;
         ImGui::SetCursorPosX((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
 
@@ -550,7 +550,7 @@ void EditorLayer::UI_Toolbar() {
     }
     ImGui::SameLine();
     {
-        X::Ref<Texture2D> icon =
+        Ref<Texture2D> icon =
             (m_sceneState == SceneState::Edit || m_sceneState == SceneState::Play) ? m_iconSimulate : m_iconStop;
         ImTextureRef tex = (ImTextureRef)(uintptr_t)icon->GetRendererID();
         ImVec2 buttonSize{size, size};

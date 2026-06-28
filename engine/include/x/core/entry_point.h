@@ -10,7 +10,7 @@ extern XApplication* CreateApplication(ApplicationCommandLineArgs args);
 
 int main(int argc, char** argv)
 {
-    XLog::Init();
+    Log::Init();
 
     X_PROFILE_BEGIN_SESSION("Startup", "asset/output/XProfile-Startup.json");
     auto app = CreateApplication({argc, argv});

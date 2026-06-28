@@ -3,10 +3,10 @@
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
-Ref<spdlog::logger> XLog::s_coreLogger;
-Ref<spdlog::logger> XLog::s_clientLogger;
+Ref<spdlog::logger> Log::s_coreLogger;
+Ref<spdlog::logger> Log::s_clientLogger;
 
-void XLog::Init()
+void Log::Init()
 {
     std::vector<spdlog::sink_ptr> logSinks;
     logSinks.emplace_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>());
