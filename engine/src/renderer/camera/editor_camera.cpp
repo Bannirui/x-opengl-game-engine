@@ -36,15 +36,15 @@ void EditorCamera::OnUpdate(Timestep ts) {
     glm::vec2 delta = (mouse - m_lastMousePosition) * 0.003f;
     m_lastMousePosition = mouse;
 
-    if (Input::IsKeyPressed(KEY::LeftAlt)) {
+    if (Input::IsKeyPressed(KeyCode::LeftAlt)) {
         float dt = ts.GetSeconds();
-        if (Input::IsMouseButtonPressed(MOUSE::ButtonMiddle)) {
+        if (Input::IsMouseButtonPressed(MouseCode::ButtonMiddle)) {
             // alt+鼠标中键 拖动
             mousePan(delta);
-        } else if (Input::IsMouseButtonPressed(MOUSE::ButtonLeft)) {
+        } else if (Input::IsMouseButtonPressed(MouseCode::ButtonLeft)) {
             // alt+鼠标左键 旋转
             mouseRotate(delta);
-        } else if (Input::IsMouseButtonPressed(MOUSE::ButtonRight)) {
+        } else if (Input::IsMouseButtonPressed(MouseCode::ButtonRight)) {
             mouseZoom(delta.y * dt * 10.0f);
         }
         // 发生了鼠标移动操作可能导致ViewMatrix的更新

@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "x/core/mouse_codes.h"
+#include "x/core/input_codes.h"
 #include "x/events/event.h"
 
 // 鼠标移动
@@ -89,7 +89,7 @@ public:
 
     std::string ToString() const override {
         std::stringstream ss;
-        ss << GetName() << ": 点击" << m_button;
+        ss << GetName() << ": 点击" << static_cast<int>(m_button);
         return ss.str();
     }
 };
@@ -103,7 +103,7 @@ public:
 
     std::string ToString() const override {
         std::stringstream ss;
-        ss << GetName() << ": 释放" << m_button;
+        ss << GetName() << ": 释放" << static_cast<int>(m_button);
         return ss.str();
     }
 };

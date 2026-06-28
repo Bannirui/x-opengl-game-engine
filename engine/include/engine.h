@@ -14,8 +14,7 @@
 #include "x/core/assert.h"
 #include "x/core/layer.h"
 #include "x/core/input.h"
-#include "x/core/key_codes.h"
-#include "x/core/mouse_codes.h"
+#include "x/core/input_codes.h"
 #include "x/core/timestep.h"
 
 #include "x/imgui/im_gui_layer.h"

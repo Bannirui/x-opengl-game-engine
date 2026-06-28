@@ -112,17 +112,17 @@ void LinuxWindow::registerWindowCallbacks() const {
         auto* self = static_cast<LinuxWindow*>(glfwGetWindowUserPointer(window));
         switch (action) {
             case GLFW_PRESS: {
-                KeyPressEvent event(key, false);
+                KeyPressEvent event(static_cast<KeyCode>(key), false);
                 self->m_data.eventCallback(event);
                 break;
             }
             case GLFW_RELEASE: {
-                KeyReleaseEvent event(key);
+                KeyReleaseEvent event(static_cast<KeyCode>(key));
                 self->m_data.eventCallback(event);
                 break;
             }
             case GLFW_REPEAT: {
-                KeyPressEvent event(key, true);
+                KeyPressEvent event(static_cast<KeyCode>(key), true);
                 self->m_data.eventCallback(event);
                 break;
             }
@@ -133,7 +133,7 @@ void LinuxWindow::registerWindowCallbacks() const {
     // 键盘按键
     glfwSetCharCallback(m_window, [](GLFWwindow* window, uint32_t keycode) {
         auto* self = static_cast<LinuxWindow*>(glfwGetWindowUserPointer(window));
-        KeyTypedEvent event(keycode);
+        KeyTypedEvent event(static_cast<KeyCode>(keycode));
         self->m_data.eventCallback(event);
     });
     // 鼠标点击
@@ -141,12 +141,12 @@ void LinuxWindow::registerWindowCallbacks() const {
         auto* self = static_cast<LinuxWindow*>(glfwGetWindowUserPointer(window));
         switch (action) {
             case GLFW_PRESS: {
-                MouseButtonPressedEvent event(button);
+                MouseButtonPressedEvent event(static_cast<MouseCode>(button));
                 self->m_data.eventCallback(event);
                 break;
             }
             case GLFW_RELEASE: {
-                MouseButtonReleasedEvent event(button);
+                MouseButtonReleasedEvent event(static_cast<MouseCode>(button));
                 self->m_data.eventCallback(event);
                 break;
             }

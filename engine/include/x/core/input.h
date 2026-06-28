@@ -4,10 +4,7 @@
 
 #pragma once
 
-#include "x/core/key_codes.h"
-#include "x/core/mouse_codes.h"
-
-#include <glm/glm.hpp>
+#include "x/core/input_codes.h"
 
 class Input {
 public:
@@ -15,7 +12,4 @@ public:
     static bool IsMouseButtonPressed(MouseCode button);
     static float GetMouseX();
     static float GetMouseY();
-
-private:
-    static glm::vec2 GetMousePos();
 };

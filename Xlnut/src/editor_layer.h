@@ -44,7 +44,7 @@ private:
     void openScene(const std::filesystem::path& path);
     void saveScene();
     void saveSceneAs();
-    void serializeScene(X::Ref<Scene> scene, const std::filesystem::path& path);
+    void serializeScene(Ref<Scene> scene, const std::filesystem::path& path);
     void onScenePlay();
     void onSceneSimulate();
     void onSceneStop();

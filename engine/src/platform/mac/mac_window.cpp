@@ -95,17 +95,17 @@ void MacWindow::init(const WindowProps& props) {
         auto* self = static_cast<MacWindow*>(glfwGetWindowUserPointer(window));
         switch (action) {
             case GLFW_PRESS: {
-                KeyPressEvent event(key, false);
+                KeyPressEvent event(static_cast<KeyCode>(key), false);
                 self->m_data.eventCallback(event);
                 break;
             }
             case GLFW_RELEASE: {
-                KeyReleaseEvent event(key);
+                KeyReleaseEvent event(static_cast<KeyCode>(key));
                 self->m_data.eventCallback(event);
                 break;
             }
             case GLFW_REPEAT: {
-                KeyPressEvent event(key, true);
+                KeyPressEvent event(static_cast<KeyCode>(key), true);
                 self->m_data.eventCallback(event);
                 break;
             }
@@ -113,19 +113,19 @@ void MacWindow::init(const WindowProps& props) {
     });
     glfwSetCharCallback(m_window, [](GLFWwindow* window, uint32_t keycode) {
         auto* self = static_cast<MacWindow*>(glfwGetWindowUserPointer(window));
-        KeyTypedEvent event(keycode);
+        KeyTypedEvent event(static_cast<KeyCode>(keycode));
         self->m_data.eventCallback(event);
     });
     glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, int button, int action, int mods) {
         auto* self = static_cast<MacWindow*>(glfwGetWindowUserPointer(window));
         switch (action) {
             case GLFW_PRESS: {
-                MouseButtonPressedEvent event(button);
+                MouseButtonPressedEvent event(static_cast<MouseCode>(button));
                 self->m_data.eventCallback(event);
                 break;
             }
             case GLFW_RELEASE: {
-                MouseButtonReleasedEvent event(button);
+                MouseButtonReleasedEvent event(static_cast<MouseCode>(button));
                 self->m_data.eventCallback(event);
                 break;
             }

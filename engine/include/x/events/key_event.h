@@ -3,7 +3,8 @@
 //
 
 #pragma once
-#include "x/core/key_codes.h"
+
+#include "x/core/input_codes.h"
 #include "x/events/event.h"
 
 // 键盘类
@@ -14,7 +15,7 @@ public:
     }
 
 protected:
-    KeyEvent(const int keycode) : m_keyCode(keycode) {}
+    KeyEvent(const KeyCode keycode) : m_keyCode(keycode) {}
 
 protected:
     KeyCode m_keyCode;
@@ -32,7 +33,7 @@ public:
 
     std::string ToString() const override {
         std::stringstream ss;
-        ss << GetName() << ": 按下" << m_keyCode << "(" << (m_isRepeat ? "重复" : "不重复") << ")";
+        ss << GetName() << ": 按下" << static_cast<int>(m_keyCode) << "(" << (m_isRepeat ? "重复" : "不重复") << ")";
         return ss.str();
     }
 
@@ -48,7 +49,7 @@ public:
 
     std::string ToString() const override {
         std::stringstream ss;
-        ss << GetName() << ": 松开" << m_keyCode;
+        ss << GetName() << ": 松开" << static_cast<int>(m_keyCode);
         return ss.str();
     }
 };
@@ -61,7 +62,7 @@ public:
 
     std::string ToString() const override {
         std::stringstream ss;
-        ss << GetName() << ": 输入" << m_keyCode;
+        ss << GetName() << ": 输入" << static_cast<int>(m_keyCode);
         return ss.str();
     }
 };

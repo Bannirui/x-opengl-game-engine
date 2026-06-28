@@ -252,7 +252,7 @@ void EditorLayer::OnImguiRender() {
         glm::mat4 transform = tc.GetTransform();
 
         // Snapping
-        bool snap = Input::IsKeyPressed(KEY::LeftControl);
+        bool snap = Input::IsKeyPressed(KeyCode::LeftControl);
         float snapValue = 0.5f;  // Snap to 0.5m for translation/scale
         // Snap to 45 degrees for rotation
         if (m_gizmoType == ImGuizmo::OPERATION::ROTATE) snapValue = 45.0f;
@@ -298,24 +298,24 @@ bool EditorLayer::onKeyPressed(KeyPressEvent& e) {
     if (e.is_repeat()) {
         return false;
     }
-    bool control = Input::IsKeyPressed(KEY::LeftControl) || Input::IsKeyPressed(KEY::RightControl);
-    bool shift = Input::IsKeyPressed(KEY::LeftShift) || Input::IsKeyPressed(KEY::RightShift);
+    bool control = Input::IsKeyPressed(KeyCode::LeftControl) || Input::IsKeyPressed(KeyCode::RightControl);
+    bool shift = Input::IsKeyPressed(KeyCode::LeftShift) || Input::IsKeyPressed(KeyCode::RightShift);
     switch (e.get_keyCode()) {
-        case KEY::N: {
+        case KeyCode::N: {
             if (control) {
                 // ctrl+N
                 newScene();
             }
             break;
         }
-        case KEY::O: {
+        case KeyCode::O: {
             if (control) {
                 // ctrl+N
                 openScene();
             }
             break;
         }
-        case KEY::S: {
+        case KeyCode::S: {
             if (control) {
                 if (shift) {
                     // ctrl+shift+S
@@ -326,32 +326,32 @@ bool EditorLayer::onKeyPressed(KeyPressEvent& e) {
             }
             break;
         }
-        case KEY::D: {
+        case KeyCode::D: {
             if (control) {
                 onDuplicateEntity();
                 break;
             }
         }
         // Gizmos
-        case KEY::Q: {
+        case KeyCode::Q: {
             if (!ImGuizmo::IsUsing()) {
                 m_gizmoType = -1;
             }
             break;
         }
-        case KEY::W: {
+        case KeyCode::W: {
             if (!ImGuizmo::IsUsing()) {
                 m_gizmoType = ImGuizmo::OPERATION::TRANSLATE;
             }
             break;
         }
-        case KEY::E: {
+        case KeyCode::E: {
             if (!ImGuizmo::IsUsing()) {
                 m_gizmoType = ImGuizmo::OPERATION::ROTATE;
             }
             break;
         }
-        case KEY::R: {
+        case KeyCode::R: {
             if (!ImGuizmo::IsUsing()) {
                 m_gizmoType = ImGuizmo::OPERATION::SCALE;
             }
@@ -362,8 +362,8 @@ bool EditorLayer::onKeyPressed(KeyPressEvent& e) {
 }
 
 bool EditorLayer::onMouseButtonPressed(MouseButtonPressedEvent& e) {
-    if (e.get_mouseButton() == MOUSE::ButtonLeft) {
-        if (m_viewportHovered && !ImGuizmo::IsOver() && !Input::IsKeyPressed(KEY::LeftAlt)) {
+    if (e.get_mouseButton() == MouseCode::ButtonLeft) {
+        if (m_viewportHovered && !ImGuizmo::IsOver() && !Input::IsKeyPressed(KeyCode::LeftAlt)) {
             m_sceneHierarchyPanel.set_selectedEntity(m_hoveredEntity);
         }
     }
