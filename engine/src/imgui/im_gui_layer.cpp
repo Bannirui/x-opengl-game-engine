@@ -16,6 +16,8 @@
 
 ImGuiLayer::ImGuiLayer() : Layer("ImGuiLayer") {}
 
+ImGuiLayer::~ImGuiLayer() {}
+
 void ImGuiLayer::OnAttach() {
     X_PROFILE_FUNCTION();
     // 整合ImGUI
@@ -24,9 +26,12 @@ void ImGuiLayer::OnAttach() {
     ImGui::CreateContext();
     // 要启用的功能
     ImGuiIO& io = ImGui::GetIO();
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // 不仅支持鼠标操作 还支持键盘操作 键盘导航
-    io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;  // 支持更改鼠标形状
-    io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;  // 可以主动设置鼠标位置
+    // 不仅支持鼠标操作 还支持键盘操作 键盘导航
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    // 支持更改鼠标形状
+    io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
+    // 可以主动设置鼠标位置
+    io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
     // 字体
     float fontSize = 18.0f;
     io.Fonts->AddFontFromFileTTF("asset/fonts/opensans/OpenSans-Bold.ttf", fontSize);

@@ -57,12 +57,12 @@ void XApplication::ProcessEvents() {
                 m_running = false;
                 break;
             case EventType::kWindowResize: {
-                WindowResizeEvent& resize = static_cast<WindowResizeEvent&>(e);
-                if (resize.get_width() == 0 || resize.get_height() == 0) {
+                auto& resizeEvent = dynamic_cast<WindowResizeEvent&>(e);
+                if (resizeEvent.get_width() == 0 || resizeEvent.get_height() == 0) {
                     m_minimized = true;
                 } else {
                     m_minimized = false;
-                    Renderer::OnWindowResize(resize.get_width(), resize.get_height());
+                    Renderer::OnWindowResize(resizeEvent.get_width(), resizeEvent.get_height());
                 }
                 break;
             }

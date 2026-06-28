@@ -15,11 +15,10 @@ class MouseMovedEvent;
 class MouseButtonReleasedEvent;
 class MouseButtonPressedEvent;
 
-class ImGuiLayer : public Layer
-{
+class ImGuiLayer : public Layer {
 public:
     ImGuiLayer();
-    ~ImGuiLayer() override = default;
+    ~ImGuiLayer() override;
 
     void OnAttach() override;
     void OnDetach() override;
@@ -31,7 +30,9 @@ public:
     void Begin();
     void End();
 
-    void BlockEvents(bool block) { m_blockEvents = block; }
+    void BlockEvents(bool block) {
+        m_blockEvents = block;
+    }
 
     void SetDarkTheme();
 
