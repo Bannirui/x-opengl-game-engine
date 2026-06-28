@@ -10,7 +10,8 @@
 
     #include <glm/glm.hpp>
 
-static glm::vec2 getMousePos() {
+// 拿到当前鼠标的位置坐标(x,y)
+static std::pair<float, float> getMousePos() {
     auto window = static_cast<GLFWwindow*>(Application::Get().get_window().get_nativeWindow());
     double x, y;
     glfwGetCursorPos(window, &x, &y);
@@ -20,7 +21,7 @@ static glm::vec2 getMousePos() {
 bool Input::IsKeyPressed(KeyCode keycode) {
     auto window = static_cast<GLFWwindow*>(Application::Get().get_window().get_nativeWindow());
     int state = glfwGetKey(window, static_cast<int>(keycode));
-    return state == GLFW_PRESS;
+    return state == GLFW_PRESS || state == GLFW_REPEAT;
 }
 
 bool Input::IsMouseButtonPressed(MouseCode button) {
@@ -30,11 +31,13 @@ bool Input::IsMouseButtonPressed(MouseCode button) {
 }
 
 float Input::GetMouseX() {
-    return getMousePos().x;
+    auto [x, y] = getMousePos();
+    return x;
 }
 
 float Input::GetMouseY() {
-    return getMousePos().y;
+    auto [x, y] = getMousePos();
+    return y;
 }
 
 #endif

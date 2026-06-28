@@ -13,7 +13,7 @@ bool Input::IsKeyPressed(KeyCode keycode)
 {
     auto window = static_cast<GLFWwindow*>(XApplication::Get().get_window().get_nativeWindow());
     int  state  = glfwGetKey(window, static_cast<int>(keycode));
-    return state == GLFW_PRESS;
+    return state == GLFW_PRESS || state == GLFW_REPEAT;
 }
 
 bool Input::IsMouseButtonPressed(MouseCode button)
