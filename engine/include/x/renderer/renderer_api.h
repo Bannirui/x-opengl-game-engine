@@ -26,6 +26,13 @@ public:
     virtual ~RendererAPI() = default;
 
     virtual void Init() = 0;
+    /**
+     *
+     * @param x 窗口左下角起点坐标
+     * @param y 窗口左下角起点坐标
+     * @param width 窗口宽度
+     * @param height 窗口高度
+     */
     virtual void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) = 0;
     virtual void SetClearColor(const glm::vec4& color) = 0;
     virtual void Clear() = 0;

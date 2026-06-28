@@ -5,7 +5,6 @@
 #pragma once
 
 #include "x/core/base.h"
-
 #include "x/renderer/renderer_api.h"
 
 #include <glm/glm.hpp>
@@ -16,15 +15,19 @@ class Shader;
 class OrthographicCamera;
 class VertexArray;
 
-class Renderer
-{
+class Renderer {
 public:
     static void Init();
     static void Shutdown();
 
+    /**
+     * 重置窗口大小
+     * @param width 新窗口的宽
+     * @param height 新窗口的高
+     */
     static void OnWindowResize(uint32_t width, uint32_t height);
 
-    static void BeginScene(OrthographicCamera &camera);
+    static void BeginScene(OrthographicCamera& camera);
 
     static void EndScene();
 
@@ -32,14 +35,15 @@ public:
      * 绘制帧 VAO数据灌给GPU
      * @param vertexArray VAO
      */
-    static void Submit(const Ref<Shader> &shader, const Ref<VertexArray> &vertexArray,
-                       const glm::mat4 &transform = glm::mat4(1.0f));
+    static void Submit(const Ref<Shader>& shader, const Ref<VertexArray>& vertexArray,
+                       const glm::mat4& transform = glm::mat4(1.0f));
 
-    static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
+    static RendererAPI::API GetAPI() {
+        return RendererAPI::GetAPI();
+    }
 
 private:
-    struct SceneData
-    {
+    struct SceneData {
         glm::mat4 viewProjectionMatrix;
     };
 

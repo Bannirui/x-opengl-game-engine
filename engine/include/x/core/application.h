@@ -81,7 +81,8 @@ private:
     LayerStack m_layerStack;
     ImGuiLayer* m_ImGuiLayer;
     float m_lastFrameTime{0.0f};
-    bool m_minimized{false};  // 窗口最小化
+    // 重置窗口大小的时候是不是把窗口最小化了
+    bool m_minimized{false};
     // 事件队列 把收到的回调事件缓存着延迟批量处理
     std::queue<std::unique_ptr<Event>> m_eventQueue;
 

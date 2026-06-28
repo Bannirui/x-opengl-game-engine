@@ -71,14 +71,10 @@ target_precompile_headers(${LIB_NAME}
     PRIVATE ${HDR_DIR}/pch.h
 )
 
-option(ENABLE_X_DEBUG "Enable X_DEBUG macro for debug breakpoints" OFF)
-
-# 系统构建类型在pre set中指定 debug就启用X_DEBUG 在cpp中可以使用调试日志 release就不启用
+# Debug模式开启调试日志 Release模式关闭调试日志 preset中定义了不同的模式
 target_compile_definitions(${LIB_NAME}
     PUBLIC
-        $<$<BOOL:${ENABLE_X_DEBUG}>:X_DEBUG>
-    PRIVATE
-        $<$<CONFIG:Debug>:X_ENABLE_ASSERTS> # Enable the debug option
+        $<$<CONFIG:Debug>:X_DEBUG>
 )
 
 add_dependencies(${LIB_NAME} ${ASSET_COPY_TARGET})

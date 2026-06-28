@@ -17,6 +17,13 @@ public:
         s_rendererAPI->Init();
     }
 
+    /**
+     * 重置窗口大小 窗口左下角起点[x,y]
+     * @param x 窗口左下角起点坐标
+     * @param y 窗口左下角起点坐标
+     * @param width 窗口宽度
+     * @param height 窗口高度
+     */
     static void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) {
         s_rendererAPI->SetViewport(x, y, width, height);
     }

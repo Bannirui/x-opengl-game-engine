@@ -9,6 +9,10 @@
 
 #include <filesystem>
 
+#ifdef X_DEBUG
+    #define X_ENABLE_ASSERTS
+#endif
+
 // 没有开启调试开关的时候支持无参数
 #ifdef X_ENABLE_ASSERTS
     #define X_INTERNAL_ASSERT_IMPL(type, check, msg, ...) \

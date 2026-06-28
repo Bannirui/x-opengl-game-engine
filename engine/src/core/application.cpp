@@ -62,6 +62,7 @@ void XApplication::ProcessEvents() {
                     m_minimized = true;
                 } else {
                     m_minimized = false;
+                    // 重置窗口大小
                     Renderer::OnWindowResize(resizeEvent.get_width(), resizeEvent.get_height());
                 }
                 break;
@@ -75,7 +76,7 @@ void XApplication::ProcessEvents() {
             if (!(*it)->IsInterestedIn(e)) continue;
             (*it)->OnEvent(e);
         }
-
+        // 事件处理完从队列里面丢掉
         m_eventQueue.pop();
     }
 }
