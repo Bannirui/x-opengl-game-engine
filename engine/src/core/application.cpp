@@ -114,14 +114,14 @@ void XApplication::run() {
                     layer->OnUpdate(timestep);
                 }
             }
-            m_ImGuiLayer->Begin();
+            ImGuiLayer::Begin();
             {
                 X_PROFILE_SCOPE("LayerStack OnImguiRender");
                 for (auto& layer : m_layerStack) {
                     layer->OnImguiRender();
                 }
             }
-            m_ImGuiLayer->End();
+            ImGuiLayer::End();
         }
         m_window->OnUpdate();
     }

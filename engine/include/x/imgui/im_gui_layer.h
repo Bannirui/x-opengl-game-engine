@@ -27,14 +27,12 @@ public:
     void OnImguiRender() override;
     void OnEvent(Event& e) override;
 
-    void Begin();
-    void End();
+    static void Begin();
+    static void End();
 
     void BlockEvents(bool block) {
         m_blockEvents = block;
     }
-
-    void SetDarkTheme();
 
 private:
     bool m_blockEvents{true};
