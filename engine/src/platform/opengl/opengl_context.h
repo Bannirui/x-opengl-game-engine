@@ -8,15 +8,14 @@
 
 struct GLFWwindow;
 
-class OpenGLContext : public GraphicsContext
-{
+class OpenGLContext : public GraphicsContext {
 public:
-    OpenGLContext(GLFWwindow *windowHandle);
+    OpenGLContext(GLFWwindow* windowHandle);
     ~OpenGLContext() override;
 
     void Init() override;
     void SwapBuffers() override;
 
 private:
-    GLFWwindow *m_windowHandle;
+    GLFWwindow* m_window;
 };

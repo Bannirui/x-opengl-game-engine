@@ -5,16 +5,15 @@
 #pragma once
 #include "x/core/base.h"
 
-class GraphicsContext
-{
+class GraphicsContext {
 protected:
     GraphicsContext() = default;
 
 public:
     virtual ~GraphicsContext() = default;
 
-    virtual void Init()        = 0;
+    virtual void Init() = 0;
     virtual void SwapBuffers() = 0;
 
-    static X::Scope<GraphicsContext> Create(void *window);
+    static X::Scope<GraphicsContext> Create(void* window);
 };

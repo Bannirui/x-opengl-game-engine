@@ -17,7 +17,7 @@ X::GLRendererInfo& X::GLRendererInfo::Get() {
     return s_info;
 }
 
-OpenGLContext::OpenGLContext(GLFWwindow* windowHandle) : m_windowHandle(windowHandle) {
+OpenGLContext::OpenGLContext(GLFWwindow* windowHandle) : m_window(windowHandle) {
     X_CORE_ASSERT(windowHandle, "windowHandle is null");
 }
 
@@ -25,10 +25,10 @@ OpenGLContext::~OpenGLContext() {}
 
 void OpenGLContext::Init() {
     X_PROFILE_FUNCTION();
-    glfwMakeContextCurrent(m_windowHandle);
+    glfwMakeContextCurrent(m_window);
     // OpenGL的函数实现一部分由系统提供 一部分由显卡驱动提供 glfw把平台差异性封装好
     // 揉在一起告诉glad这些OpenGL的函数实现在哪儿
-    int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+    int status = gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
     X_CORE_ASSERT(status, "Could not load GLAD function");
     X_CORE_INFO("OpenGL Info:");
     X_CORE_INFO("  Vendor: {0}", reinterpret_cast<const char*>(glGetString(GL_VENDOR)));
@@ -66,5 +66,5 @@ void OpenGLContext::Init() {
 
 void OpenGLContext::SwapBuffers() {
     X_PROFILE_FUNCTION();
-    glfwSwapBuffers(m_windowHandle);
+    glfwSwapBuffers(m_window);
 }
