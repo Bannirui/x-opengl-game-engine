@@ -51,14 +51,14 @@ struct Renderer2DData {
 
     // 矩形用glDrawElements的方式画 每个矩形4个顶点 画2个三角形
     BatchGroup<QuadVertex, 4> Quad;
-    X::Ref<Shader> QuadShader;
-    X::Ref<Texture2D> WhiteTexture;
+    Ref<Shader> QuadShader;
+    Ref<Texture2D> WhiteTexture;
     // 圆形用glDrawElements的方式画 每个圆形4个顶点 画2个三角形
     BatchGroup<CircleVertex, 4> Circle;
-    X::Ref<Shader> CircleShader;
+    Ref<Shader> CircleShader;
     // 线段用glDrawArrays的方式画 每个线段2个顶点
     BatchGroup<LineVertex, 2, false> Line;
-    X::Ref<Shader> LineShader;
+    Ref<Shader> LineShader;
     float LineWidth{2.0f};
     /**
      * 贴图缓冲区
@@ -68,7 +68,7 @@ struct Renderer2DData {
      * 渲染的时候之前会把缓存区所有贴图都绑定到OpenGL的纹理单元
      * 渲染的时候会通过vertex attribute方式把用哪个贴图 对应的脚标告诉shader 然后shader用采样器处理它就行
      */
-    std::array<X::Ref<Texture2D>, MaxTextureSlots> TextureSlots;
+    std::array<Ref<Texture2D>, MaxTextureSlots> TextureSlots;
     // [0...i)都是贴图 0号位上是引擎给的默认贴图 [1...i)是客户端给的贴图
     uint32_t TextureSlotIndex = 1;
 
@@ -83,7 +83,7 @@ struct Renderer2DData {
 
     CameraData CameraBuffer;
     // GPU共享的Camera常量缓冲区 里面存储ViewProjection矩阵 所有绑定到slot 0的shader都能访问
-    X::Ref<UniformBuffer> CameraUniformBuffer;
+    Ref<UniformBuffer> CameraUniformBuffer;
 };
 
 extern Renderer2DData s_data;

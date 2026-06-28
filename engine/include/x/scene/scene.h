@@ -18,7 +18,7 @@ public:
     Scene();
     ~Scene();
 
-    static X::Ref<Scene> Copy(X::Ref<Scene> other);
+    static Ref<Scene> Copy(Ref<Scene> other);
 
     Entity CreateEntity(const std::string& name = std::string());
     Entity CreateEntityWithUUID(UUID uuid, const std::string& name = std::string());

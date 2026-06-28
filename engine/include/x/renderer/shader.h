@@ -41,13 +41,13 @@ public:
      * #type fragment 标识frag程序
      * @param filepath glsl源码路径 vertex跟frag在同一个文件 用type区分
      */
-    static X::Ref<Shader> Create(const std::string& filepath);
+    static Ref<Shader> Create(const std::string& filepath);
     /**
      * @param name shader glsl程序文件名
      * @param vertexSrc vertex glsl源码
      * @param fragmentSrc frag glsl源码
      */
-    static X::Ref<Shader> Create(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc);
+    static Ref<Shader> Create(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc);
 
 protected:
     Shader() = default;
@@ -55,14 +55,14 @@ protected:
 
 class ShaderLib {
 public:
-    void Add(const std::string& name, const X::Ref<Shader>& shader);
-    void Add(const X::Ref<Shader>& shader);
-    X::Ref<Shader> Load(const std::string& filepath);
-    X::Ref<Shader> Load(const std::string& name, const std::string& filepath);
-    X::Ref<Shader> Get(const std::string& name);
+    void Add(const std::string& name, const Ref<Shader>& shader);
+    void Add(const Ref<Shader>& shader);
+    Ref<Shader> Load(const std::string& filepath);
+    Ref<Shader> Load(const std::string& name, const std::string& filepath);
+    Ref<Shader> Get(const std::string& name);
     bool Exists(const std::string& name) const;
 
 private:
     // shader缓存在这
-    std::unordered_map<std::string, X::Ref<Shader>> m_shaders;
+    std::unordered_map<std::string, Ref<Shader>> m_shaders;
 };

@@ -15,12 +15,12 @@
 class Model {
 public:
     struct SubMesh {
-        X::Ref<Mesh> MeshHandle;
-        X::Ref<Material> MaterialHandle;
+        Ref<Mesh> MeshHandle;
+        Ref<Material> MaterialHandle;
         std::string Name;
     };
 
-    static X::Ref<Model> Load(const std::string& filepath, const X::Ref<Shader>& defaultShader = nullptr);
+    static Ref<Model> Load(const std::string& filepath, const Ref<Shader>& defaultShader = nullptr);
 
     const std::vector<SubMesh>& GetSubMeshes() const { return m_subMeshes; }
     const std::string& GetDirectory() const { return m_directory; }

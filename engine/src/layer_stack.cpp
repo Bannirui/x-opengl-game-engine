@@ -14,12 +14,12 @@ LayerStack::~LayerStack() {
     }
 }
 
-void LayerStack::PushLayer(X::Scope<Layer> layer) {
+void LayerStack::PushLayer(Scope<Layer> layer) {
     m_layers.emplace(m_layers.begin() + m_layerCnt, std::move(layer));
     ++m_layerCnt;
 }
 
-void LayerStack::PushOverlay(X::Scope<Layer> overlay) {
+void LayerStack::PushOverlay(Scope<Layer> overlay) {
     m_layers.emplace_back(std::move(overlay));
 }
 

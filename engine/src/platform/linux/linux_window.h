@@ -59,5 +59,5 @@ private:
 
     WindowData m_data;
     GLFWwindow* m_window;
-    X::Scope<GraphicsContext> m_context;
+    Scope<GraphicsContext> m_context;
 };

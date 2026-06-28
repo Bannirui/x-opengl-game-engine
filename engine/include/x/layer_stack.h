@@ -30,14 +30,14 @@ public:
      * 插入位置是分割线
      * 添加结束之后的效果是 被放在了分割线左边
      */
-    void PushLayer(X::Scope<Layer> layer);
+    void PushLayer(Scope<Layer> layer);
 
     /**
      * 添加imgui层
      * 插入位置是Vector的最后
      * 添加结束之后的效果是 被放在了分割线右边
      */
-    void PushOverlay(X::Scope<Layer> overlay);
+    void PushOverlay(Scope<Layer> overlay);
 
     /**
      * 从分割线左边找到它 移除
@@ -51,35 +51,35 @@ public:
      */
     void PopOverlay(Layer* overlay);
 
-    std::vector<X::Scope<Layer>>::iterator begin() {
+    std::vector<Scope<Layer>>::iterator begin() {
         return m_layers.begin();
     }
 
-    std::vector<X::Scope<Layer>>::iterator end() {
+    std::vector<Scope<Layer>>::iterator end() {
         return m_layers.end();
     }
 
-    std::vector<X::Scope<Layer>>::reverse_iterator rbegin() {
+    std::vector<Scope<Layer>>::reverse_iterator rbegin() {
         return m_layers.rbegin();
     }
 
-    std::vector<X::Scope<Layer>>::reverse_iterator rend() {
+    std::vector<Scope<Layer>>::reverse_iterator rend() {
         return m_layers.rend();
     }
 
-    std::vector<X::Scope<Layer>>::const_iterator cbegin() const {
+    std::vector<Scope<Layer>>::const_iterator cbegin() const {
         return m_layers.begin();
     }
 
-    std::vector<X::Scope<Layer>>::const_iterator cend() const {
+    std::vector<Scope<Layer>>::const_iterator cend() const {
         return m_layers.end();
     }
 
-    std::vector<X::Scope<Layer>>::const_reverse_iterator rbegin() const {
+    std::vector<Scope<Layer>>::const_reverse_iterator rbegin() const {
         return m_layers.rbegin();
     }
 
-    std::vector<X::Scope<Layer>>::const_reverse_iterator rend() const {
+    std::vector<Scope<Layer>>::const_reverse_iterator rend() const {
         return m_layers.rend();
     }
 
@@ -87,5 +87,5 @@ private:
     // layers的分割线 前n个是逻辑层 左边是逻辑层[0...n) 右边是ImGui层[n...)
     uint32_t m_layerCnt{0};
     // 存放所有的层
-    std::vector<X::Scope<Layer>> m_layers;
+    std::vector<Scope<Layer>> m_layers;
 };

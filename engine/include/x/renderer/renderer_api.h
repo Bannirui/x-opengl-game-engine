@@ -34,8 +34,8 @@ public:
      * @param vao VAO在内存的什么位置
      * @param indexCount VAO管理了多少个VBO顶点
      */
-    virtual void DrawIndexed(const X::Ref<VertexArray>& vao, uint32_t indexCount) = 0;
-    virtual void DrawLines(const X::Ref<VertexArray>& vao, uint32_t vertexCount) = 0;
+    virtual void DrawIndexed(const Ref<VertexArray>& vao, uint32_t indexCount) = 0;
+    virtual void DrawLines(const Ref<VertexArray>& vao, uint32_t vertexCount) = 0;
 
     virtual void SetLineWidth(float width) = 0;
 
@@ -43,7 +43,7 @@ public:
         return s_API;
     }
 
-    static X::Scope<RendererAPI> Create();
+    static Scope<RendererAPI> Create();
 
 private:
     static API s_API;

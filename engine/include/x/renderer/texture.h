@@ -44,11 +44,11 @@ public:
     /**
      * @param path 图片路径
      */
-    static X::Ref<Texture2D> Create(const std::string& path);
+    static Ref<Texture2D> Create(const std::string& path);
     /**
      * 不是用磁盘上的图片 一般是先生成一个纹理对象 然后SetData传一个4Byte的RBGA到显存
      * @param width 图片宽度
      * @param height 图片高度
      */
-    static X::Ref<Texture2D> Create(uint32_t width, uint32_t height);
+    static Ref<Texture2D> Create(uint32_t width, uint32_t height);
 };

@@ -100,7 +100,7 @@ static std::string resolveShaderFilePath(const std::string& originalPath) {
     if (dotGlslPos == std::string::npos) {
         return originalPath;
     }
-    auto& info = X::GLRendererInfo::Get();
+    auto& info = GLVerInfo::Get();
     // 运行时的OpenGL版本号 比如330
     int versionDigits = info.MajorVersion * 100 + info.MinorVersion * 10;
     std::string versionSuffix = "." + std::to_string(versionDigits);
@@ -157,8 +157,8 @@ static std::unordered_map<GLenum, std::string> preProcess(const std::string& gls
     if (!isVersionSpecificFilePath(glslPath) && modifiedSource.find("#version") != std::string::npos) {
         // GLSL源码里面没有指定版本号 就用备用逻辑 把源码里面的#version声明替换成运行时OpenGL的版本
         // 然后用源码创建shader程序
-        X_CORE_INFO("shader using OpenGL:{}", X::GLRendererInfo::Get().GetGLSLVersionString());
-        modifiedSource = replaceVersion(modifiedSource, X::GLRendererInfo::Get().GetGLSLVersionString());
+        X_CORE_INFO("shader using OpenGL:{}", GLVerInfo::Get().GetGLSLVersionString());
+        modifiedSource = replaceVersion(modifiedSource, GLVerInfo::Get().GetGLSLVersionString());
     }
     // 在GLSL源码路径里面指定了版本的不要动里面的#version声明 在编写的时候已经适配了对应的版本了
     std::unordered_map<GLenum, std::string> shaderSources;

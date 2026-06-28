@@ -13,12 +13,12 @@
 #error "Unsupported platform!"
 #endif
 
-X::Scope<Window> Window::Create(const WindowProps &props)
+Scope<Window> Window::Create(const WindowProps &props)
 {
 #if defined(X_PLATFORM_MAC)
-    return X::CreateScope<MacWindow>(props);
+    return CreateScope<MacWindow>(props);
 #elif defined(X_PLATFORM_LINUX)
-    return X::CreateScope<LinuxWindow>(props);
+    return CreateScope<LinuxWindow>(props);
 #else
     return nullptr;  // 理论上不会走到这里
 #endif

@@ -7,14 +7,14 @@
 #include "platform/opengl/opengl_uniform_buffer.h"
 #include "x/renderer/renderer.h"
 
-X::Ref<UniformBuffer> UniformBuffer::Create(uint32_t size, uint32_t binding) {
+Ref<UniformBuffer> UniformBuffer::Create(uint32_t size, uint32_t binding) {
     switch (Renderer::GetAPI()) {
         case RendererAPI::API::kNone: {
             X_CORE_ERROR("RendererAPI::kNone is currently not supported!");
             return nullptr;
         }
         case RendererAPI::API::kOpenGL: {
-            return X::CreateRef<OpenGLUniformBuffer>(size, binding);
+            return CreateRef<OpenGLUniformBuffer>(size, binding);
         }
     }
     X_CORE_ERROR("Unknown RendererAPI!");

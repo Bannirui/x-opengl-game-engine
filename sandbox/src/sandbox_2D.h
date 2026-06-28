@@ -21,10 +21,10 @@ public:
 
 private:
     OrthographicCameraController m_cameraController;
-    X::Ref<VertexArray> m_squareVA;
-    X::Ref<Shader> m_flatShader;
-    X::Ref<Texture2D> m_checkerboardTexture;
-    X::Ref<Texture2D> m_cppTexture;
+    Ref<VertexArray> m_squareVA;
+    Ref<Shader> m_flatShader;
+    Ref<Texture2D> m_checkerboardTexture;
+    Ref<Texture2D> m_cppTexture;
     glm::vec4 m_squareColor = {0.2f, 0.3f, 0.8f, 1.0f};
 
     std::vector<ProfileResult> m_profileResults;

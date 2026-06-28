@@ -60,7 +60,7 @@ void Renderer3D::Init() {
     };
 
     // 手动绑定UBO的block跟binding
-    auto setupBlockBindings = [](const X::Ref<Shader>& shader) {
+    auto setupBlockBindings = [](const Ref<Shader>& shader) {
         // OpenGL维护的shader object
         GLuint prog = shader->GetRendererID();
         for (auto& def : s_UBODefs) {
@@ -108,7 +108,7 @@ void Renderer3D::Init() {
      * 在没有加载天空盒时 绑定这个黑色 cubemap避免采样未定义的纹理单元
      */
     {
-        X::Ref<TextureCube> defaultCube = TextureCube::Create(1, true);
+        Ref<TextureCube> defaultCube = TextureCube::Create(1, true);
         s_data.IrradianceMap = defaultCube;
         s_data.PrefilterMap = defaultCube;
     }
@@ -307,7 +307,7 @@ void Renderer3D::Flush() {
     }
 }
 
-void Renderer3D::DrawMesh(const X::Ref<Mesh>& mesh, const X::Ref<Material>& material, const glm::mat4& transform,
+void Renderer3D::DrawMesh(const Ref<Mesh>& mesh, const Ref<Material>& material, const glm::mat4& transform,
                           int32_t entityID) {
     X_PROFILE_FUNCTION();
     if (!mesh || !material) {
@@ -421,7 +421,7 @@ void Renderer3D::DrawSkybox() {
     glDepthFunc(GL_LESS);
 }
 
-void Renderer3D::SetEnvironmentMap(const X::Ref<TextureCube>& envMap) {
+void Renderer3D::SetEnvironmentMap(const Ref<TextureCube>& envMap) {
     s_data.EnvironmentMap = envMap;
     if (envMap) {
         // 从天空盒HDR Cubemap预计算IBL数据
@@ -431,8 +431,8 @@ void Renderer3D::SetEnvironmentMap(const X::Ref<TextureCube>& envMap) {
     }
 }
 
-void Renderer3D::SetEnvironmentMaps(const X::Ref<TextureCube>& envMap, const X::Ref<TextureCube>& irradianceMap,
-                                    const X::Ref<TextureCube>& prefilterMap, uint32_t brdfLUTTexture) {
+void Renderer3D::SetEnvironmentMaps(const Ref<TextureCube>& envMap, const Ref<TextureCube>& irradianceMap,
+                                    const Ref<TextureCube>& prefilterMap, uint32_t brdfLUTTexture) {
     s_data.EnvironmentMap = envMap;
     s_data.IrradianceMap = irradianceMap;
     s_data.PrefilterMap = prefilterMap;
@@ -443,7 +443,7 @@ void Renderer3D::SetExposure(float exposure) {
     s_data.PBRBuffer.Exposure = exposure;
 }
 
-const X::Ref<TextureCube>& Renderer3D::GetEnvironmentMap() {
+const Ref<TextureCube>& Renderer3D::GetEnvironmentMap() {
     return s_data.EnvironmentMap;
 }
 

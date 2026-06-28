@@ -9,28 +9,28 @@
 #include "x/core/log.h"
 #include "x/renderer/renderer.h"
 
-X::Ref<VertexBuffer> VertexBuffer::Create(float* vertices, uint32_t size) {
+Ref<VertexBuffer> VertexBuffer::Create(float* vertices, uint32_t size) {
     switch (Renderer::GetAPI()) {
         case RendererAPI::API::kNone: {
             X_CORE_ERROR("RendererAPI::kNone is currently not supported!");
             return nullptr;
         }
         case RendererAPI::API::kOpenGL: {
-            return X::CreateRef<OpenGLVertexBuffer>(vertices, size);
+            return CreateRef<OpenGLVertexBuffer>(vertices, size);
         }
     }
     X_CORE_ERROR("Unknown RendererAPI!");
     return nullptr;
 }
 
-X::Ref<VertexBuffer> VertexBuffer::Create(uint32_t size) {
+Ref<VertexBuffer> VertexBuffer::Create(uint32_t size) {
     switch (Renderer::GetAPI()) {
         case RendererAPI::API::kNone: {
             X_CORE_ERROR("RendererAPI::kNone is currently not supported!");
             return nullptr;
         }
         case RendererAPI::API::kOpenGL: {
-            return X::CreateRef<OpenGLVertexBuffer>(size);
+            return CreateRef<OpenGLVertexBuffer>(size);
         }
     }
     X_CORE_ERROR("Unknown RendererAPI!");
@@ -41,14 +41,14 @@ X::Ref<VertexBuffer> VertexBuffer::Create(uint32_t size) {
  * @param indices 顶点索引数组在内存的什么位置 内存地址
  * @param count 多少个顶点的索引
  */
-X::Ref<IndexBuffer> IndexBuffer::Create(uint32_t* indices, uint32_t count) {
+Ref<IndexBuffer> IndexBuffer::Create(uint32_t* indices, uint32_t count) {
     switch (Renderer::GetAPI()) {
         case RendererAPI::API::kNone: {
             X_CORE_ERROR("RendererAPI::kNone is currently not supported!");
             return nullptr;
         }
         case RendererAPI::API::kOpenGL: {
-            return X::CreateRef<OpenGLIndexBuffer>(indices, count);
+            return CreateRef<OpenGLIndexBuffer>(indices, count);
         }
     }
     X_CORE_ERROR("Unknown RendererAPI!");

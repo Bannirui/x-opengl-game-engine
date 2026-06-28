@@ -13,9 +13,9 @@
 class Sandbox : public XApplication {
 public:
     Sandbox(const ApplicationSpecification& spec) : XApplication(spec) {
-        // PushLayer(X::CreateScope<Sandbox2D>());
-        // PushLayer(X::CreateScope<Sandbox3D>());
-        PushLayer(X::CreateScope<SolarSystem>());
+        // PushLayer(CreateScope<Sandbox2D>());
+        // PushLayer(CreateScope<Sandbox3D>());
+        PushLayer(CreateScope<SolarSystem>());
     }
 
     ~Sandbox() override = default;

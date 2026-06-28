@@ -11,14 +11,14 @@
 
 RendererAPI::API RendererAPI::s_API = RendererAPI::API::kOpenGL;
 
-X::Scope<RendererAPI> RendererAPI::Create() {
+Scope<RendererAPI> RendererAPI::Create() {
     switch (Renderer::GetAPI()) {
         case RendererAPI::API::kNone: {
             X_CORE_ERROR("RendererAPI::kNone is currently not supported!");
             return nullptr;
         }
         case RendererAPI::API::kOpenGL: {
-            return X::CreateScope<OpenGLRendererAPI>();
+            return CreateScope<OpenGLRendererAPI>();
         }
     }
     X_CORE_ERROR("Unknown RendererAPI!");

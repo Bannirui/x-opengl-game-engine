@@ -20,7 +20,7 @@
 // 封装单次的绘制命令
 struct MeshDrawCommand {
     // 风格资源
-    X::Ref<Mesh> MeshAsset;
+    Ref<Mesh> MeshAsset;
     // 模型矩阵 MVP的M 剪裁空间坐标=投影矩阵*观察矩阵*模型矩阵*本地坐标 模型矩阵负责把本地坐标转换到世界坐标
     glm::mat4 Transform;
     // 用来鼠标拾取
@@ -30,7 +30,7 @@ struct MeshDrawCommand {
 // 按照材质分组 相同材质的多个绘制指令放在一起
 struct MaterialBucket {
     // 要绘制哪个材质
-    X::Ref<Material> MaterialAsset;
+    Ref<Material> MaterialAsset;
     // 这个材质的绘制指令
     std::vector<MeshDrawCommand> Commands;
 };
@@ -70,27 +70,27 @@ struct Renderer3DData {
     // 剪裁空间坐标gl_Position=投影矩阵P*观察矩阵V*模型矩阵M*本地坐标
     // 约定的UBO
     // slot0 ViewProjection矩阵 每帧更新 P*V的结果 负责把世界坐标转换剪裁坐标
-    X::Ref<UniformBuffer> CameraUBO;
+    Ref<UniformBuffer> CameraUBO;
     // slot1 模型矩阵M 负责把本地坐标转换世界
-    X::Ref<UniformBuffer> ModelUBO;
+    Ref<UniformBuffer> ModelUBO;
     // slot2 光照 每帧更新 按light group切换时重新上传
-    X::Ref<UniformBuffer> LightUBO;
+    Ref<UniformBuffer> LightUBO;
     // slot3 相机位置+曝光度 每帧更新
-    X::Ref<UniformBuffer> PBRUBO;
+    Ref<UniformBuffer> PBRUBO;
 
     // 每个light group的CPU端光照参数 只有在真正渲染的时候才会将数据通过UBO传给着色器
     std::unordered_map<uint32_t, LightGroupData> LightGroups;
-    X::Ref<Texture2D> WhiteTexture;  // 1*1白色纹理 没有贴图时作为兜底使用
-    X::Ref<TextureCube> EnvironmentMap;  // HDR环境光 天空盒原始图
-    X::Ref<TextureCube> IrradianceMap;  // 漫反射辐照度图
-    X::Ref<TextureCube> PrefilterMap;  // 预过滤镜面反射图 多级的mipmap
+    Ref<Texture2D> WhiteTexture;  // 1*1白色纹理 没有贴图时作为兜底使用
+    Ref<TextureCube> EnvironmentMap;  // HDR环境光 天空盒原始图
+    Ref<TextureCube> IrradianceMap;  // 漫反射辐照度图
+    Ref<TextureCube> PrefilterMap;  // 预过滤镜面反射图 多级的mipmap
     uint32_t BRDFLUTTexture = 0;  // BRDF积分LUT查找表
     uint32_t DefaultShadowMap = 0;  // 默认阴影贴图
 
     // 着色器
-    X::Ref<Shader> DefaultShader;  // 冯氏
-    X::Ref<Shader> PBRShader;
-    X::Ref<Shader> SkyboxShader;  // 天空盒着色器
+    Ref<Shader> DefaultShader;  // 冯氏
+    Ref<Shader> PBRShader;
+    Ref<Shader> SkyboxShader;  // 天空盒着色器
 
     // CPU端缓冲 UBO数据源 最终都会通过ubo->SetD
     struct CameraData {

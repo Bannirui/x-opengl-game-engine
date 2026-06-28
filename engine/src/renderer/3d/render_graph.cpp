@@ -88,7 +88,7 @@ void RenderGraph::SetExternalResource(const std::string& name, uint32_t renderer
     m_resources[name] = res;
 }
 
-void RenderGraph::AddPass(const X::Ref<RenderPass>& pass) {
+void RenderGraph::AddPass(const Ref<RenderPass>& pass) {
     m_passes.push_back(pass);
 }
 

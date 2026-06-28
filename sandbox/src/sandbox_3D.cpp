@@ -25,7 +25,7 @@ void Sandbox3D::OnAttach() {
 
     m_cubeShader = Shader::Create("asset/shader/Renderer3D_Phong.glsl");
 
-    X::Ref<Texture2D> whiteTex = Texture2D::Create(1, 1);
+    Ref<Texture2D> whiteTex = Texture2D::Create(1, 1);
     uint32_t whiteData = 0xffffffff;
     whiteTex->SetData(&whiteData, sizeof(uint32_t));
 

@@ -21,12 +21,12 @@ void Renderer2DDraw::DrawQuad(const glm::vec3& position, const glm::vec2& size, 
     DrawQuad(transform, color);
 }
 
-void Renderer2DDraw::DrawQuad(const glm::vec2& position, const glm::vec2& size, const X::Ref<Texture2D>& texture,
+void Renderer2DDraw::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture,
                               float tilingFactor, const glm::vec4& tintColor) {
     DrawQuad({position.x, position.y, 0.0f}, size, texture, tilingFactor, tintColor);
 }
 
-void Renderer2DDraw::DrawQuad(const glm::vec3& position, const glm::vec2& size, const X::Ref<Texture2D>& texture,
+void Renderer2DDraw::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture,
                               float tilingFactor, const glm::vec4& tintColor) {
     X_PROFILE_FUNCTION();
     glm::mat4 transform =
@@ -53,7 +53,7 @@ void Renderer2DDraw::DrawQuad(const glm::mat4& transform, const glm::vec4& color
     s_data.Stats.PrimitiveCount++;
 }
 
-void Renderer2DDraw::DrawQuad(const glm::mat4& transform, const X::Ref<Texture2D>& texture, float tilingFactor,
+void Renderer2DDraw::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, float tilingFactor,
                               const glm::vec4& tintColor, int entityID) {
     X_PROFILE_FUNCTION();
     constexpr glm::vec2 textureCoords[] = {{0.0f, 0.0f}, {1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f}};
@@ -103,12 +103,12 @@ void Renderer2DDraw::DrawRotatedQuad(const glm::vec3& position, const glm::vec2&
 }
 
 void Renderer2DDraw::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation,
-                                     const X::Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor) {
+                                     const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor) {
     DrawRotatedQuad({position.x, position.y, 0.0f}, size, rotation, texture, tilingFactor, tintColor);
 }
 
 void Renderer2DDraw::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation,
-                                     const X::Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor) {
+                                     const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor) {
     X_PROFILE_FUNCTION();
     glm::mat4 transform =
         glm::translate(glm::mat4(1.0f), position) *

@@ -55,5 +55,5 @@ public:
 
     virtual const FramebufferSpecification& GetSpecification() const = 0;
 
-    static X::Ref<FrameBuffer> Create(const FramebufferSpecification& spec);
+    static Ref<FrameBuffer> Create(const FramebufferSpecification& spec);
 };

@@ -55,7 +55,7 @@ struct TransformComponent {
 
 struct SpriteRendererComponent {
     glm::vec4 Color{1.0f};
-    X::Ref<Texture2D> Texture;
+    Ref<Texture2D> Texture;
     float TilingFactor{1.0f};
 
     SpriteRendererComponent() = default;
@@ -74,14 +74,14 @@ struct CircleRendererComponent {
 };
 
 struct MeshComponent {
-    X::Ref<Mesh> MeshHandle;
+    Ref<Mesh> MeshHandle;
 
     MeshComponent() = default;
     MeshComponent(const MeshComponent&) = default;
 };
 
 struct MaterialComponent {
-    X::Ref<Material> MaterialHandle;
+    Ref<Material> MaterialHandle;
 
     MaterialComponent() = default;
     MaterialComponent(const MaterialComponent&) = default;
@@ -173,7 +173,7 @@ struct CircleCollider2DComponent {
 };
 
 struct AnimatorComponent {
-    X::Scope<Animator> AnimatorInstance;
+    Scope<Animator> AnimatorInstance;
 
     AnimatorComponent() = default;
     AnimatorComponent(const AnimatorComponent&) = delete;

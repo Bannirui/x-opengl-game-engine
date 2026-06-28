@@ -4,7 +4,7 @@
 
 #include "x/animation/animator.h"
 
-void Animator::PlayClip(const X::Ref<AnimationClip>& clip, bool loop) {
+void Animator::PlayClip(const Ref<AnimationClip>& clip, bool loop) {
     m_currentClip = clip;
     m_currentTime = 0.0f;
     m_looping = loop;

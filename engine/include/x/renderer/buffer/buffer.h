@@ -277,13 +277,13 @@ public:
      * @param vertices VBO里面放的数据 这些数据在CPU侧内存位置 内存地址
      * @param size 需要多大的显存空间 多少个字节
      */
-    static X::Ref<VertexBuffer> Create(float* vertices, uint32_t size);
+    static Ref<VertexBuffer> Create(float* vertices, uint32_t size);
     /**
      * 创建VBO
      * 只要分配空的显存 暂时不放数据
      * @param size 需要多大的显存 字节
      */
-    static X::Ref<VertexBuffer> Create(uint32_t size);
+    static Ref<VertexBuffer> Create(uint32_t size);
 };
 
 /**
@@ -310,5 +310,5 @@ public:
      * @param indices EBO里面要放的数据 这些数据在内存上的位置 内存地址 把这些内存上数据复制到显存上
      * @param count 要往显存上发送多少个索引顶点 每个索引是一个整数 很容易计算出来内存要复制多少个字节到显存
      */
-    static X::Ref<IndexBuffer> Create(uint32_t* indices, uint32_t count);
+    static Ref<IndexBuffer> Create(uint32_t* indices, uint32_t count);
 };

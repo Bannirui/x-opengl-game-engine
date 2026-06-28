@@ -33,7 +33,7 @@ private:
     uint32_t m_shadowSize;
     const std::vector<MeshDrawCommand>& m_drawCommands;
     glm::mat4 m_lightViewProjection{1.0f};
-    X::Ref<Shader> m_shader;
+    Ref<Shader> m_shader;
     uint32_t m_shadowFBO = 0;
 };
 
@@ -50,7 +50,7 @@ public:
 private:
     uint32_t m_width, m_height;
     glm::mat4 m_projection{1.0f};
-    X::Ref<Shader> m_ssaoShader, m_blurShader;
+    Ref<Shader> m_ssaoShader, m_blurShader;
     std::vector<glm::vec3> m_ssaoKernel;
 };
 
@@ -75,7 +75,7 @@ private:
     uint32_t m_width, m_height;
     float m_threshold = 1.0f;
     float m_exposure = 1.0f;
-    X::Ref<Shader> m_extractShader, m_blurShader, m_compositeShader;
+    Ref<Shader> m_extractShader, m_blurShader, m_compositeShader;
     uint32_t m_pingPongA = 0, m_pingPongB = 0;
 };
 

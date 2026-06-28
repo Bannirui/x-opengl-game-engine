@@ -1,5 +1,7 @@
 #pragma once
 
+#include "x/core/base.h"
+
 #include <fmt/format.h>
 #include <glm/gtx/string_cast.hpp>
 #include <spdlog/spdlog.h>
@@ -8,17 +10,17 @@ class XLog {
 public:
     static void Init();
 
-    static X::Ref<spdlog::logger>& get_coreLogger() {
+    static Ref<spdlog::logger>& get_coreLogger() {
         return s_coreLogger;
     }
 
-    static X::Ref<spdlog::logger>& get_clientLogger() {
+    static Ref<spdlog::logger>& get_clientLogger() {
         return s_clientLogger;
     }
 
 private:
-    static X::Ref<spdlog::logger> s_coreLogger;
-    static X::Ref<spdlog::logger> s_clientLogger;
+    static Ref<spdlog::logger> s_coreLogger;
+    static Ref<spdlog::logger> s_clientLogger;
 };
 
 template <glm::length_t L, typename T, glm::qualifier Q>

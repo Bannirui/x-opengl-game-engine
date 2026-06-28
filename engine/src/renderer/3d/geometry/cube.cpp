@@ -8,7 +8,7 @@
 
 #include <vector>
 
-X::Ref<Mesh> GeometryGenerator::CreateCube(float size) {
+Ref<Mesh> GeometryGenerator::CreateCube(float size) {
     float h = size * 0.5f;
     // clang-format off
     std::vector<StaticMeshVertex> vertices = {

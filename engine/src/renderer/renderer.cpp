@@ -11,7 +11,7 @@
 #include "x/renderer/render_command.h"
 #include "x/renderer/shader.h"
 
-X::Scope<Renderer::SceneData> Renderer::s_sceneData = X::CreateScope<Renderer::SceneData>();
+Scope<Renderer::SceneData> Renderer::s_sceneData = CreateScope<Renderer::SceneData>();
 
 void Renderer::Init() {
     X_PROFILE_FUNCTION();
@@ -35,7 +35,7 @@ void Renderer::BeginScene(OrthographicCamera& camera) {
 
 void Renderer::EndScene() {}
 
-void Renderer::Submit(const X::Ref<Shader>& shader, const X::Ref<VertexArray>& vertexArray,
+void Renderer::Submit(const Ref<Shader>& shader, const Ref<VertexArray>& vertexArray,
                       const glm::mat4& transform) {
     shader->Bind();
     shader->SetMat4("u_ViewProjection", s_sceneData->viewProjectionMatrix);

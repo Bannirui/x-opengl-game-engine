@@ -11,8 +11,8 @@
 
 class TextureCube {
 public:
-    static X::Ref<TextureCube> Create(uint32_t size, bool hdr = false);
-    static X::Ref<TextureCube> CreateFromEquirectangular(const std::string& hdrPath);
+    static Ref<TextureCube> Create(uint32_t size, bool hdr = false);
+    static Ref<TextureCube> CreateFromEquirectangular(const std::string& hdrPath);
 
     void Bind(uint32_t slot = 0) const;
     void Unbind() const;

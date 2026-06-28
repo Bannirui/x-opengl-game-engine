@@ -93,7 +93,7 @@ void OpenGLVertexArray::Unbind() const {
  * 所以配置而言配置的就是让shader的attribute知道怎么使用VBO
  * @param vertexBuffer VBO VBO里面不仅有多个顶点的数据信息 还有这些每个顶点的有多少个分量
  */
-void OpenGLVertexArray::AddVertexBuffer(const X::Ref<VertexBuffer>& vertexBuffer) {
+void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer) {
     X_PROFILE_FUNCTION();
     // 必须得有布局 VBO中不仅需要顶点数据 还要有这些顶点数据是怎么布局的
     X_CORE_ASSERT(vertexBuffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
@@ -159,7 +159,7 @@ void OpenGLVertexArray::AddVertexBuffer(const X::Ref<VertexBuffer>& vertexBuffer
     m_vertexBuffers.push_back(vertexBuffer);
 }
 
-void OpenGLVertexArray::SetIndexBuffer(const X::Ref<IndexBuffer>& indexBuffer) {
+void OpenGLVertexArray::SetIndexBuffer(const Ref<IndexBuffer>& indexBuffer) {
     X_PROFILE_FUNCTION();
     // 激活VAO在OpenGL的插槽
     glBindVertexArray(m_rendererID);

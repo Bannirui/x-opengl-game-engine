@@ -51,7 +51,7 @@ public:
     /**
      * 封装平台差异性
      */
-    static X::Scope<Window> Create(const WindowProps& props = WindowProps());
+    static Scope<Window> Create(const WindowProps& props = WindowProps());
 
 protected:
     Window() = default;

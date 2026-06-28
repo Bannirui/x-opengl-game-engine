@@ -45,9 +45,9 @@ public:
      * @param indices 内存上的索引数组
      * @return 坐等直接提交给GPU绘制的几何数据
      */
-    static X::Ref<Mesh> Create(const std::vector<StaticMeshVertex>& vertices, const std::vector<uint32_t>& indices);
+    static Ref<Mesh> Create(const std::vector<StaticMeshVertex>& vertices, const std::vector<uint32_t>& indices);
 
-    const X::Ref<VertexArray>& GetVertexArray() const {
+    const Ref<VertexArray>& GetVertexArray() const {
         return m_vertexArray;
     }
 
@@ -57,11 +57,11 @@ public:
 
 private:
     // 串联VBO+EBO的一个说明书 告诉GPU顶点数据怎么解读
-    X::Ref<VertexArray> m_vertexArray;
+    Ref<VertexArray> m_vertexArray;
     // 显存上的顶点数据块 位置 法线 UV
-    X::Ref<VertexBuffer> m_vertexBuffer;
+    Ref<VertexBuffer> m_vertexBuffer;
     // 显存上的索引数组 复用顶点
-    X::Ref<IndexBuffer> m_indexBuffer;
+    Ref<IndexBuffer> m_indexBuffer;
     // 索引总数据 绘制的时候传给glDrawElements
     uint32_t m_indexCount = 0;
 };

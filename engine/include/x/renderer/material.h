@@ -25,7 +25,7 @@ public:
      * 静态工厂
      * @param shader 着色器程序
      */
-    static X::Ref<Material> Create(const X::Ref<Shader>& shader);
+    static Ref<Material> Create(const Ref<Shader>& shader);
 
     /**
      * 给shader程序传uniform变量
@@ -41,7 +41,7 @@ public:
      * @param name uniform变量名
      * @param texture 纹理对象
      */
-    void SetTexture(const std::string& name, const X::Ref<Texture2D>& texture);
+    void SetTexture(const std::string& name, const Ref<Texture2D>& texture);
     /**
      * 给shader程序传float
      * @param name uniform变量名
@@ -61,11 +61,11 @@ public:
      */
     void SetFloat4(const std::string& name, const glm::vec4& value);
 
-    const X::Ref<Shader>& GetShader() const {
+    const Ref<Shader>& GetShader() const {
         return m_shader;
     }
 
-    const std::unordered_map<std::string, X::Ref<Texture2D>>& GetTextures() const {
+    const std::unordered_map<std::string, Ref<Texture2D>>& GetTextures() const {
         return m_textures;
     }
 
@@ -81,8 +81,8 @@ public:
     Material() = default;
 
 public:
-    X::Ref<Shader> m_shader;
-    std::unordered_map<std::string, X::Ref<Texture2D>> m_textures;
+    Ref<Shader> m_shader;
+    std::unordered_map<std::string, Ref<Texture2D>> m_textures;
     std::unordered_map<std::string, float> m_floats;
     std::unordered_map<std::string, glm::vec3> m_vec3s;
     std::unordered_map<std::string, glm::vec4> m_vec4s;

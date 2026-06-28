@@ -54,9 +54,9 @@ struct BatchGroup {
     }
 
     // GPU显存 顶点的索引信息
-    X::Ref<VertexArray> VAO;
+    Ref<VertexArray> VAO;
     // GPU显存 顶点信息
-    X::Ref<VertexBuffer> VBO;
+    Ref<VertexBuffer> VBO;
     /**
      * 双指针管理缓存空间
      * CPU侧内存上[Base...Ptr)区间维护着实际的顶点数据内存

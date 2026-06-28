@@ -3,8 +3,8 @@
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
-X::Ref<spdlog::logger> XLog::s_coreLogger;
-X::Ref<spdlog::logger> XLog::s_clientLogger;
+Ref<spdlog::logger> XLog::s_coreLogger;
+Ref<spdlog::logger> XLog::s_clientLogger;
 
 void XLog::Init()
 {

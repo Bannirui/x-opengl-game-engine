@@ -20,14 +20,14 @@ public:
     void Bind() const override;
     void Unbind() const override;
 
-    void AddVertexBuffer(const X::Ref<VertexBuffer>& vertexBuffer) override;
-    void SetIndexBuffer(const X::Ref<IndexBuffer>& indexBuffer) override;
+    void AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer) override;
+    void SetIndexBuffer(const Ref<IndexBuffer>& indexBuffer) override;
 
-    const std::vector<X::Ref<VertexBuffer>>& GetVertexBuffers() const override {
+    const std::vector<Ref<VertexBuffer>>& GetVertexBuffers() const override {
         return m_vertexBuffers;
     }
 
-    const X::Ref<IndexBuffer>& GetIndexBuffer() const override {
+    const Ref<IndexBuffer>& GetIndexBuffer() const override {
         return m_indexBuffer;
     }
 
@@ -36,8 +36,8 @@ private:
      * OpenGL封装了VAO(vertex array object) 在显存开辟对应空间 OpenGL分配唯一id引用它
      */
     uint32_t m_rendererID;
-    std::vector<X::Ref<VertexBuffer>> m_vertexBuffers;  // VAO管理着的VBO
-    X::Ref<IndexBuffer> m_indexBuffer;                  // VAO管理着的EBO
+    std::vector<Ref<VertexBuffer>> m_vertexBuffers;  // VAO管理着的VBO
+    Ref<IndexBuffer> m_indexBuffer;                  // VAO管理着的EBO
     /**
      * 哪个顶点分量 要让shader的哪个attribute知道取哪些数据
      *   - pos就是0->映射shader里面的location=0->就是shader里面变量a_Position

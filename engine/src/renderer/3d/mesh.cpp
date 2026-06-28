@@ -8,12 +8,12 @@
 #include "x/renderer/buffer/buffer.h"
 #include "x/renderer/buffer/vertex_array.h"
 
-X::Ref<Mesh> Mesh::Create(const std::vector<StaticMeshVertex>& vertices, const std::vector<uint32_t>& indices) {
+Ref<Mesh> Mesh::Create(const std::vector<StaticMeshVertex>& vertices, const std::vector<uint32_t>& indices) {
     X_PROFILE_FUNCTION();
     X_CORE_ASSERT(!vertices.empty(), "Mesh must have vertices");
     X_CORE_ASSERT(!indices.empty(), "Mesh must have indices");
 
-    X::Ref<Mesh> mesh(new Mesh());
+    Ref<Mesh> mesh(new Mesh());
     // 内存上的顶点
     mesh->m_vertexBuffer = VertexBuffer::Create((float*)vertices.data(),
                                                 static_cast<uint32_t>(vertices.size() * sizeof(StaticMeshVertex)));

@@ -38,7 +38,7 @@ public:
 private:
     uint32_t m_shadowSize;
     const std::vector<MeshDrawCommand>& m_drawCommands;
-    X::Ref<Shader> m_shader;
+    Ref<Shader> m_shader;
     uint32_t m_shadowFBO = 0;
     uint32_t m_shadowMaps[CASCADE_COUNT] = {};
     glm::mat4 m_lightViewProjections[CASCADE_COUNT]{};

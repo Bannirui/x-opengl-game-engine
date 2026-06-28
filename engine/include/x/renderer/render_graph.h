@@ -71,7 +71,7 @@ public:
     void SetExternalResource(const std::string& name, uint32_t rendererID, RenderGraphResourceType type);
 
     // Pass management
-    void AddPass(const X::Ref<RenderPass>& pass);
+    void AddPass(const Ref<RenderPass>& pass);
     void Compile();
     void Execute();
     void Reset();
@@ -87,7 +87,7 @@ private:
     void allocateResource(const std::string& name, const RenderGraphResource& res);
 
     std::unordered_map<std::string, RenderGraphResource> m_resources;
-    std::vector<X::Ref<RenderPass>> m_passes;
+    std::vector<Ref<RenderPass>> m_passes;
     uint32_t m_viewportWidth = 1280;
     uint32_t m_viewportHeight = 720;
 };

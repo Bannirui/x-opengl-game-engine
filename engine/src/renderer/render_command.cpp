@@ -4,4 +4,4 @@
 
 #include "x/renderer/render_command.h"
 
-X::Scope<RendererAPI> RenderCommand::s_rendererAPI = RendererAPI::Create();
+Scope<RendererAPI> RenderCommand::s_rendererAPI = RendererAPI::Create();

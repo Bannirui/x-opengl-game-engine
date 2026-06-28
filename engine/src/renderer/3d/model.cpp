@@ -146,7 +146,7 @@ static std::unordered_map<std::string, MTLMaterial> parseMTL(const std::string& 
 
 // ---- Main OBJ + MTL loader ----
 
-X::Ref<Model> Model::Load(const std::string& filepath, const X::Ref<Shader>& defaultShader) {
+Ref<Model> Model::Load(const std::string& filepath, const Ref<Shader>& defaultShader) {
     X_PROFILE_FUNCTION();
 
     std::string content = readFile(filepath);
@@ -224,13 +224,13 @@ X::Ref<Model> Model::Load(const std::string& filepath, const X::Ref<Shader>& def
     }
 
     // Resolve default shader
-    X::Ref<Shader> shader = defaultShader;
+    Ref<Shader> shader = defaultShader;
     if (!shader) {
         shader = Shader::Create("asset/shader/Renderer3D_Phong.glsl");
     }
 
     // Build sub-meshes from face groups
-    X::Ref<Model> model = X::CreateRef<Model>();
+    Ref<Model> model = CreateRef<Model>();
     model->m_directory = directory;
 
     for (auto& group : groups) {
@@ -311,7 +311,7 @@ X::Ref<Model> Model::Load(const std::string& filepath, const X::Ref<Shader>& def
         // Create mesh and material for this group
         auto mesh = Mesh::Create(vertices, indices);
 
-        X::Ref<Material> material;
+        Ref<Material> material;
         MTLMaterial* mtl = nullptr;
         auto mtlIt = mtlMaterials.find(group.MaterialName);
         if (mtlIt != mtlMaterials.end()) {

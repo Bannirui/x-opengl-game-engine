@@ -17,8 +17,8 @@ class Animator {
 public:
     Animator() = default;
 
-    void SetSkeleton(const X::Ref<Skeleton>& skeleton) { m_skeleton = skeleton; }
-    void PlayClip(const X::Ref<AnimationClip>& clip, bool loop = true);
+    void SetSkeleton(const Ref<Skeleton>& skeleton) { m_skeleton = skeleton; }
+    void PlayClip(const Ref<AnimationClip>& clip, bool loop = true);
 
     void Update(float deltaTime);
 
@@ -26,8 +26,8 @@ public:
     bool HasAnimation() const { return m_currentClip != nullptr; }
 
 private:
-    X::Ref<Skeleton> m_skeleton;
-    X::Ref<AnimationClip> m_currentClip;
+    Ref<Skeleton> m_skeleton;
+    Ref<AnimationClip> m_currentClip;
 
     float m_currentTime = 0.0f;
     float m_speed = 1.0f;

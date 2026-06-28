@@ -23,8 +23,8 @@ struct PlanetData {
     float Metallic;
     float Roughness;
     glm::vec3 Emissive;
-    X::Ref<Material> Mat;
-    X::Ref<Texture2D> AlbedoTexture;
+    Ref<Material> Mat;
+    Ref<Texture2D> AlbedoTexture;
     float OrbitAngle = 0.0f;
 };
 
@@ -44,11 +44,11 @@ private:
 
     EditorCamera m_camera;
 
-    X::Ref<Shader> m_pbrShader;
-    X::Ref<Mesh> m_sphereMesh;
-    X::Ref<Mesh> m_ringMesh;
-    X::Ref<Material> m_ringMaterial;
-    X::Ref<Texture2D> m_whiteTex;
+    Ref<Shader> m_pbrShader;
+    Ref<Mesh> m_sphereMesh;
+    Ref<Mesh> m_ringMesh;
+    Ref<Material> m_ringMaterial;
+    Ref<Texture2D> m_whiteTex;
 
     PlanetData m_sun;
     std::array<PlanetData, 8> m_planets;

@@ -10,7 +10,7 @@
 #include <cmath>
 #include <vector>
 
-X::Ref<Mesh> GeometryGenerator::CreateSphere(float radius, uint32_t sectors, uint32_t stacks) {
+Ref<Mesh> GeometryGenerator::CreateSphere(float radius, uint32_t sectors, uint32_t stacks) {
     std::vector<StaticMeshVertex> vertices;
     std::vector<uint32_t> indices;
 

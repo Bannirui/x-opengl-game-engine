@@ -33,8 +33,6 @@ void ImGuiLayer::OnAttach() {
     io.FontDefault = io.Fonts->AddFontFromFileTTF("asset/fonts/opensans/OpenSans-Regular.ttf", fontSize);
     // 主题
     ImGui::StyleColorsDark();
-    // When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular
-    // ones.
     ImGuiStyle& style = ImGui::GetStyle();
     if (io.ConfigFlags) {
         style.WindowRounding = 0.0f;
@@ -45,7 +43,7 @@ void ImGuiLayer::OnAttach() {
     // ImGui绑定glfw 事件自动托管 不用自己手动管理
     ImGui_ImplGlfw_InitForOpenGL(static_cast<GLFWwindow*>(app.get_window().get_nativeWindow()), true);
     // ImGui绑定OpenGL
-    ImGui_ImplOpenGL3_Init(X::GLRendererInfo::Get().GetGLSLVersionString().c_str());
+    ImGui_ImplOpenGL3_Init(GLVerInfo::Get().GetGLSLVersionString().c_str());
 }
 
 void ImGuiLayer::OnDetach() {

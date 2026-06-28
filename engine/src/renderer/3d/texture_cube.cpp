@@ -26,8 +26,8 @@ static const glm::mat4 CAPTURE_VIEWS[6] = {
     glm::lookAt(glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f)),  // -Z
 };
 
-X::Ref<TextureCube> TextureCube::Create(uint32_t size, bool hdr) {
-    X::Ref<TextureCube> cube = X::CreateRef<TextureCube>();
+Ref<TextureCube> TextureCube::Create(uint32_t size, bool hdr) {
+    Ref<TextureCube> cube = CreateRef<TextureCube>();
     cube->m_size = size;
     cube->m_hdr = hdr;
 
@@ -52,7 +52,7 @@ X::Ref<TextureCube> TextureCube::Create(uint32_t size, bool hdr) {
     return cube;
 }
 
-X::Ref<TextureCube> TextureCube::CreateFromEquirectangular(const std::string& hdrPath) {
+Ref<TextureCube> TextureCube::CreateFromEquirectangular(const std::string& hdrPath) {
     X_PROFILE_FUNCTION();
 
     stbi_set_flip_vertically_on_load(true);
@@ -75,7 +75,7 @@ X::Ref<TextureCube> TextureCube::CreateFromEquirectangular(const std::string& hd
     stbi_image_free(data);
 
     uint32_t cubeSize = 512;
-    X::Ref<TextureCube> cube = TextureCube::Create(cubeSize, true);
+    Ref<TextureCube> cube = TextureCube::Create(cubeSize, true);
 
     // Create capture FBO
     GLuint captureFBO, captureRBO;

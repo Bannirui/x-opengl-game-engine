@@ -10,7 +10,7 @@
 #include <cmath>
 #include <vector>
 
-X::Ref<Mesh> GeometryGenerator::CreateRing(float innerRadius, float outerRadius, uint32_t segments) {
+Ref<Mesh> GeometryGenerator::CreateRing(float innerRadius, float outerRadius, uint32_t segments) {
     std::vector<StaticMeshVertex> vertices;
     std::vector<uint32_t> indices;
 

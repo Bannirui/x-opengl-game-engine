@@ -125,9 +125,9 @@ void SolarSystem::OnAttach() {
     uint32_t whiteData = 0xffffffff;
     m_whiteTex->SetData(&whiteData, sizeof(uint32_t));
 
-    auto loadTex = [this](const std::string& name) -> X::Ref<Texture2D> {
+    auto loadTex = [this](const std::string& name) -> Ref<Texture2D> {
         std::string path = "asset/texture/" + name + ".jpg";
-        X::Ref<Texture2D> tex = Texture2D::Create(path);
+        Ref<Texture2D> tex = Texture2D::Create(path);
         if (!tex->IsLoaded()) {
             X_CORE_WARN("Failed to load texture: {}, using fallback", path);
             return m_whiteTex;

@@ -58,7 +58,7 @@ public:
      * 不立刻绘制 而是按照Material分组累积到Buckets 在EndScene->Flush()时统一批量提交
      * @param transform 模型矩阵M 把本地坐标转换到世界坐标
      */
-    static void DrawMesh(const X::Ref<Mesh>& mesh, const X::Ref<Material>& material, const glm::mat4& transform,
+    static void DrawMesh(const Ref<Mesh>& mesh, const Ref<Material>& material, const glm::mat4& transform,
                          int32_t entityID = -1);
 
     /**
@@ -72,11 +72,11 @@ public:
     static void DrawSkybox();
 
     // PBR environment
-    static void SetEnvironmentMap(const X::Ref<TextureCube>& envMap);
-    static void SetEnvironmentMaps(const X::Ref<TextureCube>& envMap, const X::Ref<TextureCube>& irradianceMap,
-                                   const X::Ref<TextureCube>& prefilterMap, uint32_t brdfLUTTexture);
+    static void SetEnvironmentMap(const Ref<TextureCube>& envMap);
+    static void SetEnvironmentMaps(const Ref<TextureCube>& envMap, const Ref<TextureCube>& irradianceMap,
+                                   const Ref<TextureCube>& prefilterMap, uint32_t brdfLUTTexture);
     static void SetExposure(float exposure);
-    static const X::Ref<TextureCube>& GetEnvironmentMap();
+    static const Ref<TextureCube>& GetEnvironmentMap();
 
     // Light
     static void SetLightAmbient(const glm::vec3& ambient, uint32_t lightGroupId = 0);

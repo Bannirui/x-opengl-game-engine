@@ -30,7 +30,7 @@ XApplication::XApplication(const ApplicationSpecification& specification) : m_sp
 
     Renderer::Init();
 
-    auto imGuiLayer = X::CreateScope<ImGuiLayer>();
+    auto imGuiLayer = CreateScope<ImGuiLayer>();
     m_ImGuiLayer = imGuiLayer.get();
     PushOverlay(std::move(imGuiLayer));
 }
@@ -80,13 +80,13 @@ void XApplication::ProcessEvents() {
     }
 }
 
-void XApplication::PushLayer(X::Scope<Layer> layer) {
+void XApplication::PushLayer(Scope<Layer> layer) {
     X_PROFILE_FUNCTION();
     layer->OnAttach();
     m_layerStack.PushLayer(std::move(layer));
 }
 
-void XApplication::PushOverlay(X::Scope<Layer> overlay) {
+void XApplication::PushOverlay(Scope<Layer> overlay) {
     X_PROFILE_FUNCTION();
     overlay->OnAttach();
     m_layerStack.PushOverlay(std::move(overlay));

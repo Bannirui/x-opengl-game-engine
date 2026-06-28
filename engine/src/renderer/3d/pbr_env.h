@@ -12,8 +12,8 @@
 
 class PBREnvironment {
 public:
-    static X::Ref<TextureCube> BakeIrradiance(const X::Ref<TextureCube>& envMap, uint32_t size = 32);
-    static X::Ref<TextureCube> BakePrefilter(const X::Ref<TextureCube>& envMap, uint32_t size = 128,
+    static Ref<TextureCube> BakeIrradiance(const Ref<TextureCube>& envMap, uint32_t size = 32);
+    static Ref<TextureCube> BakePrefilter(const Ref<TextureCube>& envMap, uint32_t size = 128,
                                              uint32_t maxMip = 5);
     static uint32_t BakeBRDFLUT(uint32_t size = 512);
 

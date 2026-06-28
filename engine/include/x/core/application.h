@@ -46,8 +46,8 @@ public:
      */
     void OnEvent(Event& e);
 
-    void PushLayer(X::Scope<Layer> layer);
-    void PushOverlay(X::Scope<Layer> overlay);
+    void PushLayer(Scope<Layer> layer);
+    void PushOverlay(Scope<Layer> overlay);
 
     void Close();
 
@@ -76,7 +76,7 @@ private:
 
 private:
     ApplicationSpecification m_specification;
-    X::Scope<Window> m_window;
+    Scope<Window> m_window;
     bool m_running{true};
     LayerStack m_layerStack;
     ImGuiLayer* m_ImGuiLayer;

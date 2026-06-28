@@ -217,7 +217,7 @@ void PBREnvironment::ShutdownCaptureResources() {
 //   用途: PBR shader 中采样 u_IrradianceMap 得到环境漫反射分量
 //   GLSL: irradiance = PI * Σ(envSample * cosθ * sinθ) / N_samples
 // =============================================================================
-X::Ref<TextureCube> PBREnvironment::BakeIrradiance(const X::Ref<TextureCube>& envMap, uint32_t size) {
+Ref<TextureCube> PBREnvironment::BakeIrradiance(const Ref<TextureCube>& envMap, uint32_t size) {
     X_PROFILE_FUNCTION();
 
     const char* vert = R"(
@@ -260,7 +260,7 @@ void main() {
     GLuint prog = compileShader(vert, frag);
 
     // 创建输出纹理 (RGBA16F HDR)
-    X::Ref<TextureCube> irradianceMap = TextureCube::Create(size, true);
+    Ref<TextureCube> irradianceMap = TextureCube::Create(size, true);
 
     glUseProgram(prog);
     glUniformMatrix4fv(glGetUniformLocation(prog, "u_Projection"), 1, GL_FALSE, CUBEMAP_CAPTURE_PROJECTION);
@@ -304,7 +304,7 @@ void main() {
 //
 //   用途: PBR shader 中采样 u_PrefilterMap 得到环境镜面反射分量
 // =============================================================================
-X::Ref<TextureCube> PBREnvironment::BakePrefilter(const X::Ref<TextureCube>& envMap, uint32_t size, uint32_t maxMip) {
+Ref<TextureCube> PBREnvironment::BakePrefilter(const Ref<TextureCube>& envMap, uint32_t size, uint32_t maxMip) {
     X_PROFILE_FUNCTION();
 
     const char* vert = R"(
@@ -384,7 +384,7 @@ void main() {
 )";
     GLuint prog = compileShader(vert, frag);
 
-    X::Ref<TextureCube> prefilterMap = TextureCube::Create(size, true);
+    Ref<TextureCube> prefilterMap = TextureCube::Create(size, true);
 
     glUseProgram(prog);
     glUniformMatrix4fv(glGetUniformLocation(prog, "u_Projection"), 1, GL_FALSE, CUBEMAP_CAPTURE_PROJECTION);

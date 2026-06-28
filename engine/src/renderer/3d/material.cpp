@@ -8,10 +8,10 @@
 #include "x/renderer/shader.h"
 #include "x/renderer/texture.h"
 
-X::Ref<Material> Material::Create(const X::Ref<Shader>& shader) {
+Ref<Material> Material::Create(const Ref<Shader>& shader) {
     X_PROFILE_FUNCTION();
     X_CORE_ASSERT(shader, "Material requires a valid shader");
-    X::Ref<Material> material = X::CreateRef<Material>();
+    Ref<Material> material = CreateRef<Material>();
     material->m_shader = shader;
     return material;
 }
@@ -44,7 +44,7 @@ void Material::Unbind() const {
     m_shader->Unbind();
 }
 
-void Material::SetTexture(const std::string& name, const X::Ref<Texture2D>& texture) {
+void Material::SetTexture(const std::string& name, const Ref<Texture2D>& texture) {
     m_textures[name] = texture;
 }
 

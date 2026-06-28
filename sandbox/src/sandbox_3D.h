@@ -28,8 +28,8 @@ private:
     float m_rotation = 0.0f;
 
     // 渲染立方体要用到
-    X::Ref<Shader> m_cubeShader;
-    X::Ref<Mesh> m_cubeMesh;
-    X::Ref<Material> m_cubeMaterial;
-    X::Ref<Material> m_cubeMaterialBlue;
+    Ref<Shader> m_cubeShader;
+    Ref<Mesh> m_cubeMesh;
+    Ref<Material> m_cubeMaterial;
+    Ref<Material> m_cubeMaterialBlue;
 };

@@ -35,7 +35,7 @@ public:
      * @param vao VAO数据在CPU侧内存什么位置 内存地址
      * @param count 多少个顶点的索引
      */
-    static void DrawIndexed(const X::Ref<VertexArray>& vao, uint32_t count = 0) {
+    static void DrawIndexed(const Ref<VertexArray>& vao, uint32_t count = 0) {
         s_rendererAPI->DrawIndexed(vao, count);
     }
 
@@ -44,7 +44,7 @@ public:
      * @param vao VAO数据在内存的什么位置 内存地址
      * @param vertexCount 要画多少个顶点
      */
-    static void DrawLines(const X::Ref<VertexArray>& vao, uint32_t vertexCount) {
+    static void DrawLines(const Ref<VertexArray>& vao, uint32_t vertexCount) {
         s_rendererAPI->DrawLines(vao, vertexCount);
     }
 
@@ -53,5 +53,5 @@ public:
     }
 
 private:
-    static X::Scope<RendererAPI> s_rendererAPI;
+    static Scope<RendererAPI> s_rendererAPI;
 };

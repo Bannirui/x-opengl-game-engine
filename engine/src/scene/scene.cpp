@@ -81,8 +81,8 @@ Scene::~Scene() {
     delete m_physicsWorld;
 }
 
-X::Ref<Scene> Scene::Copy(X::Ref<Scene> other) {
-    X::Ref<Scene> newScene = X::CreateRef<Scene>();
+Ref<Scene> Scene::Copy(Ref<Scene> other) {
+    Ref<Scene> newScene = CreateRef<Scene>();
     newScene->m_viewportWidth = other->m_viewportWidth;
     newScene->m_viewportHeight = other->m_viewportHeight;
     auto& srcSceneRegistry = other->m_registry;

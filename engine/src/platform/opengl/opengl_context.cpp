@@ -12,8 +12,8 @@
 
 #include <GLFW/glfw3.h>
 
-X::GLRendererInfo& X::GLRendererInfo::Get() {
-    static GLRendererInfo s_info;
+GLVerInfo& GLVerInfo::Get() {
+    static GLVerInfo s_info;
     return s_info;
 }
 
@@ -44,7 +44,7 @@ void OpenGLContext::Init() {
                   "Requires at least OpenGL version 3.3, not support {}.{}", versionMajor, versionMinor);
 
     // 拿到运行时的OpenGL版本缓存起来
-    auto& info = X::GLRendererInfo::Get();
+    auto& info = GLVerInfo::Get();
     info.MajorVersion = versionMajor;
     info.MinorVersion = versionMinor;
 
