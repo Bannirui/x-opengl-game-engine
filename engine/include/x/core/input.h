@@ -9,12 +9,13 @@
 
 #include <glm/glm.hpp>
 
-class Input
-{
+class Input {
 public:
-    static bool      IsKeyPressed(KeyCode keycode);
-    static bool      IsMouseButtonPressed(MouseCode button);
+    static bool IsKeyPressed(KeyCode keycode);
+    static bool IsMouseButtonPressed(MouseCode button);
+    static float GetMouseX();
+    static float GetMouseY();
+
+private:
     static glm::vec2 GetMousePos();
-    static float     GetMouseX();
-    static float     GetMouseY();
 };
