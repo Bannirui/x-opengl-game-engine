@@ -54,12 +54,12 @@ private:
 private:
     OrthographicCameraController m_cameraController;
 
-    X::Ref<VertexArray> m_squareVA;
-    X::Ref<Shader>      m_flatColorShader;
-    X::Ref<FrameBuffer> m_framebuffer;
+    Ref<VertexArray> m_squareVA;
+    Ref<Shader>      m_flatColorShader;
+    Ref<FrameBuffer> m_framebuffer;
 
-    X::Ref<Scene>         m_activeScene;
-    X::Ref<Scene>         m_editorScene;
+    Ref<Scene>         m_activeScene;
+    Ref<Scene>         m_editorScene;
     std::filesystem::path m_editorScenePath;
     Entity                m_squareEntity;
     Entity                m_cameraEntity;
@@ -68,7 +68,7 @@ private:
 
     EditorCamera m_editorCamera;
 
-    X::Ref<Texture2D> m_checkerboardTexture;
+    Ref<Texture2D> m_checkerboardTexture;
     glm::vec2         m_viewportSize = {0.0f, 0.0f};
     glm::vec2         m_viewportBounds[2];
     bool              m_viewportFocused{false}, m_viewportHovered{false};
@@ -89,5 +89,5 @@ private:
     SceneState m_sceneState{SceneState::Edit};
 
     // Editor resources
-    X::Ref<Texture2D> m_iconPlay, m_iconSimulate, m_iconStop;
+    Ref<Texture2D> m_iconPlay, m_iconSimulate, m_iconStop;
 };

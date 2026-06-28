@@ -11,7 +11,7 @@
 class XInut : public Application
 {
 public:
-    XInut(const ApplicationSpecification& spec) : Application(spec) { PushLayer(X::CreateScope<EditorLayer>()); }
+    XInut(const ApplicationSpecification& spec) : Application(spec) { PushLayer(CreateScope<EditorLayer>()); }
 };
 
 Application* CreateApplication(ApplicationCommandLineArgs args)

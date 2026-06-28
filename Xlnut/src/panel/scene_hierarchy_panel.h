@@ -13,13 +13,13 @@ class SceneHierarchyPanel
 {
 public:
     SceneHierarchyPanel() = default;
-    SceneHierarchyPanel(const X::Ref<Scene>& scene);
+    SceneHierarchyPanel(const Ref<Scene>& scene);
 
     Entity get_selectedEntity() const { return m_selectionContext; }
 
     void set_selectedEntity(Entity entity) { m_selectionContext = entity; }
 
-    void set_context(const X::Ref<Scene>& scene);
+    void set_context(const Ref<Scene>& scene);
     void OnImGuiRender();
 
 private:
@@ -30,6 +30,6 @@ private:
     void drawComponents(Entity entity);
 
 private:
-    X::Ref<Scene> m_context;
+    Ref<Scene> m_context;
     Entity        m_selectionContext;
 };

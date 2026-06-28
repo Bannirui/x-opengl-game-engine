@@ -6,8 +6,9 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
+#include <x/core/application.h>
 #include <x/core/input.h>
-#include <x/core/x_application.h>
+#include <x/debug/instrumentor.h>
 #include <x/events/event.h>
 #include <x/events/key_event.h>
 #include <x/events/mouse_event.h>
@@ -15,7 +16,7 @@
 #include <x/math/math.h>
 #include <x/renderer/2d/renderer_2D.h>
 #include <x/renderer/2d/renderer_2D_primitives.h>
-#include <x/renderer/frame_buffer.h>
+#include <x/renderer/buffer/frame_buffer.h>
 #include <x/renderer/render_command.h>
 #include <x/renderer/texture.h>
 #include <x/scene/component.h>
@@ -48,7 +49,7 @@ void EditorLayer::OnAttach() {
 
     m_editorScene = CreateRef<Scene>();
     m_activeScene = m_editorScene;
-    auto commandLineArgs = XApplication::Get().get_specification().CommandLineArgs;
+    auto commandLineArgs = Application::Get().get_specification().CommandLineArgs;
     if (commandLineArgs.Count > 1) {
         auto sceneFilePath = commandLineArgs[1];
         SceneSerializer serializer(m_activeScene);
@@ -174,7 +175,7 @@ void EditorLayer::OnImguiRender() {
                 saveSceneAs();
             }
             if (ImGui::MenuItem("Exit")) {
-                XApplication::Get().Close();
+                Application::Get().Close();
             }
             ImGui::EndMenu();
         }
@@ -214,7 +215,7 @@ void EditorLayer::OnImguiRender() {
 
     m_viewportFocused = ImGui::IsWindowFocused();
     m_viewportHovered = ImGui::IsWindowHovered();
-    XApplication::Get().get_ImGuiLayer()->BlockEvents(!m_viewportFocused && !m_viewportHovered);
+    Application::Get().get_ImGuiLayer()->BlockEvents(!m_viewportFocused && !m_viewportHovered);
 
     ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
     m_viewportSize = {viewportPanelSize.x, viewportPanelSize.y};

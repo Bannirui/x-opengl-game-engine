@@ -18,6 +18,6 @@ public:
 
 private:
     std::filesystem::path m_currentDirectory;
-    X::Ref<Texture2D>     m_directoryIcon;
-    X::Ref<Texture2D>     m_fileIcon;
+    Ref<Texture2D>     m_directoryIcon;
+    Ref<Texture2D>     m_fileIcon;
 };
