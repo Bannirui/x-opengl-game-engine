@@ -31,7 +31,7 @@ static b2BodyType Rigidbody2DTypeToBox2DBody(Rigidbody2DComponent::BodyType body
         default:
             break;
     }
-    X_CORE_ERROR("Unknown body type");
+    CORE_ERROR("Unknown body type");
     return b2_staticBody;
 }
 
@@ -291,7 +291,7 @@ Entity Scene::GetPrimaryCameraEntity() {
 
 template <typename T>
 void Scene::onComponentAdded(Entity /* entity */, T& /* component */) {
-    X_CORE_ASSERT(sizeof(T) == 0);
+    CORE_ASSERT(sizeof(T) == 0);
 }
 
 // 模板特化

@@ -7,7 +7,7 @@
 #include "x/core/assert.h"
 
 void Skeleton::AddBone(const Bone& bone) {
-    X_CORE_ASSERT(m_bones.size() < MAX_BONES, "Exceeded max bone count");
+    CORE_ASSERT(m_bones.size() < MAX_BONES, "Exceeded max bone count");
     m_bones.push_back(bone);
 }
 

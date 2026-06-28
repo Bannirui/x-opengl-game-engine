@@ -10,7 +10,7 @@
 
 Ref<Material> Material::Create(const Ref<Shader>& shader) {
     X_PROFILE_FUNCTION();
-    X_CORE_ASSERT(shader, "Material requires a valid shader");
+    CORE_ASSERT(shader, "Material requires a valid shader");
     Ref<Material> material = CreateRef<Material>();
     material->m_shader = shader;
     return material;

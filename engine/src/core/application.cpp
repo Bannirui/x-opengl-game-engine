@@ -16,7 +16,7 @@ Application* Application::s_instance = nullptr;
 
 Application::Application(const ApplicationSpecification& specification) : m_specification(specification) {
     X_PROFILE_FUNCTION();
-    X_CORE_ASSERT(!s_instance, "Application already exists");
+    CORE_ASSERT(!s_instance, "Application already exists");
     s_instance = this;
     if (!m_specification.WorkingDirectory.empty()) {
         std::filesystem::current_path(m_specification.WorkingDirectory);
@@ -42,7 +42,7 @@ Application::~Application() {
 
 void Application::OnEvent(Event& e) {
     X_PROFILE_FUNCTION();
-    X_CORE_INFO("收到的事件{}", e);
+    CORE_INFO("收到的事件{}", e);
     // 把收到的窗体事件缓存起来 在每一帧集中处理
     m_eventQueue.push(e.Clone());
 }

@@ -20,7 +20,7 @@
 static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type) {
     switch (type) {
         case ShaderDataType::kNone: {
-            X_CORE_ERROR("Not support ShaderDataType::kNone");
+            CORE_ERROR("Not support ShaderDataType::kNone");
         }
         case ShaderDataType::kFloat: {
             return GL_FLOAT;
@@ -56,7 +56,7 @@ static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type) {
             return GL_BOOL;
         }
     }
-    X_CORE_ERROR("Unknown ShaderDataType!");
+    CORE_ERROR("Unknown ShaderDataType!");
     return 0;
 }
 
@@ -96,7 +96,7 @@ void OpenGLVertexArray::Unbind() const {
 void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer) {
     X_PROFILE_FUNCTION();
     // 必须得有布局 VBO中不仅需要顶点数据 还要有这些顶点数据是怎么布局的
-    X_CORE_ASSERT(vertexBuffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
+    CORE_ASSERT(vertexBuffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
     // VAO插槽
     glBindVertexArray(m_rendererID);
     // VBO插槽
@@ -153,7 +153,7 @@ void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer) {
                 break;
             }
             default:
-                X_CORE_ERROR("Unknown ShaderDataType!");
+                CORE_ERROR("Unknown ShaderDataType!");
         }
     }
     m_vertexBuffers.push_back(vertexBuffer);

@@ -24,7 +24,7 @@ struct ApplicationCommandLineArgs {
     char** Args = nullptr;
 
     const char* operator[](int index) const {
-        X_CORE_ASSERT(index < Count, "Index out of bounds, index={}, Count={}", index, Count);
+        CORE_ASSERT(index < Count, "Index out of bounds, index={}, Count={}", index, Count);
         return Args[index];
     }
 };

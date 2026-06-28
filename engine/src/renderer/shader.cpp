@@ -13,33 +13,33 @@
 Ref<Shader> Shader::Create(const std::string& filepath) {
     switch (Renderer::GetAPI()) {
         case RendererAPI::API::kNone: {
-            X_CORE_ERROR("RendererAPI::kNone is currently not supported!");
+            CORE_ERROR("RendererAPI::kNone is currently not supported!");
             return nullptr;
         }
         case RendererAPI::API::kOpenGL: {
             return CreateRef<OpenGLShader>(filepath);
         }
     }
-    X_CORE_ERROR("Unknown RendererAPI!");
+    CORE_ERROR("Unknown RendererAPI!");
     return nullptr;
 }
 
 Ref<Shader> Shader::Create(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc) {
     switch (Renderer::GetAPI()) {
         case RendererAPI::API::kNone: {
-            X_CORE_ERROR("RendererAPI::kNone is currently not supported!");
+            CORE_ERROR("RendererAPI::kNone is currently not supported!");
             return nullptr;
         }
         case RendererAPI::API::kOpenGL: {
             return CreateRef<OpenGLShader>(name, vertexSrc, fragmentSrc);
         }
     }
-    X_CORE_ERROR("Unknown RendererAPI!");
+    CORE_ERROR("Unknown RendererAPI!");
     return nullptr;
 }
 
 void ShaderLib::Add(const std::string& name, const Ref<Shader>& shader) {
-    X_CORE_ASSERT(!Exists(name), "Shader already exists!");
+    CORE_ASSERT(!Exists(name), "Shader already exists!");
     m_shaders[name] = shader;
 }
 
@@ -62,7 +62,7 @@ Ref<Shader> ShaderLib::Load(const std::string& name, const std::string& filepath
 }
 
 Ref<Shader> ShaderLib::Get(const std::string& name) {
-    X_CORE_ASSERT(Exists(name), "Shader not found!");
+    CORE_ASSERT(Exists(name), "Shader not found!");
     return m_shaders[name];
 }
 

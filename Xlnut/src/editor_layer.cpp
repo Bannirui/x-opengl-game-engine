@@ -435,7 +435,7 @@ void EditorLayer::openScene(const std::filesystem::path& path) {
         onSceneStop();
     }
     if (path.extension().string() != ".x") {
-        X_WARN("Could not load {0} - not a scene file", path.filename().string());
+        WARN("Could not load {0} - not a scene file", path.filename().string());
         return;
     }
     Ref<Scene> newScene = CreateRef<Scene>();
@@ -491,7 +491,7 @@ void EditorLayer::onSceneSimulate() {
 }
 
 void EditorLayer::onSceneStop() {
-    X_CORE_ASSERT(m_sceneState == SceneState::Play || m_sceneState == SceneState::Simulate);
+    CORE_ASSERT(m_sceneState == SceneState::Play || m_sceneState == SceneState::Simulate);
     if (m_sceneState == SceneState::Play) {
         m_activeScene->OnRuntimeStop();
     } else if (m_sceneState == SceneState::Simulate) {

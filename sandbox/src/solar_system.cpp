@@ -129,7 +129,7 @@ void SolarSystem::OnAttach() {
         std::string path = "asset/texture/" + name + ".jpg";
         Ref<Texture2D> tex = Texture2D::Create(path);
         if (!tex->IsLoaded()) {
-            X_CORE_WARN("Failed to load texture: {}, using fallback", path);
+            CORE_WARN("Failed to load texture: {}, using fallback", path);
             return m_whiteTex;
         }
         return tex;

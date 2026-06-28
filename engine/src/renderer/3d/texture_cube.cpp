@@ -59,7 +59,7 @@ Ref<TextureCube> TextureCube::CreateFromEquirectangular(const std::string& hdrPa
     int width, height, channels;
     float* data = stbi_loadf(hdrPath.c_str(), &width, &height, &channels, 0);
     if (!data) {
-        X_CORE_ERROR("Failed to load HDR file: {}", hdrPath);
+        CORE_ERROR("Failed to load HDR file: {}", hdrPath);
         return nullptr;
     }
 

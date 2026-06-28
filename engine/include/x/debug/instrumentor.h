@@ -43,7 +43,7 @@ public:
         {
             if (Log::get_coreLogger())
             {  // Edge case: BeginSession() might be before Log::Init()
-                X_CORE_ERROR("Instrumentor::BeginSession('{0}') when session '{1}' already open.", name,
+                CORE_ERROR("Instrumentor::BeginSession('{0}') when session '{1}' already open.", name,
                              m_currentSession->name);
             }
             internalEndSession();
@@ -65,7 +65,7 @@ public:
             if (Log::get_coreLogger())
             {
                 // Edge case: BeginSession() might be before Log::Init()
-                X_CORE_ERROR("Instrumentor could not open results file '{0}'.", filepath);
+                CORE_ERROR("Instrumentor could not open results file '{0}'.", filepath);
             }
         }
     }

@@ -15,13 +15,13 @@
 Ref<VertexArray> VertexArray::Create() {
     switch (Renderer::GetAPI()) {
         case RendererAPI::API::kNone: {
-            X_CORE_ERROR("RendererAPI::kNone is currently not supported!");
+            CORE_ERROR("RendererAPI::kNone is currently not supported!");
             return nullptr;
         }
         case RendererAPI::API::kOpenGL: {
             return CreateRef<OpenGLVertexArray>();
         }
     }
-    X_CORE_ERROR("Unknown RendererAPI!");
+    CORE_ERROR("Unknown RendererAPI!");
     return nullptr;
 }

@@ -26,7 +26,7 @@ OpenGLTexture2D::OpenGLTexture2D(const std::string& path) : m_path(path) {
         X_PROFILE_SCOPE("stbi_load - OpenGLTexture2D::OpenGLTexture2D(const std::string&)");
         data = stbi_load(path.c_str(), &width, &height, &channels, 0);
     }
-    X_CORE_ASSERT(data, "Failed to load image: {}", path);
+    CORE_ASSERT(data, "Failed to load image: {}", path);
     m_isLoaded = true;
     m_width = width;
     m_height = height;
@@ -49,7 +49,7 @@ OpenGLTexture2D::OpenGLTexture2D(const std::string& path) : m_path(path) {
     // 分配cpu内存
     m_internalFormat = internalFormat;
     m_dataFormat = dataFormat;
-    X_CORE_ASSERT(internalFormat & dataFormat, "Format not supported!");
+    CORE_ASSERT(internalFormat & dataFormat, "Format not supported!");
     // 用图片生成一个纹理对象贴图 mipmap level设置0代表的是没有给纹理对象设置mipmap 可以在生成纹理对象后再给它设置mipmap
     glTexImage2D(GL_TEXTURE_2D,  // 纹理对象在上面已经绑定了OpenGL的2d插槽 现在要配置2d插槽就是在配置纹理对象
                  0,  // mipmap的level 不用mipmap就设置0
@@ -129,7 +129,7 @@ OpenGLTexture2D::~OpenGLTexture2D() {
 void OpenGLTexture2D::SetData(void* data, uint32_t size) {
     X_PROFILE_FUNCTION();
     uint32_t bpp = m_dataFormat == GL_RGBA ? 4 : 3;
-    X_CORE_ASSERT(size == m_width * m_height * bpp, "Incorrect size!");
+    CORE_ASSERT(size == m_width * m_height * bpp, "Incorrect size!");
     // 绑定纹理对象
     glBindTexture(GL_TEXTURE_2D, m_rendererId);
     // 更新数据

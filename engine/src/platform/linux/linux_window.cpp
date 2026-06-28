@@ -15,7 +15,7 @@ static uint8_t s_GLFWWindowCount = 0;
 
 // 注册给glfw glfw发生异常时会回调这个函数
 static void glfwErrorCallback(int error, const char* description) {
-    X_CORE_ERROR("GLFW error ({0}): {1}", error, description);
+    CORE_ERROR("GLFW error ({0}): {1}", error, description);
 }
 
 LinuxWindow::LinuxWindow(const WindowProps& props) {
@@ -50,12 +50,12 @@ void LinuxWindow::init(const WindowProps& props) {
     m_data.width = props.width;
     m_data.height = props.height;
 
-    X_CORE_INFO("Create window {0} ({1}, {2})", props.title, props.width, props.height);
+    CORE_INFO("Create window {0} ({1}, {2})", props.title, props.width, props.height);
 
     if (s_GLFWWindowCount == 0) {
         X_PROFILE_SCOPE("glfwInit");
         int succ = glfwInit();
-        X_CORE_ASSERT(succ, "Could not init GLFW");
+        CORE_ASSERT(succ, "Could not init GLFW");
         glfwSetErrorCallback(glfwErrorCallback);
     }
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -67,7 +67,7 @@ void LinuxWindow::init(const WindowProps& props) {
                                     nullptr, nullptr);
         ++s_GLFWWindowCount;
     }
-    X_CORE_ASSERT(m_window, "Failed to create GLFW window");
+    CORE_ASSERT(m_window, "Failed to create GLFW window");
 
     glfwMakeContextCurrent(m_window);
 
@@ -87,7 +87,7 @@ void LinuxWindow::shutdown() {
     glfwDestroyWindow(m_window);
     --s_GLFWWindowCount;
     if (s_GLFWWindowCount == 0) {
-        X_CORE_INFO("Terminating GLFW window");
+        CORE_INFO("Terminating GLFW window");
         glfwTerminate();
     }
 }

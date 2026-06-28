@@ -45,15 +45,15 @@ struct fmt::formatter<glm::qua<T, Q>> : fmt::formatter<std::string> {
 };
 
 // Core log macros
-#define X_CORE_TRACE(...) ::Log::get_coreLogger()->trace(__VA_ARGS__)
-#define X_CORE_INFO(...) ::Log::get_coreLogger()->info(__VA_ARGS__)
-#define X_CORE_WARN(...) ::Log::get_coreLogger()->warn(__VA_ARGS__)
-#define X_CORE_ERROR(...) ::Log::get_coreLogger()->error(__VA_ARGS__)
-#define X_CORE_FATAL(...) ::Log::get_coreLogger()->critical(__VA_ARGS__)
+#define CORE_TRACE(...) ::Log::get_coreLogger()->trace(__VA_ARGS__)
+#define CORE_INFO(...) ::Log::get_coreLogger()->info(__VA_ARGS__)
+#define CORE_WARN(...) ::Log::get_coreLogger()->warn(__VA_ARGS__)
+#define CORE_ERROR(...) ::Log::get_coreLogger()->error(__VA_ARGS__)
+#define CORE_FATAL(...) ::Log::get_coreLogger()->critical(__VA_ARGS__)
 
 // Client log macros
-#define X_TRACE(...) ::Log::get_clientLogger()->trace(__VA_ARGS__)
-#define X_INFO(...) ::Log::get_clientLogger()->info(__VA_ARGS__)
-#define X_WARN(...) ::Log::get_clientLogger()->warn(__VA_ARGS__)
-#define X_ERROR(...) ::Log::get_clientLogger()->error(__VA_ARGS__)
-#define X_FATAL(...) ::Log::get_clientLogger()->critical(__VA_ARGS__)
+#define TRACE(...) ::Log::get_clientLogger()->trace(__VA_ARGS__)
+#define INFO(...) ::Log::get_clientLogger()->info(__VA_ARGS__)
+#define WARN(...) ::Log::get_clientLogger()->warn(__VA_ARGS__)
+#define ERROR(...) ::Log::get_clientLogger()->error(__VA_ARGS__)
+#define FATAL(...) ::Log::get_clientLogger()->critical(__VA_ARGS__)

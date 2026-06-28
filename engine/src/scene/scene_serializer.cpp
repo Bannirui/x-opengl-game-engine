@@ -110,7 +110,7 @@ static std::string RigidBody2DBodyTypeToString(Rigidbody2DComponent::BodyType bo
             return "Kinematic";
         }
     }
-    X_CORE_ERROR("Unknown body type");
+    CORE_ERROR("Unknown body type");
     return {};
 }
 
@@ -124,7 +124,7 @@ static Rigidbody2DComponent::BodyType RigidBody2DBodyTypeFromString(const std::s
     if (bodyTypeString == "Kinematic") {
         return Rigidbody2DComponent::BodyType::Kinematic;
     }
-    X_CORE_ERROR("Unknown body type={}", bodyTypeString);
+    CORE_ERROR("Unknown body type={}", bodyTypeString);
     return Rigidbody2DComponent::BodyType::Static;
 }
 
@@ -133,19 +133,19 @@ static std::string LightTypeToString(LightType type) {
         case LightType::Directional: return "Directional";
         case LightType::Point: return "Point";
     }
-    X_CORE_ERROR("Unknown light type");
+    CORE_ERROR("Unknown light type");
     return {};
 }
 
 static LightType LightTypeFromString(const std::string& typeStr) {
     if (typeStr == "Directional") return LightType::Directional;
     if (typeStr == "Point") return LightType::Point;
-    X_CORE_ERROR("Unknown light type={}", typeStr);
+    CORE_ERROR("Unknown light type={}", typeStr);
     return LightType::Directional;
 }
 
 static void serializeEntity(YAML::Emitter& out, Entity entity) {
-    X_CORE_ASSERT(entity.HasComponent<IDComponent>());
+    CORE_ASSERT(entity.HasComponent<IDComponent>());
     out << YAML::BeginMap;
     out << YAML::Key << "Entity" << YAML::Value << entity.GetUUID();
     if (entity.HasComponent<TagComponent>()) {
@@ -274,14 +274,14 @@ bool SceneSerializer::Deserialize(const std::string& filepath) {
     try {
         data = YAML::LoadFile(filepath);
     } catch (YAML::ParserException& e) {
-        X_CORE_ERROR("Failed to load scene file '{}': {}", filepath, e.what());
+        CORE_ERROR("Failed to load scene file '{}': {}", filepath, e.what());
         return false;
     }
     if (!data["Scene"]) {
         return false;
     }
     std::string sceneName = data["Scene"].as<std::string>();
-    X_CORE_TRACE("Deserializing scene '{0}'", sceneName);
+    CORE_TRACE("Deserializing scene '{0}'", sceneName);
     auto entities = data["Entities"];
     if (!entities) {
         return true;
@@ -292,7 +292,7 @@ bool SceneSerializer::Deserialize(const std::string& filepath) {
         auto tagComponent = entity["TagComponent"];
         if (tagComponent) {
             name = tagComponent["Tag"].as<std::string>();
-            X_CORE_TRACE("Deserializing entity with ID = {0}, name = {1}", uuid, name);
+            CORE_TRACE("Deserializing entity with ID = {0}, name = {1}", uuid, name);
             Entity deserializeEntity = m_scene->CreateEntityWithUUID(uuid, name);
             auto transformComponent = entity["TransformComponent"];
             if (transformComponent) {

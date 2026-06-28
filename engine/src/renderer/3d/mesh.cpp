@@ -10,8 +10,8 @@
 
 Ref<Mesh> Mesh::Create(const std::vector<StaticMeshVertex>& vertices, const std::vector<uint32_t>& indices) {
     X_PROFILE_FUNCTION();
-    X_CORE_ASSERT(!vertices.empty(), "Mesh must have vertices");
-    X_CORE_ASSERT(!indices.empty(), "Mesh must have indices");
+    CORE_ASSERT(!vertices.empty(), "Mesh must have vertices");
+    CORE_ASSERT(!indices.empty(), "Mesh must have indices");
 
     Ref<Mesh> mesh(new Mesh());
     // 内存上的顶点

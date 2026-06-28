@@ -12,22 +12,22 @@
 // 调试开关
 #ifdef X_DEBUG
     #if defined(X_PLATFORM_WINDOWS)
-        #define X_DEBUGBREAK() __debugbreak()
+        #define DEBUGBREAK() __debugbreak()
     #elif defined(X_PLATFORM_MAC) || defined(X_PLATFORM_LINUX)
         #include <csignal>
-        #define X_DEBUGBREAK() raise(SIGTRAP)
+        #define DEBUGBREAK() raise(SIGTRAP)
     #else
         #error "Debugbreak not implemented for this platform"
     #endif
 #else
-    #define X_DEBUGBREAK()
+    #define DEBUGBREAK()
 #endif
 
 #define BIT(n) (1 << n)
 
 // ---------- stringify ----------
-#define X_EXPAND_MACRO(x) x
-#define X_STRINGIFY_MACRO(x) #x
+#define EXPAND_MACRO(x) x
+#define STRINGIFY_MACRO(x) #x
 
 // 记录OpenGL的版本信息 运行时从机器上读 控制对GLAD的API调用和GLSL的语法版本选择
 struct GLVerInfo {

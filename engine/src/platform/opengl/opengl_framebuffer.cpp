@@ -80,7 +80,7 @@ namespace Util {
             default:
                 break;
         }
-        X_CORE_ERROR("unknown format");
+        CORE_ERROR("unknown format");
         return 0;
     }
 #endif
@@ -143,7 +143,7 @@ void OpenGLFramebuffer::Invalidate() {
                                              m_specification.m_width, m_specification.m_height, i);
                     break;
                 default:
-                    X_CORE_ERROR("Unknown framebuffer format");
+                    CORE_ERROR("Unknown framebuffer format");
             }
         }
     }
@@ -157,18 +157,18 @@ void OpenGLFramebuffer::Invalidate() {
                                          m_specification.m_height);
                 break;
             default:
-                X_CORE_ERROR("Unknown depth format");
+                CORE_ERROR("Unknown depth format");
         }
     }
     if (m_colorAttachments.empty()) {
         // Only depth-pass
         glDrawBuffer(GL_NONE);
     } else {
-        X_CORE_ASSERT(m_colorAttachments.size() <= 4);
+        CORE_ASSERT(m_colorAttachments.size() <= 4);
         GLenum buffers[4] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3};
         glDrawBuffers(m_colorAttachments.size(), buffers);
     }
-    X_CORE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete");
+    CORE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete");
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -184,7 +184,7 @@ void OpenGLFramebuffer::Unbind() {
 void OpenGLFramebuffer::Resize(uint32_t width, uint32_t height) {
     // 校验
     if (width == 0 || height == 0 || width > s_MaxFramebufferSize || height > s_MaxFramebufferSize) {
-        X_CORE_WARN("Attempted to resize framebuffer to {0}, {1}", width, height);
+        CORE_WARN("Attempted to resize framebuffer to {0}, {1}", width, height);
         return;
     }
     m_specification.m_width = width;
@@ -193,7 +193,7 @@ void OpenGLFramebuffer::Resize(uint32_t width, uint32_t height) {
 }
 
 int OpenGLFramebuffer::ReadPixel(uint32_t attachmentIndex, int x, int y) {
-    X_CORE_ASSERT(attachmentIndex < m_colorAttachments.size(), "Invalid attachmentIndex");
+    CORE_ASSERT(attachmentIndex < m_colorAttachments.size(), "Invalid attachmentIndex");
 
     glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
     int pixelData;
@@ -202,7 +202,7 @@ int OpenGLFramebuffer::ReadPixel(uint32_t attachmentIndex, int x, int y) {
 }
 
 void OpenGLFramebuffer::ClearAttachment(uint32_t attachmentIndex, int value) {
-    X_CORE_ASSERT(attachmentIndex < m_colorAttachments.size(), "Invalid attachmentIndex");
+    CORE_ASSERT(attachmentIndex < m_colorAttachments.size(), "Invalid attachmentIndex");
 #ifdef X_PLATFORM_MAC
     // mac上用的是低版本的OpenGL 用老版本的API
     glBindFramebuffer(GL_FRAMEBUFFER, m_rendererID);
@@ -217,6 +217,6 @@ void OpenGLFramebuffer::ClearAttachment(uint32_t attachmentIndex, int value) {
 }
 
 uint32_t OpenGLFramebuffer::GetColorAttachmentRendererID(uint32_t index) const {
-    X_CORE_ASSERT(index < m_colorAttachments.size(), "Index[{}] out of bounds[{}]", index, m_colorAttachments.size());
+    CORE_ASSERT(index < m_colorAttachments.size(), "Index[{}] out of bounds[{}]", index, m_colorAttachments.size());
     return m_colorAttachments[index];
 }

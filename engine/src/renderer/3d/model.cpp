@@ -18,7 +18,7 @@
 static std::string readFile(const std::string& filepath) {
     std::ifstream in(filepath, std::ios::in | std::ios::binary);
     if (!in) {
-        X_CORE_ERROR("Failed to open file: {}", filepath);
+        CORE_ERROR("Failed to open file: {}", filepath);
         return {};
     }
     in.seekg(0, std::ios::end);
@@ -151,7 +151,7 @@ Ref<Model> Model::Load(const std::string& filepath, const Ref<Shader>& defaultSh
 
     std::string content = readFile(filepath);
     if (content.empty()) {
-        X_CORE_ERROR("Failed to read OBJ file: {}", filepath);
+        CORE_ERROR("Failed to read OBJ file: {}", filepath);
         return nullptr;
     }
 
@@ -343,7 +343,7 @@ Ref<Model> Model::Load(const std::string& filepath, const Ref<Shader>& defaultSh
         model->m_subMeshes.push_back(std::move(subMesh));
     }
 
-    X_CORE_INFO("Loaded model '{}': {} sub-meshes, {} vertices, {} indices",
+    CORE_INFO("Loaded model '{}': {} sub-meshes, {} vertices, {} indices",
                  filepath, model->m_subMeshes.size(),
                  [&]() {
                      size_t v = 0;
