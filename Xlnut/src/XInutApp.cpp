@@ -8,13 +8,13 @@
 
 #include <engine.h>
 
-class XInut : public XApplication
+class XInut : public Application
 {
 public:
-    XInut(const ApplicationSpecification& spec) : XApplication(spec) { PushLayer(X::CreateScope<EditorLayer>()); }
+    XInut(const ApplicationSpecification& spec) : Application(spec) { PushLayer(X::CreateScope<EditorLayer>()); }
 };
 
-XApplication* CreateApplication(ApplicationCommandLineArgs args)
+Application* CreateApplication(ApplicationCommandLineArgs args)
 {
     ApplicationSpecification spec;
     spec.Name            = "Xlnut";

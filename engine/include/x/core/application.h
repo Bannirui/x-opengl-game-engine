@@ -35,10 +35,10 @@ struct ApplicationSpecification {
     ApplicationCommandLineArgs CommandLineArgs;
 };
 
-class XApplication {
+class Application {
 public:
-    XApplication(const ApplicationSpecification& specification);
-    virtual ~XApplication();
+    Application(const ApplicationSpecification& specification);
+    virtual ~Application();
 
     /**
      * 接收glfw的窗体事件 对它们进行处理
@@ -59,7 +59,7 @@ public:
         return m_ImGuiLayer;
     }
 
-    static XApplication& Get() {
+    static Application& Get() {
         return *s_instance;
     }
 
@@ -87,9 +87,9 @@ private:
     std::queue<std::unique_ptr<Event>> m_eventQueue;
 
 private:
-    static XApplication* s_instance;
+    static Application* s_instance;
     friend int main(int argc, char** argv);
 };
 
 // To be defined in the CLIENT
-XApplication* CreateApplication(ApplicationCommandLineArgs args);
+Application* CreateApplication(ApplicationCommandLineArgs args);

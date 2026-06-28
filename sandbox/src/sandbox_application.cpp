@@ -10,9 +10,9 @@
 
 #include <engine.h>
 
-class Sandbox : public XApplication {
+class Sandbox : public Application {
 public:
-    Sandbox(const ApplicationSpecification& spec) : XApplication(spec) {
+    Sandbox(const ApplicationSpecification& spec) : Application(spec) {
         // PushLayer(CreateScope<Sandbox2D>());
         // PushLayer(CreateScope<Sandbox3D>());
         PushLayer(CreateScope<SolarSystem>());
@@ -21,7 +21,7 @@ public:
     ~Sandbox() override = default;
 };
 
-XApplication* CreateApplication(ApplicationCommandLineArgs args) {
+Application* CreateApplication(ApplicationCommandLineArgs args) {
     ApplicationSpecification spec;
     spec.Name = "Sandbox";
     spec.CommandLineArgs = args;

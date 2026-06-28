@@ -12,9 +12,9 @@
 #include "x/util/platform_util.h"
 #include "x/window.h"
 
-XApplication* XApplication::s_instance = nullptr;
+Application* Application::s_instance = nullptr;
 
-XApplication::XApplication(const ApplicationSpecification& specification) : m_specification(specification) {
+Application::Application(const ApplicationSpecification& specification) : m_specification(specification) {
     X_PROFILE_FUNCTION();
     X_CORE_ASSERT(!s_instance, "Application already exists");
     s_instance = this;
@@ -35,19 +35,19 @@ XApplication::XApplication(const ApplicationSpecification& specification) : m_sp
     PushOverlay(std::move(imGuiLayer));
 }
 
-XApplication::~XApplication() {
+Application::~Application() {
     X_PROFILE_FUNCTION();
     Renderer::Shutdown();
 }
 
-void XApplication::OnEvent(Event& e) {
+void Application::OnEvent(Event& e) {
     X_PROFILE_FUNCTION();
     X_CORE_INFO("收到的事件{}", e);
     // 把收到的窗体事件缓存起来 在每一帧集中处理
     m_eventQueue.push(e.Clone());
 }
 
-void XApplication::ProcessEvents() {
+void Application::ProcessEvents() {
     // 把攒着的事件一次性处理掉
     while (!m_eventQueue.empty()) {
         Event& e = *m_eventQueue.front();
@@ -81,23 +81,23 @@ void XApplication::ProcessEvents() {
     }
 }
 
-void XApplication::PushLayer(Scope<Layer> layer) {
+void Application::PushLayer(Scope<Layer> layer) {
     X_PROFILE_FUNCTION();
     layer->OnAttach();
     m_layerStack.PushLayer(std::move(layer));
 }
 
-void XApplication::PushOverlay(Scope<Layer> overlay) {
+void Application::PushOverlay(Scope<Layer> overlay) {
     X_PROFILE_FUNCTION();
     overlay->OnAttach();
     m_layerStack.PushOverlay(std::move(overlay));
 }
 
-void XApplication::Close() {
+void Application::Close() {
     m_running = false;
 }
 
-void XApplication::run() {
+void Application::run() {
     X_PROFILE_FUNCTION();
     while (m_running) {
         X_PROFILE_SCOPE("RunLoop");

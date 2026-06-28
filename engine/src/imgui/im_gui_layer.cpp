@@ -71,7 +71,7 @@ void ImGuiLayer::OnAttach() {
         style.Colors[ImGuiCol_WindowBg].w = 1.0f;
     }
     setDarkTheme();
-    XApplication& app = XApplication::Get();
+    Application& app = Application::Get();
     // ImGui绑定glfw 事件自动托管 不用自己手动管理
     ImGui_ImplGlfw_InitForOpenGL(static_cast<GLFWwindow*>(app.get_window().get_nativeWindow()), true);
     // ImGui绑定OpenGL
@@ -109,7 +109,7 @@ void ImGuiLayer::Begin() {
 void ImGuiLayer::End() {
     X_PROFILE_FUNCTION();
     ImGuiIO& io = ImGui::GetIO();
-    XApplication& app = XApplication::Get();
+    Application& app = Application::Get();
     io.DisplaySize =
         ImVec2(static_cast<float>(app.get_window().GetWidth()), static_cast<float>(app.get_window().GetHeight()));
     // 渲染

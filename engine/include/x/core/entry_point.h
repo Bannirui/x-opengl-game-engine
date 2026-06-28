@@ -6,7 +6,7 @@
 #include "x/core/application.h"
 #include "x/debug/instrumentor.h"
 
-extern XApplication* CreateApplication(ApplicationCommandLineArgs args);
+extern Application* CreateApplication(ApplicationCommandLineArgs args);
 
 int main(int argc, char** argv)
 {
