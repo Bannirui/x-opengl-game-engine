@@ -33,7 +33,7 @@ public:
 
     std::string ToString() const override {
         std::stringstream ss;
-        ss << GetName() << ": 按下" << static_cast<int>(m_keyCode) << "(" << (m_isRepeat ? "重复" : "不重复") << ")";
+        ss << GetName() << ": 按下" << static_cast<char>(m_keyCode) << "(" << (m_isRepeat ? "重复" : "不重复") << ")";
         return ss.str();
     }
 
@@ -49,7 +49,7 @@ public:
 
     std::string ToString() const override {
         std::stringstream ss;
-        ss << GetName() << ": 松开" << static_cast<int>(m_keyCode);
+        ss << GetName() << ": 松开" << static_cast<char>(m_keyCode);
         return ss.str();
     }
 };
@@ -62,7 +62,7 @@ public:
 
     std::string ToString() const override {
         std::stringstream ss;
-        ss << GetName() << ": 输入" << static_cast<int>(m_keyCode);
+        ss << GetName() << ": 输入" << static_cast<char>(m_keyCode);
         return ss.str();
     }
 };
