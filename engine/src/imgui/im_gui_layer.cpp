@@ -55,6 +55,8 @@ void ImGuiLayer::OnAttach() {
     ImGuiIO& io = ImGui::GetIO();
     // 不仅支持鼠标操作 还支持键盘操作 键盘导航
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
     // 支持更改鼠标形状
     io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
     // 可以主动设置鼠标位置
@@ -71,6 +73,7 @@ void ImGuiLayer::OnAttach() {
         style.Colors[ImGuiCol_WindowBg].w = 1.0f;
     }
     setDarkTheme();
+
     Application& app = Application::Get();
     // ImGui绑定glfw 事件自动托管 不用自己手动管理
     ImGui_ImplGlfw_InitForOpenGL(static_cast<GLFWwindow*>(app.get_window().get_nativeWindow()), true);
@@ -115,4 +118,10 @@ void ImGuiLayer::End() {
     // 渲染
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
+        GLFWwindow* backupCurrentContext = glfwGetCurrentContext();
+        ImGui::UpdatePlatformWindows();
+        ImGui::RenderPlatformWindowsDefault();
+        glfwMakeContextCurrent(backupCurrentContext);
+    }
 }
