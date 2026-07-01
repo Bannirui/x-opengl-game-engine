@@ -6,24 +6,20 @@
 
 // For use by engine application
 
-#include "x/core/base.h"
-#include "x/debug/instrumentor.h"
-
 #include "x/core/application.h"
-#include "x/core/log.h"
 #include "x/core/assert.h"
-#include "x/core/layer.h"
+#include "x/core/base.h"
 #include "x/core/input.h"
 #include "x/core/input_codes.h"
+#include "x/core/layer.h"
 #include "x/core/timestep.h"
-
-#include "x/imgui/im_gui_layer.h"
-
+#include "x/debug/instrumentor.h"
 #include "x/events/event.h"
-
-#include "x/scene/scene.h"
+#include "x/imgui/im_gui_layer.h"
+#include "x/log/log.h"
 #include "x/scene/component.h"
 #include "x/scene/entity.h"
+#include "x/scene/scene.h"
 #include "x/scene/scriptable_entity.h"
 
 // ---Renderer---

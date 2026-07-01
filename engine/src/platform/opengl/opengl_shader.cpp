@@ -7,7 +7,7 @@
 #include "x/core/assert.h"
 #include "x/core/base.h"
 #include "x/core/timer.h"
-#include "x/core/log.h"
+#include "x/log/log.h"
 
 #include <glad/glad.h>
 

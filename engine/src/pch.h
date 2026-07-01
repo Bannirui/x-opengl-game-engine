@@ -4,30 +4,26 @@
 
 #pragma once
 
-#include <iostream>
-#include <sstream>
-#include <fstream>
-#include <memory>
-#include <utility>
-#include <algorithm>
-#include <functional>
-#include <string>
-
-#include <vector>
-#include <unordered_map>
-#include <unordered_set>
-#include <array>
-#include <queue>
+#include "../include/x/log/log.h"
+#include "../include/x/log/log_formatter.h"
+#include "x/core/base.h"
+#include "x/debug/instrumentor.h"
 
 #include <fmt/format.h>
 
-#include <thread>
-#include <chrono>
-#include <iomanip>
-
 #include <algorithm>
-
-#include "x/core/base.h"
-#include "x/core/log.h"
-#include "x/debug/instrumentor.h"
-#include "x/events/event_formatter.h"
+#include <array>
+#include <chrono>
+#include <fstream>
+#include <functional>
+#include <iomanip>
+#include <iostream>
+#include <memory>
+#include <queue>
+#include <sstream>
+#include <string>
+#include <thread>
+#include <unordered_map>
+#include <unordered_set>
+#include <utility>
+#include <vector>

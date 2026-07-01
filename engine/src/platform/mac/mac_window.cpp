@@ -6,7 +6,7 @@
 
 #include "platform/opengl/opengl_context.h"
 #include "x/core/assert.h"
-#include "x/core/log.h"
+#include "x/log/log.h"
 #include "x/events/application_event.h"
 #include "x/events/key_event.h"
 #include "x/events/mouse_event.h"

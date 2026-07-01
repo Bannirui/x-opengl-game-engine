@@ -5,7 +5,7 @@
 #pragma once
 
 #include "x/core/base.h"
-#include "x/core/log.h"
+#include "x/log/log.h"
 
 #include <filesystem>
 

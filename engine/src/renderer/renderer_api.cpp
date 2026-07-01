@@ -6,7 +6,7 @@
 
 #include "platform/opengl/opengl_renderer_api.h"
 #include "x/core/base.h"
-#include "x/core/log.h"
+#include "x/log/log.h"
 #include "x/renderer/renderer.h"
 
 RendererAPI::API RendererAPI::s_API = RendererAPI::API::kOpenGL;

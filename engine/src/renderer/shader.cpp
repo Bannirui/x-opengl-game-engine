@@ -7,7 +7,7 @@
 #include "platform/opengl/opengl_shader.h"
 #include "x/core/assert.h"
 #include "x/core/base.h"
-#include "x/core/log.h"
+#include "x/log/log.h"
 #include "x/renderer/renderer.h"
 
 Ref<Shader> Shader::Create(const std::string& filepath) {

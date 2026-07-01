@@ -2,7 +2,7 @@
 
 #include "platform/opengl/opengl_context.h"
 #include "x/core/base.h"
-#include "x/core/log.h"
+#include "x/log/log.h"
 #include "x/renderer/renderer.h"
 
 Scope<GraphicsContext> GraphicsContext::Create(void* window) {

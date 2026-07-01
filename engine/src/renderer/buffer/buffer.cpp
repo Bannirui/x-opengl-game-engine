@@ -6,7 +6,7 @@
 
 #include "platform/opengl/opengl_buffer.h"
 #include "x/core/base.h"
-#include "x/core/log.h"
+#include "x/log/log.h"
 #include "x/renderer/renderer.h"
 
 Ref<VertexBuffer> VertexBuffer::Create(float* vertices, uint32_t size) {
