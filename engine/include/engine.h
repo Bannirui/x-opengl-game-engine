@@ -15,7 +15,7 @@
 #include "x/core/timestep.h"
 #include "x/debug/instrumentor.h"
 #include "x/events/event.h"
-#include "x/imgui/im_gui_layer.h"
+#include "x/imgui/imgui_layer.h"
 #include "x/log/log.h"
 #include "x/scene/component.h"
 #include "x/scene/entity.h"

@@ -7,7 +7,7 @@
 #include "x/core/layer.h"
 #include "x/core/timestep.h"
 #include "x/events/application_event.h"
-#include "x/imgui/im_gui_layer.h"
+#include "x/imgui/imgui_layer.h"
 #include "x/renderer/renderer.h"
 #include "x/util/platform_util.h"
 #include "x/window.h"
