@@ -30,7 +30,7 @@ MacWindow::~MacWindow() {
 void MacWindow::OnUpdate() {
     X_PROFILE_FUNCTION();
     glfwPollEvents();
-    glfwSwapBuffers(m_window);
+    this->m_context->SwapBuffers();
 }
 
 void MacWindow::SetVSync(bool enabled) {
@@ -68,8 +68,6 @@ void MacWindow::init(const WindowProps& props) {
         ++s_GLFWWindowCount;
     }
     CORE_ASSERT(m_window, "Failed to create GLFW window");
-
-    glfwMakeContextCurrent(m_window);
 
     m_context = GraphicsContext::Create(m_window);
     // 把OpenGL的函数实现地址告诉glad

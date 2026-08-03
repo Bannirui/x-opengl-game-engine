@@ -39,8 +39,8 @@ public:
     }
 
 private:
-    virtual void init(const WindowProps& props);
-    virtual void shutdown();
+    void init(const WindowProps& props);
+    void shutdown();
     /**
      * 把GlfwWindow回调的窗体事件转给自己
      */

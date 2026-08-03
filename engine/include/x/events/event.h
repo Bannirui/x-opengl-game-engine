@@ -36,7 +36,7 @@ enum class EventType {
 #undef ENUM_VALUE
 };
 
-// 事件类别枚举 层看自己感不感兴趣就看标识里面有没有这个类型 C风格枚举原生支持运算
+// 事件类别枚举 渲染层看自己感不感兴趣就看标识里面有没有这个类型 C风格枚举原生支持运算
 enum EventCategory {
     kNone = 0,
     kEventCategoryApplication = BIT(0),

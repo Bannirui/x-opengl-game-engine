@@ -20,18 +20,18 @@ static void glfwErrorCallback(int error, const char* description) {
 
 LinuxWindow::LinuxWindow(const WindowProps& props) {
     X_PROFILE_FUNCTION();
-    init(props);
+    this->init(props);
 }
 
 LinuxWindow::~LinuxWindow() {
     X_PROFILE_FUNCTION();
-    shutdown();
+    this->shutdown();
 }
 
 void LinuxWindow::OnUpdate() {
     X_PROFILE_FUNCTION();
     glfwPollEvents();
-    glfwSwapBuffers(m_window);
+    this->m_context->SwapBuffers();
 }
 
 void LinuxWindow::SetVSync(bool enabled) {
@@ -68,8 +68,6 @@ void LinuxWindow::init(const WindowProps& props) {
         ++s_GLFWWindowCount;
     }
     CORE_ASSERT(m_window, "Failed to create GLFW window");
-
-    glfwMakeContextCurrent(m_window);
 
     m_context = GraphicsContext::Create(m_window);
     m_context->Init();
