@@ -296,6 +296,9 @@ public:
  *   - 用EBO告诉OpenGL怎么组合这些顶点
  */
 class IndexBuffer {
+protected:
+    IndexBuffer() = default;
+
 public:
     virtual ~IndexBuffer() = default;
 
