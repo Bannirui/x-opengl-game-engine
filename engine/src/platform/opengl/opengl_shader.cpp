@@ -184,15 +184,15 @@ static std::unordered_map<GLenum, std::string> preProcess(const std::string& gls
 OpenGLShader::OpenGLShader(const std::string& filepath) {
     X_PROFILE_FUNCTION();
     // GLSL源码路径 传进来的是不带版本号的{name}.glsl 最终可能用{name}.{version}.glsl也可能用{name}.glsl的shader程序
-    m_filePath = resolveShaderFilePath(filepath);
+    this->m_filePath = resolveShaderFilePath(filepath);
     Util::CreateCacheDirectoryIfNeeded();
     // shader源码读出来
-    std::string source = readFile(m_filePath);
+    std::string source = readFile(this->m_filePath);
     // vertex源码和frag源码
-    auto shaderSources = preProcess(m_filePath, source);
+    auto shaderSources = preProcess(this->m_filePath, source);
     {
         Timer timer;
-        m_glslSources = shaderSources;
+        this->m_glslSources = shaderSources;
         // 创建OpenGL的shader object
         creatProgram();
         CORE_INFO("Shader creation took {} ms", timer.ElapsedMillis());
@@ -201,7 +201,7 @@ OpenGLShader::OpenGLShader(const std::string& filepath) {
     lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
     auto lastDot = filepath.rfind('.');
     auto count = lastDot == std::string::npos ? filepath.size() - lastSlash : lastDot - lastSlash;
-    m_name = filepath.substr(lastSlash, count);
+    this->m_name = filepath.substr(lastSlash, count);
 }
 
 OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string fragmentSrc)

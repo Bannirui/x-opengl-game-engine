@@ -15,6 +15,9 @@
  * OpenGL创建个shader object然后分配个id引用它
  */
 class Shader {
+protected:
+    Shader() = default;
+
 public:
     virtual ~Shader() = default;
 
@@ -48,9 +51,6 @@ public:
      * @param fragmentSrc frag glsl源码
      */
     static Ref<Shader> Create(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc);
-
-protected:
-    Shader() = default;
 };
 
 class ShaderLib {
