@@ -255,6 +255,9 @@ private:
  *   - GL_DYNAMIC_DRAW 数据经常变 GPU用的多
  */
 class VertexBuffer {
+protected:
+    VertexBuffer() = default;
+
 public:
     virtual ~VertexBuffer() = default;
 
