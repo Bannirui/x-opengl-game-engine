@@ -59,5 +59,6 @@ public:
 
 private:
     uint32_t m_rendererID;
+    // 多少个索引点
     uint32_t m_count;
 };
