@@ -118,7 +118,8 @@ void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer) {
                     element.GetComponentCount(),  // 顶点的这个分量有多少个数据
                     ShaderDataTypeToOpenGLBaseType(element.type),  // 数据类型
                     element.normalized ? GL_TRUE : GL_FALSE,  // 是否归一化
-                    layout.GetStride(), reinterpret_cast<const void*>(element.offset)  // 这个顶点分量在顶点中的偏移
+                    layout.GetStride(), // 一个顶点所有属性属性有多少字节
+                    reinterpret_cast<const void*>(element.offset)  // 这个顶点分量在顶点所有属性中的偏移
                 );
                 // 比如参数依次是0 3 GL_FLOAT GL_TRUE 0
                 // 就是让OpenGL去显存VBO里面从每个顶点的偏移0开始读连续3个float传给shader的location=0

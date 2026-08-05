@@ -189,10 +189,11 @@ struct BufferElement {
  *   - normal
  *   - ...
  * 这么多个分量是什么顺序 每个分量多少个数字 每个数字是什么类型
+ * 一个顶点的所有属性怎么布局的
  */
 class BufferLayout {
 public:
-    BufferLayout() {}
+    BufferLayout() = default;
 
     BufferLayout(const std::initializer_list<BufferElement>& elements) : m_elements(elements) {
         calculateOffsetsAndStride();
@@ -225,10 +226,10 @@ public:
 private:
     void calculateOffsetsAndStride() {
         size_t offset = 0;
-        // 统计顶点数据多少字节 就是顶点里面所有分量大小加起来
+        // 统计一个顶点数据多少字节 就是顶点里面所有分量大小加起来
         m_stride = 0;
         for (auto& element : m_elements) {
-            // 顶点分量在顶点的偏移
+            // 顶点的某个分量在一个顶点所有数据中的偏移
             element.offset = offset;
             offset += element.size;
             // 每个分量大小求和
@@ -237,7 +238,7 @@ private:
     }
 
 private:
-    // 一个顶点的分量 放在vector就顺序性就是每个分量的顺序
+    // 一个顶点的所有属性 放在vector就顺序性就是每个属性分量的顺序
     std::vector<BufferElement> m_elements;
     // 一个顶点的步长 也就是一个顶点数据多少字节 VBO是GPU显存上一个连续内存空间 一连串的数据
     // GPU不知道这些数据哪些是顶点A 哪些是顶点B 这个步长就是负责告诉GPU每个顶点数据是怎么划分的
