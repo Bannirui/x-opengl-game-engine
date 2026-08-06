@@ -51,12 +51,9 @@ void Renderer3D::Init() {
         const char* Name;  // UBO的名称
         uint32_t Binding;  // UBO在shader里面对应的binding
     } s_UBODefs[] = {
-        {"Camera", UBOBinding::Camera},
-        {"Model", UBOBinding::Model},
-        {"LightBlock", UBOBinding::Light},
-        {"PBRSettings", UBOBinding::PBRSettings},
-        {"LightSpace", UBOBinding::LightSpace},
-        {"CSMData", UBOBinding::CSMData},
+        {"Camera", UBOBinding::Camera},         {"Model", UBOBinding::Model},
+        {"LightBlock", UBOBinding::Light},      {"PBRSettings", UBOBinding::PBRSettings},
+        {"LightSpace", UBOBinding::LightSpace}, {"CSMData", UBOBinding::CSMData},
     };
 
     // 手动绑定UBO的block跟binding

@@ -21,6 +21,9 @@ public:
         return m_position;
     }
 
+    /**
+     * @param position 相机新位置
+     */
     void set_position(const glm::vec3& position) {
         m_position = position;
         reCalculateViewMatrix();
@@ -51,10 +54,13 @@ private:
     void reCalculateViewMatrix();
 
 private:
+    // 投影矩阵
     glm::mat4 m_projectionMatrix;
+    // 观察矩阵
     glm::mat4 m_viewMatrix;
+    // P*V
     glm::mat4 m_viewProjectionMatrix;
-
+    // 相机的位置
     glm::vec3 m_position{0.0f, 0.0f, 0.0f};
     float m_rotation{0.0f};
 };

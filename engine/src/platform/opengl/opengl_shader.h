@@ -73,6 +73,9 @@ private:
     void uploadUniformFloat3(const std::string& name, const glm::vec3& value) const;
     void uploadUniformFloat4(const std::string& name, const glm::vec4& value) const;
     void uploadUniformMat3(const std::string& name, const glm::mat3& matrix) const;
+    /**
+     * @param name 在glsl代码里面uniform变量的名字
+     */
     void uploadUniformMat4(const std::string& name, const glm::mat4& matrix) const;
 
 private:
