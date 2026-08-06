@@ -106,6 +106,7 @@ void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer) {
     const auto& layout = vertexBuffer->GetLayout();
     // for循环保证了分量的遍历顺序 跟shader的GLSL里面的location对应起来 比如依次是a_Position a_Color...
     for (const auto& element : layout) {
+        // 处理VBO的顶点的每个属性 a_Position a_Color
         switch (element.type) {
             case ShaderDataType::kFloat:
             case ShaderDataType::kFloat2:

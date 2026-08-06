@@ -216,7 +216,7 @@ void Renderer3D::BeginScene(const EditorCamera& camera) {
 
 void Renderer3D::EndScene() {
     X_PROFILE_FUNCTION();
-    Flush();
+    flush();
 }
 
 /**
@@ -238,7 +238,7 @@ void Renderer3D::EndScene() {
  *   GL_TEXTURE9  — ShadowMap2      CSM级联2
  *   GL_TEXTURE10 — ShadowMap3      CSM级联3
  */
-void Renderer3D::Flush() {
+void Renderer3D::flush() {
     if (s_data.Buckets.empty()) return;
 
     // 绑定IBL 纹理到固定纹理单元

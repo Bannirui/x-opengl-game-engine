@@ -103,5 +103,5 @@ public:
     static void ResetStats();
 
 private:
-    static void Flush();
+    static void flush();
 };
