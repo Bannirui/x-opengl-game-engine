@@ -80,6 +80,7 @@ private:
     bool m_running{true};
     LayerStack m_layerStack;
     ImGuiLayer* m_ImGuiLayer;
+    // 上一帧的时间
     float m_lastFrameTime{0.0f};
     // 重置窗口大小的时候是不是把窗口最小化了
     bool m_minimized{false};

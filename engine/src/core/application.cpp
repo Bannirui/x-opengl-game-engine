@@ -105,6 +105,7 @@ void Application::run() {
         ProcessEvents();
 
         float time = Time::GetTime();
+        // 已经给Timestep实现了函数转换 可以直接跟float进行运算 会自动隐式转换
         Timestep timestep = time - m_lastFrameTime;
         m_lastFrameTime = time;
 
